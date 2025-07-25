@@ -21,6 +21,8 @@ To provide a streamlined platform for organizing, managing, and attending events
 > SusalSandeepa
 > kavindidilhara
 > SudaraDilshan
+> chathura722
+> era12-ux
 
 ## 📌 Note
 This project is developed solely for academic purposes.
