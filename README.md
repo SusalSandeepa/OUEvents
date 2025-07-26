@@ -14,7 +14,7 @@ To provide a streamlined platform for organizing, managing, and attending events
 
 ## 📚 Course Info
 - **Course Code:** EEY4189  
-- **Course Name:** Software Design in Groups  
+- **Course Name:** Software Design in Group 2024  
 - **Institution:** The Open University of Sri Lanka  
 
 ## 👥 Contributors
