@@ -1,7 +1,7 @@
 # 🎉 OUEvents
 
 OUEvents is an event management web application developed for **The Open University of Sri Lanka** using the **MERN stack** (MongoDB, Express.js, React, Node.js).  
-This project is part of the **EEY4189 Software Design in Group** course.
+This project is part of the **EEY4189 Software Design in Group** course for the 2024/2025 academic year.
 
 ## 🚀 Purpose
 To provide a streamlined platform for organizing, managing, and attending events within the Open University community.
