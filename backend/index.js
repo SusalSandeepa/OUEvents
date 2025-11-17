@@ -28,7 +28,7 @@ app.get("/",
 
         res.json(
             {
-                message: "Hello from server!"
+                message: "Hello from server!!"
             }
         )
     }
