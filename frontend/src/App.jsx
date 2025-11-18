@@ -1,14 +1,15 @@
-import './App.css'
+import "./App.css";
+import Navbar from "./components/Navbar";
 
 function App() {
-
   return (
     <>
-      <div className="text-center text-3xl font-bold hover:text-red-700">
-        Welcome to OUEvents
+      <Navbar />
+      <div style={{ padding: "40px" }}>
+        <h1>Welcome to OUEvents</h1>
       </div>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
