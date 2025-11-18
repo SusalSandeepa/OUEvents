@@ -5,8 +5,8 @@ function App() {
   return (
     <>
       <Navbar />
-      <div style={{ padding: "40px" }}>
-        <h1>Welcome to OUEvents</h1>
+      <div className="p-10">
+        <h1 className="text-3xl font-bold">Welcome to OUEvents</h1>
       </div>
     </>
   );
