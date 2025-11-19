@@ -15,7 +15,7 @@ export default function Navbar() {
   );
 
   return (
-    <nav className="w-full bg-white border-b border-gray-200 py-3 px-8 flex items-center justify-between">
+    <nav className="flex items-center justify-between w-full px-8 py-3 bg-white border-b border-gray-200">
       {/* LEFT */}
       <div className="flex items-center space-x-3">
         <img src={logo} alt="Logo" className="w-12 h-12" />
