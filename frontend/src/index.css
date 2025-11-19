@@ -6,6 +6,4 @@
   --color-secondary: #2f3e4e;
 }
 
-@tailwind base;
-@tailwind components;
 @tailwind utilities;
