@@ -1,6 +1,7 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import userRouter from './routes/userRouter.js';
 
 dotenv.config();// Load environment variables from .env file
 
@@ -20,6 +21,8 @@ mongoose.connect(connectionString).then(
         console.log("Database Connection Failed")
     }
 )
+
+app.use("/api/users", userRouter)
 
 app.get("/",
     (req,res)=>{
