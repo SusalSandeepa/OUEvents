@@ -25,3 +25,30 @@ export function createUser(req,res){
 			});
 		});
 }
+
+export function loginUser(req,res){
+	User.findOne(
+		{
+			email: req.body.email
+		}
+	).then(
+		(user) => {
+			if(user == null){
+				res.json({
+					message: "User not found"
+				})
+			}else{
+				const isPasswordMatching = bcrypt.compareSync(req.body.password, user.password); // Compare the provided password with the hashed password
+				if(isPasswordMatching){
+					res.json({
+						message: "Login successful"
+					})
+				}else{
+					res.json({
+						message: "Incorrect password"
+					})
+				}
+			}
+		}
+	)
+}
