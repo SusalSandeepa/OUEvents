@@ -1,5 +1,9 @@
 import User from "../models/user.js";
 import bcrypt from "bcryptjs";
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+
+dotenv.config(); // Load environment variables from .env file
 
 export function createUser(req,res){
 
@@ -34,21 +38,56 @@ export function loginUser(req,res){
 	).then(
 		(user) => {
 			if(user == null){
-				res.json({
+				res.status(404).json({
 					message: "User not found"
 				})
 			}else{
 				const isPasswordMatching = bcrypt.compareSync(req.body.password, user.password); // Compare the provided password with the hashed password
 				if(isPasswordMatching){
+
+					const token = jwt.sign(
+						{
+							email: user.email,
+							firstName: user.firstName,	
+							lastName: user.lastName,
+							role: user.role,
+							isEmailVerified: user.isEmailVerified
+						},
+						process.env.JWT_SECRET
+					)
+
 					res.json({
-						message: "Login successful"
+						message: "Login successful",
+						token: token
 					})
 				}else{
-					res.json({
+					res.status(401).json({
 						message: "Incorrect password"
 					})
 				}
 			}
 		}
 	)
+}
+
+export function isAdmin(req) {
+	if (req.user == null) {
+		return false;
+	}
+	if (req.user.role != "admin") {
+		return false;
+	}
+
+	return true;
+}
+
+export function isUser(req) {
+	if (req.user == null) {
+		return false;
+	}
+	if (req.user.role != "user") {
+		return false;
+	}
+
+	return true;
 }
