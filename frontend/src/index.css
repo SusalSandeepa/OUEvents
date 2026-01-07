@@ -7,3 +7,78 @@
 }
 
 @tailwind utilities;
+
+/* === CountdownBadge2 global animations === */
+
+/* Wrapper fade-in + move up (for the whole countdown area) */
+@keyframes countdown-fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-countdown-fade-in {
+  animation: countdown-fade-in 0.8s ease forwards 0.2s;
+}
+
+/* Number change: new value from top → center → down */
+@keyframes number-change {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  40% {
+    transform: translateY(0%);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0%);
+    opacity: 1;
+  }
+}
+
+.animate-number-change {
+  animation: number-change 0.35s ease-out;
+}
+
+/* Reset animation when the unit value hits 0 (a subtle pulse) */
+@keyframes reset-pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(255, 51, 102, 0.25);
+  }
+  50% {
+    transform: scale(1.04);
+    box-shadow: 0 0 0 6px rgba(255, 51, 102, 0.15);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(255, 51, 102, 0);
+  }
+}
+
+.animate-reset-pulse {
+  animation: reset-pulse 0.35s ease-out;
+}
+
+/* Slow moving colored line (#FF3366) at the top of each box */
+@keyframes line-slow {
+  0% {
+    transform: translateX(-100%);
+  }
+  50% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-line-slow {
+  animation: line-slow 2.4s ease-in-out infinite;
+}
