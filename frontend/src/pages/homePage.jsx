@@ -4,11 +4,13 @@ import Hero from "../components/Hero"
 
 export default function HomePage(){
     return(
-        <>
+        <div className="flex flex-col min-h-screen">
             <Navbar />
-            <Hero />
+            <main className="flex-grow">
+                <Hero />
+            </main>
             <Footer />
-        </>
+        </div>
     )
 }
 
