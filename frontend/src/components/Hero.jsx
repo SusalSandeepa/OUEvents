@@ -25,6 +25,8 @@ const Hero = () => {
         <p className="text-gray-500">[Hero Image Placeholder]</p>
       </div>
     </section>
+
+  
   );
 };
 
