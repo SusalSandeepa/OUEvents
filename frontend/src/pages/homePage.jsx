@@ -7,11 +7,13 @@ export default function HomePage(){
     return(
         <div className="flex flex-col min-h-screen">
             <Navbar />
-            <Routes path="/">
-                <Route path="/" element={<Hero />} />
-                <Route path="/events" element={<></>} />
-                <Route path="/about" element={<></>} />
-            </Routes>
+            <main className="flex-1">
+                <Routes path="/">
+                    <Route path="/" element={<Hero />} />
+                    <Route path="/events" element={<></>} />
+                    <Route path="/about" element={<></>} />
+                </Routes>
+            </main>
             <Footer />
         </div>
     )

@@ -1,39 +1,7 @@
-import { useState, useEffect } from "react";
-
 const Footer = () => {
-  const [isVisible, setIsVisible] = useState(true);
-
-  useEffect(() => {
-    let timeoutId;
-
-    const handleScroll = () => {
-      setIsVisible(false);
-      
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => {
-        setIsVisible(true);
-      }, 200); // Show after scrolling stops
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      clearTimeout(timeoutId);
-    };
-  }, []);
-
   return (
-    <>
-      {/* Spacer to prevent content overlap */}
-      <div className="h-[400px] w-full" aria-hidden="true" />
-      
-      <footer 
-        className={`fixed bottom-0 left-0 w-full z-50 bg-[var(--color-accent)] text-white/90 transition-all duration-500 ease-in-out transform ${
-          isVisible ? "translate-y-0 opacity-100" : "translate-y-full opacity-0 pointer-events-none"
-        }`}
-      >
+    <footer className="bg-[var(--color-accent)] text-white/90">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-14">
-
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 text-center md:text-left">
 
@@ -77,7 +45,6 @@ const Footer = () => {
 
       </div>
     </footer>
-    </>
   );
 };
 
