@@ -232,19 +232,7 @@ const CountdownBadge2 = ({ targetDateTime }) => {
     );
   }
 
-  if (isPast) {
-    return (
-      <div className="flex items-center justify-center my-6 sm:my-8">
-        <p
-          className="font-semibold text-xs sm:text-sm md:text-base"
-          style={{ color: "var(--color-accent)" }}
-        >
-          Event Started
-        </p>
-      </div>
-    );
-  }
-
+ 
   return (
     <div
       className="
