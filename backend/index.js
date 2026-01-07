@@ -27,7 +27,6 @@ app.use(
                         })
                         return
                     }else{
-                        console.log(decoded)
                         req.user = decoded // attach decoded user details to the request object
                     }
                 }
