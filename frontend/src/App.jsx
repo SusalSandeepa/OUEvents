@@ -1,15 +1,14 @@
 import "./App.css";
-import Hero from "./components/Hero";
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import HomePage from "./pages/homePage";
 
 function App() {
   return (
-    <>
-      <Navbar />
-      <Footer />
-      <Hero/>
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

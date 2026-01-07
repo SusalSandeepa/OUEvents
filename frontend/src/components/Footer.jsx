@@ -1,7 +1,30 @@
+import { useState, useEffect } from "react";
+
 const Footer = () => {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      // Check if user is near the bottom of the page
+      const isBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 50;
+      setIsVisible(isBottom);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    // Initial check
+    handleScroll();
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <footer className="bg-[var(--color-accent)] text-white/90">
+    <footer 
+      className={`bg-[var(--color-accent)] text-white/90 transition-all duration-500 ease-in-out transform ${
+        isVisible ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0 pointer-events-none"
+      }`}
+    >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-14">
+
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 text-center md:text-left">
 
