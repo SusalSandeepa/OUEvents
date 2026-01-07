@@ -23,8 +23,7 @@
 
 import React, { useCallback, memo } from "react";
 import { useNavigate } from "react-router-dom";
-// FUTURE: import CountdownBadge1 once implemented
-// import CountdownBadge1 from "./CountdownBadge1";
+import CountdownBadge1 from "./CountdownBadge1";
 
 // Simple date formatter; consider centralizing later(TEMP: basic date formatting; consider moving to src/utils/dateHelpers.js later)
 const formatEventDate = (isoString) => {
@@ -116,14 +115,10 @@ const EventCard = ({ event }) => {
           loading="lazy"
         />
 
-        {/* 
-          TODO (future):
-          - Once CountdownBadge1 is implemented, uncomment and use:
-
-          <div className="absolute bottom-0 right-4 translate-y-1/2">
-            <CountdownBadge1 targetDateTime={startDateTime} />
-          </div>
-        */}
+        <div className="absolute bottom-0 right-2 sm:right-4 translate-y-1/2">
+         <CountdownBadge1 targetDateTime={startDateTime} />
+        </div>
+        
       </div>
 
       {/* Content Area */}
