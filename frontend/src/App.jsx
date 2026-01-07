@@ -7,8 +7,8 @@ function App() {
   return (
     <>
       <Navbar />
-      <Footer />
       <Hero/>
+      <Footer />
     </>
   );
 }
