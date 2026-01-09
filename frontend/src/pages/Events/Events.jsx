@@ -110,11 +110,25 @@ const Events = () => {
         // Allow both API shapes:
         //  - Bare array: [ {...}, {...} ]
         //  - Wrapped:   { events: [ {...}, {...} ] }
-        const fetchedEvents = Array.isArray(data) ? data : data.events || [];
+        const roughEvents = Array.isArray(data) ? data : data.events || [];
+
+        // Map backend fields to frontend expectations:
+        // Backend: eventID, title, description, eventDateTime, location, image, category, status, organizer
+        // Frontend: _id, title, imageUrl, startDateTime, targetDateTime, venue
+        const mappedEvents = roughEvents.map((evt) => ({
+          ...evt,
+          _id: evt._id || evt.eventID, // Ensure we have a usable ID
+          // Map visuals
+          imageUrl: evt.image || evt.imageUrl,
+          venue: evt.location || evt.venue,
+          // Map time (critical for filter & countdown)
+          startDateTime: evt.eventDateTime || evt.startDateTime,
+          targetDateTime: evt.eventDateTime || evt.targetDateTime,
+        }));
 
         if (!isSubscribed) return;
 
-        setEvents(fetchedEvents);
+        setEvents(mappedEvents);
       } catch (err) {
         // Ignore abort-related cancellation errors
         if (!isSubscribed) return;
