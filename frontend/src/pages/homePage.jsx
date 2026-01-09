@@ -2,6 +2,7 @@ import Navbar from "../components/Navbar"
 import Footer from "../components/Footer"
 import Hero from "../components/Hero"
 import Events from "./Events/Events"
+import About from "./About/About";
 import { Routes, Route } from "react-router-dom"
 
 export default function HomePage() {
@@ -12,7 +13,7 @@ export default function HomePage() {
                 <Routes>
                     <Route index element={<Hero />} />
                     <Route path="events" element={<Events />} />
-                    <Route path="about" element={<div>About page</div>} />
+                    <Route path="about" element={<About />} />
                 </Routes>
             </main>
             <Footer />
