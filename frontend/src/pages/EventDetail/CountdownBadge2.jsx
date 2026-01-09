@@ -133,7 +133,6 @@ const CountdownBadge2 = ({ targetDateTime }) => {
     hours,
     minutes,
     seconds,
-    isPast,
   } = countdown;
 
   const valuesByKey = {
@@ -210,29 +209,6 @@ const CountdownBadge2 = ({ targetDateTime }) => {
     }
   }
 
-  const allZero =
-    years === 0 &&
-    months === 0 &&
-    weeks === 0 &&
-    days === 0 &&
-    hours === 0 &&
-    minutes === 0 &&
-    seconds === 0;
-
-  if (allZero && !isPast) {
-    return (
-      <div className="flex items-center justify-center my-6 sm:my-8">
-        <p
-          className="text-xs sm:text-sm md:text-base"
-          style={{ color: "var(--color-secondary)" }}
-        >
-          Countdown not available
-        </p>
-      </div>
-    );
-  }
-
- 
   return (
     <div
       className="
