@@ -12,6 +12,14 @@ export async function createEvent(req,res){
 
     try{
         const eventData = req.body;
+
+        if(!eventData.eventDateTime && eventData.date && eventData.time){
+            const date = new Date(eventData.date);
+            const timeSplit = eventData.time.split(":");
+            date.setUTCHours(parseInt(timeSplit[0]));
+            date.setUTCMinutes(parseInt(timeSplit[1]));
+            eventData.eventDateTime = date;
+        }
         const event = new Event(eventData);
 
         await event.save();
@@ -83,6 +91,14 @@ export async function updateEvent(req,res){
     try{
         const eventID = req.params.eventID
         const updatedData = req.body
+        
+        if(!updatedData.eventDateTime && updatedData.date && updatedData.time){
+            const date = new Date(updatedData.date);
+            const timeSplit = updatedData.time.split(":");
+            date.setUTCHours(parseInt(timeSplit[0]));
+            date.setUTCMinutes(parseInt(timeSplit[1]));
+            updatedData.eventDateTime = date;
+        }
 
         await Event.updateOne(
             {eventID: eventID},
