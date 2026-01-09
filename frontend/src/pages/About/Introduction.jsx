@@ -4,7 +4,7 @@
  * Features floating 3D students image (no container/frame)
  */
 
-import studentsImg from "../../assets/students.png";
+import aboutImg from "../../assets/aboutImage.png";
 
 const Introduction = () => {
   return (
@@ -41,7 +41,7 @@ const Introduction = () => {
           - Just the raw image
         */}
         <img
-          src={studentsImg}
+          src={aboutImg}
           alt="Students illustration"
           className="
             /* Responsive sizing */
