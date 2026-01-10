@@ -59,7 +59,7 @@ import EventsEmptyState from "./EventsEmptyState";
 const EVENTS_API_URL = "/api/events";
 
 // Number of events per page
-const PAGE_SIZE = 8;
+const PAGE_SIZE = 6;
 
 // Sorting keys used in this page
 const SORT_BY = {
@@ -110,11 +110,25 @@ const Events = () => {
         // Allow both API shapes:
         //  - Bare array: [ {...}, {...} ]
         //  - Wrapped:   { events: [ {...}, {...} ] }
-        const fetchedEvents = Array.isArray(data) ? data : data.events || [];
+        const roughEvents = Array.isArray(data) ? data : data.events || [];
+
+        // Map backend fields to frontend expectations:
+        // Backend: eventID, title, description, eventDateTime, location, image, category, status, organizer
+        // Frontend: _id, title, imageUrl, startDateTime, targetDateTime, venue
+        const mappedEvents = roughEvents.map((evt) => ({
+          ...evt,
+          _id: evt._id || evt.eventID, // Ensure we have a usable ID
+          // Map visuals
+          imageUrl: evt.image || evt.imageUrl,
+          venue: evt.location || evt.venue,
+          // Map time (critical for filter & countdown)
+          startDateTime: evt.eventDateTime || evt.startDateTime,
+          targetDateTime: evt.eventDateTime || evt.targetDateTime,
+        }));
 
         if (!isSubscribed) return;
 
-        setEvents(fetchedEvents);
+        setEvents(mappedEvents);
       } catch (err) {
         // Ignore abort-related cancellation errors
         if (!isSubscribed) return;
@@ -300,21 +314,21 @@ const Events = () => {
               {/* Events grid receives the already filtered & paginated list */}
               <EventsGrid events={paginatedEvents} />
 
-              {/* Pagination is shown only if there is more than one page */}
-              {totalPages > 1 && (
-                <div className="mt-8 sm:mt-10">
-                  {/* Expected props:
+              {/* Pagination controls */}
+              <div className="mt-8 sm:mt-10">
+                {/* Expected props:
                      - currentPage: number
                      - totalPages: number
                      - onPageChange(page: number): void
                   */}
-                  <EventsPagination
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    onPageChange={handlePageChange}
-                  />
-                </div>
-              )}
+                <EventsPagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  totalItems={totalItems}
+                  pageSize={PAGE_SIZE}
+                  onPageChange={handlePageChange}
+                />
+              </div>
             </>
           )}
         </div>

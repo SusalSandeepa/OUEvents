@@ -23,6 +23,8 @@
 // PROPS:
 // - currentPage: number (1-based index of the current page).
 // - totalPages: number (>= 1).
+// - totalItems: number (total number of events matching filters).
+// - pageSize: number (number of items per page).
 // - onPageChange: (page: number) => void
 //     Called when user clicks a page or prev/next.
 //
@@ -87,8 +89,14 @@ const buildPageItems = (currentPage, totalPages) => {
   return items;
 };
 
-const EventsPagination = ({ currentPage, totalPages, onPageChange }) => {
-  if (!totalPages || totalPages <= 1) return null;
+const EventsPagination = ({
+  currentPage,
+  totalPages,
+  totalItems,
+  pageSize,
+  onPageChange,
+}) => {
+  if (!totalPages || totalPages <= 0) return null;
 
   const goToPage = (page) => {
     if (page < 1 || page > totalPages || page === currentPage) return;
@@ -102,7 +110,7 @@ const EventsPagination = ({ currentPage, totalPages, onPageChange }) => {
 
   return (
     <nav
-      className="flex justify-center"
+      className="flex flex-col items-center gap-4"
       aria-label="Events pagination"
     >
       <div
@@ -179,10 +187,9 @@ const EventsPagination = ({ currentPage, totalPages, onPageChange }) => {
                 font-medium
                 border
                 transition
-                ${
-                  isActive
-                    ? "bg-[var(--color-accent)] border-[var(--color-accent)] text-white shadow-sm"
-                    : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"
+                ${isActive
+                  ? "bg-[var(--color-accent)] border-[var(--color-accent)] text-white shadow-sm"
+                  : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"
                 }
               `}
             >
@@ -224,7 +231,30 @@ const EventsPagination = ({ currentPage, totalPages, onPageChange }) => {
           </svg>
         </button>
       </div>
+
+      {/* SHOWING RANGE TEXT */}
+      <div
+        className="text-xs sm:text-sm font-medium"
+        style={{ color: "var(--color-secondary)" }}
+      >
+        {totalItems > 0 ? (
+          <>
+            Showing{" "}
+            <span style={{ color: "var(--color-accent)" }}>
+              {Math.min((currentPage - 1) * pageSize + 1, totalItems)}
+              {" "}–{" "}
+              {Math.min(currentPage * pageSize, totalItems)}
+            </span>
+            {" "}of{" "}
+            <span style={{ color: "var(--color-accent)" }}>{totalItems}</span>
+            {" "}events
+          </>
+        ) : (
+          "No events found"
+        )}
+      </div>
     </nav>
+
   );
 };
 
