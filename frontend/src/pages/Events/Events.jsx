@@ -59,7 +59,7 @@ import EventsEmptyState from "./EventsEmptyState";
 const EVENTS_API_URL = "/api/events";
 
 // Number of events per page
-const PAGE_SIZE = 8;
+const PAGE_SIZE = 6;
 
 // Sorting keys used in this page
 const SORT_BY = {
@@ -314,21 +314,21 @@ const Events = () => {
               {/* Events grid receives the already filtered & paginated list */}
               <EventsGrid events={paginatedEvents} />
 
-              {/* Pagination is shown only if there is more than one page */}
-              {totalPages > 1 && (
-                <div className="mt-8 sm:mt-10">
-                  {/* Expected props:
+              {/* Pagination controls */}
+              <div className="mt-8 sm:mt-10">
+                {/* Expected props:
                      - currentPage: number
                      - totalPages: number
                      - onPageChange(page: number): void
                   */}
-                  <EventsPagination
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    onPageChange={handlePageChange}
-                  />
-                </div>
-              )}
+                <EventsPagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  totalItems={totalItems}
+                  pageSize={PAGE_SIZE}
+                  onPageChange={handlePageChange}
+                />
+              </div>
             </>
           )}
         </div>
