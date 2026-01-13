@@ -7,6 +7,8 @@ import {
   LuClipboardList,
   LuMessageSquare,
 } from "react-icons/lu";
+import AdminEventPage from "./admin/adminEventPage";
+import CreateEventForm from "./admin/createEventForm";
 
 export default function AdminPage() {
   const location = useLocation();
@@ -103,6 +105,7 @@ export default function AdminPage() {
                   </h2>
                 }
               />
+
               <Route
                 path="/users"
                 element={
@@ -111,14 +114,9 @@ export default function AdminPage() {
                   </h2>
                 }
               />
-              <Route
-                path="/events"
-                element={
-                  <h2 className="text-lg font-semibold opacity-50">
-                    Event Management Module
-                  </h2>
-                }
-              />
+
+              <Route path="/events" element={<AdminEventPage />} />
+
               <Route
                 path="/reports"
                 element={
@@ -127,6 +125,7 @@ export default function AdminPage() {
                   </h2>
                 }
               />
+
               <Route
                 path="/feedback"
                 element={
@@ -135,6 +134,8 @@ export default function AdminPage() {
                   </h2>
                 }
               />
+
+              <Route path="/events/create" element={<CreateEventForm />} />
             </Routes>
           </div>
         </div>
