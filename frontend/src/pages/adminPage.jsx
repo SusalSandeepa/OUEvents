@@ -9,6 +9,7 @@ import {
 } from "react-icons/lu";
 import AdminEventPage from "./admin/adminEventPage";
 import CreateEventForm from "./admin/createEventForm";
+import UpdateEventForm from "./admin/updateEventForm";
 
 export default function AdminPage() {
   const location = useLocation();
@@ -105,7 +106,6 @@ export default function AdminPage() {
                   </h2>
                 }
               />
-
               <Route
                 path="/users"
                 element={
@@ -114,9 +114,7 @@ export default function AdminPage() {
                   </h2>
                 }
               />
-
               <Route path="/events" element={<AdminEventPage />} />
-
               <Route
                 path="/reports"
                 element={
@@ -125,7 +123,6 @@ export default function AdminPage() {
                   </h2>
                 }
               />
-
               <Route
                 path="/feedback"
                 element={
@@ -134,8 +131,8 @@ export default function AdminPage() {
                   </h2>
                 }
               />
-
               <Route path="/events/create" element={<CreateEventForm />} />
+              <Route path="/events/update" element={<UpdateEventForm />} />
             </Routes>
           </div>
         </div>
