@@ -114,7 +114,7 @@ const CountdownNumberBox = memo(({ label, value }) => {
           text-[10px] sm:text-xs md:text-sm
           uppercase tracking-wide
         "
-        style={{ color: "var(--color-secondary)" }}
+        style={{ color: "rgba(255, 255, 255, 0.6)" }}
       >
         {label}
       </span>

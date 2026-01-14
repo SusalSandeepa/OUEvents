@@ -117,7 +117,7 @@ const Events = () => {
         // Frontend: _id, title, imageUrl, startDateTime, targetDateTime, venue
         const mappedEvents = roughEvents.map((evt) => ({
           ...evt,
-          _id: evt._id || evt.eventID, // Ensure we have a usable ID
+          _id: evt.eventID || evt._id, // Favor eventID for navigation to match backend
           // Map visuals
           imageUrl: evt.image || evt.imageUrl,
           venue: evt.location || evt.venue,
