@@ -18,9 +18,9 @@ const About = () => {
       {/* Hero Section - Dark gradient with main headline */}
       <AboutHero />
 
-      {/* Main Content Container */}
-      <main className="max-w-7xl mx-auto px-4 py-4 space-y-8">
-        {/* Project Introduction with 3D image */}
+      {/* Main Content Container - Optimized for expansive visuals */}
+      <main className="max-w-7xl mx-auto px-4 py-2 space-y-8 overflow-visible">
+        {/* Project Introduction with high-end visuals */}
         <Introduction />
 
         {/* Vision & Purpose - Dark card section */}
