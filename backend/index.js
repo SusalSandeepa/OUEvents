@@ -4,10 +4,14 @@ import dotenv from 'dotenv';
 import userRouter from './routes/userRouter.js';
 import eventRouter from './routes/eventRouter.js';
 import jwt from 'jsonwebtoken';
+import cors from 'cors';
 
 dotenv.config(); // Load environment variables from .env file
 
 const app = express() 
+
+// Middleware to allow cross-origin requests
+app.use(cors()); 
 
 // Middleware to parse JSON bodies
 app.use(express.json())

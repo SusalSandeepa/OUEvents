@@ -33,8 +33,8 @@ const eventSchema = new mongoose.Schema(
         },
         status : {
             type: String,
-            enum : ["draft","active","inactive"],
-            default : "draft",
+            enum : ["active","inactive"],
+            default : "active",
             required: true
         },
         organizer : {
