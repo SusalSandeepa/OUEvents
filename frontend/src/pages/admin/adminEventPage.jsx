@@ -3,15 +3,73 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { LuPencil, LuTrash2 } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
+
+export function EventDeleteConfirm(props) {
+  const eventID = props.eventID;
+  const close = props.close;
+  const refresh = props.refresh;
+
+  function deleteEvent() {
+    const token = localStorage.getItem("token");
+    axios
+      .delete(import.meta.env.VITE_API_URL + "api/events/" + eventID, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then(() => {
+        close();
+        refresh();
+        toast.success("Event deleted successfully");
+      })
+      .catch((error) => {
+        console.error("Failed to delete event:", error);
+        toast.error("Failed to delete event");
+      });
+  }
+
+  return (
+    <div className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center">
+      <div className="w-[400px] bg-white p-6 rounded-lg shadow-lg">
+        <h3 className="text-lg font-semibold text-secondary mb-2">
+          Delete Event
+        </h3>
+        <p className="text-secondary/70 text-sm mb-6">
+          Are you sure you want to delete {eventID} event? This action cannot be
+          undone.
+        </p>
+        <div className="flex gap-3 justify-end">
+          <button
+            onClick={close}
+            className="px-4 py-2 text-sm font-medium text-secondary bg-secondary/10 hover:bg-secondary/20 rounded-lg"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={deleteEvent}
+            className="px-4 py-2 text-sm font-medium text-white bg-accent hover:opacity-90 rounded-lg"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function AdminEventPage() {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [eventToDelete, setEventToDelete] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchEvents();
-  }, []);
+    if (loading) {
+      fetchEvents();
+    }
+  }, [loading]);
 
   async function fetchEvents() {
     try {
@@ -28,6 +86,17 @@ export default function AdminEventPage() {
 
   return (
     <div>
+      {isDeleteModalOpen && (
+        <EventDeleteConfirm
+          refresh={() => {
+            setLoading(true);
+          }}
+          eventID={eventToDelete}
+          close={() => {
+            setIsDeleteModalOpen(false);
+          }}
+        />
+      )}
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl text-secondary font-semibold">
@@ -130,7 +199,13 @@ export default function AdminEventPage() {
                       >
                         <LuPencil className="w-4 h-4" />
                       </button>
-                      <button className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                      <button
+                        onClick={() => {
+                          setEventToDelete(event.eventID);
+                          setIsDeleteModalOpen(true);
+                        }}
+                        className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                      >
                         <LuTrash2 className="w-4 h-4" />
                       </button>
                     </div>
