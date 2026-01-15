@@ -28,6 +28,36 @@ export default function UpdateEventForm() {
   const [image, setImage] = useState(eventData.image); // URL string initially
 
   async function updateEvent() {
+    // Validate required fields
+    if (!description.trim()) {
+      toast.error("Please enter a Description");
+      return;
+    }
+    if (!date) {
+      toast.error("Please select a Date");
+      return;
+    }
+    if (!time) {
+      toast.error("Please select a Time");
+      return;
+    }
+    if (!location.trim()) {
+      toast.error("Please enter a Location");
+      return;
+    }
+    if (!category) {
+      toast.error("Please select a Category");
+      return;
+    }
+    if (!organizer.trim()) {
+      toast.error("Please enter an Organizer");
+      return;
+    }
+    if (!image) {
+      toast.error("Please upload an Event Image");
+      return;
+    }
+
     const token = localStorage.getItem("token");
     if (token == null) {
       navigate("/login");

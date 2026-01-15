@@ -20,6 +20,44 @@ export default function CreateEventForm() {
   const [image, setImage] = useState(null);
 
   async function submitEvent() {
+    // Validate required fields
+    if (!eventID.trim()) {
+      toast.error("Please enter an Event ID");
+      return;
+    }
+    if (!title.trim()) {
+      toast.error("Please enter an Event Title");
+      return;
+    }
+    if (!description.trim()) {
+      toast.error("Please enter a Description");
+      return;
+    }
+    if (!date) {
+      toast.error("Please select a Date");
+      return;
+    }
+    if (!time) {
+      toast.error("Please select a Time");
+      return;
+    }
+    if (!location.trim()) {
+      toast.error("Please enter a Location");
+      return;
+    }
+    if (!category) {
+      toast.error("Please select a Category");
+      return;
+    }
+    if (!organizer.trim()) {
+      toast.error("Please enter an Organizer");
+      return;
+    }
+    if (!image) {
+      toast.error("Please upload an Event Image");
+      return;
+    }
+
     const token = localStorage.getItem("token");
     if (token == null) {
       navigate("/login");
