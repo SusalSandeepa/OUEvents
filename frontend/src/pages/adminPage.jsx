@@ -1,4 +1,10 @@
-import { Routes, Route, Link, useLocation } from "react-router-dom";
+import {
+  Routes,
+  Route,
+  Link,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 import logo from "../assets/logo.png";
 import {
   LuLayoutDashboard,
@@ -10,9 +16,45 @@ import {
 import AdminEventPage from "./admin/adminEventPage";
 import CreateEventForm from "./admin/createEventForm";
 import UpdateEventForm from "./admin/updateEventForm";
+import { useState, useEffect } from "react";
+import { toast } from "react-hot-toast";
+import axios from "axios";
 
 export default function AdminPage() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const [userLoaded, setUserLoaded] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+    axios
+      .get(import.meta.env.VITE_API_URL + "api/users/me", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        if (res.data.user?.role !== "admin") {
+          toast.error("You are not authorized to access this page", {
+            id: "auth-error",
+          });
+          navigate("/login");
+          return;
+        }
+        setUserLoaded(true);
+      })
+      .catch((err) => {
+        toast.error("Authorization failed, please login again", {
+          id: "auth-error",
+        });
+        navigate("/login");
+        return;
+      });
+  }, []);
 
   const isActive = (path) => {
     if (path === "/admin" && location.pathname === "/admin") return true;
