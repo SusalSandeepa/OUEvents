@@ -9,6 +9,18 @@ const eventRegistrationSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  regNo: {
+    type: String,
+    required: true,
+  },
+  academicYear: {
+    type: String,
+    required: true,
+  },
+  faculty: {
+    type: String,
+    required: true,
+  },
   registrationDate: {
     type: Date,
     default: Date.now,

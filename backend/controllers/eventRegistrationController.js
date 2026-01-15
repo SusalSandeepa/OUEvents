@@ -12,6 +12,9 @@ export function registerForEvent(req, res) {
   }
 
   const eventID = req.body.eventID;
+  const regNo = req.body.regNo;
+  const academicYear = req.body.academicYear;
+  const faculty = req.body.faculty;
 
   // Check if event exists first
   Event.findOne({ eventID: eventID })
@@ -41,6 +44,9 @@ export function registerForEvent(req, res) {
           const registration = new EventRegistration({
             eventID: eventID,
             userEmail: req.user.email,
+            regNo: regNo,
+            academicYear: academicYear,
+            faculty: faculty,
           });
 
           registration
