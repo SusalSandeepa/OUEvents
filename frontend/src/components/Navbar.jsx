@@ -1,8 +1,10 @@
 import logo from "../assets/logo.png";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Navbar() {
   const [active, setActive] = useState("Home");
+  const navigate = useNavigate();
 
   const navItem = (label) => (
     <button
@@ -19,19 +21,22 @@ export default function Navbar() {
       {/* LEFT */}
       <div className="flex items-center space-x-4">
         <img src={logo} alt="Logo" className="w-auto h-20" />
-        <span className="text-2xl font-bold text-gray-800">OUEvents</span>
+        <span className="text-2xl font-bold text-[#2f3e4e]">OUEvents</span>
       </div>
 
       {/* CENTER */}
       <div className="flex items-center">
-        {navItem("Home")}
-        {navItem("Events")}
-        {navItem("About")}
+        {navItem("Home", "/")}
+        {navItem("Events", "/events")}
+        {navItem("About", "/about")}
       </div>
 
       {/* RIGHT */}
       <div className="flex items-center space-x-8">
-        <button className="border border-[#7a1d1a] text-[#7a1d1a] px-4 py-1.5 rounded-lg font-medium hover:bg-[#7a1d1a] hover:text-white transition">
+        <button
+          onClick={() => navigate("/login")}
+          className="border border-[#7a1d1a] text-[#7a1d1a] px-4 py-1.5 rounded-lg font-medium hover:bg-[#7a1d1a] hover:text-white transition"
+        >
           Log In
         </button>
 
