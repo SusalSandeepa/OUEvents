@@ -42,11 +42,11 @@ const Hero = () => {
             </div>
             <div className="p-6">
               <h3 className="mb-3 text-xl font-semibold text-text-dark">
-                Tech Meetup 2025
+                Career Fair 2026
               </h3>
               <div className="flex items-center mb-1 text-sm text-text-dark/70">
                 <i data-lucide="calendar" className="w-4 h-4 mr-2" />
-                Dec 05, 2025
+                June 05, 2026
               </div>
               <div className="flex items-center text-sm text-text-dark/70">
                 <i data-lucide="map-pin" className="w-4 h-4 mr-2" />
