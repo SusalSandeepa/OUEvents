@@ -24,6 +24,7 @@ export default function AdminPage() {
   const location = useLocation();
   const navigate = useNavigate();
   const [userLoaded, setUserLoaded] = useState(false);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -45,6 +46,7 @@ export default function AdminPage() {
           navigate("/login");
           return;
         }
+        setUser(res.data.user);
         setUserLoaded(true);
       })
       .catch((err) => {
@@ -56,20 +58,32 @@ export default function AdminPage() {
       });
   }, []);
 
+  // This function checks if a button should be highlighted
   const isActive = (path) => {
+    // If checking Dashboard and we are on Dashboard page, return true
     if (path === "/admin" && location.pathname === "/admin") return true;
+    // If checking other pages and URL starts with path, return true
     if (path !== "/admin" && location.pathname.startsWith(path)) return true;
+    // If nothing matched, return false
     return false;
   };
 
-  const navClasses = (path) => `
-    w-[90%] flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 font-medium
-    ${
-      isActive(path)
-        ? "bg-[var(--color-accent)] text-white shadow-lg shadow-[var(--color-accent)]/20"
-        : "text-gray-500 hover:bg-white hover:text-[var(--color-accent)] hover:shadow-sm"
+  // Style for ACTIVE button (when page is selected)
+  const activeButtonStyle =
+    "w-[90%] flex items-center gap-3 px-4 py-3 rounded-xl font-medium bg-[var(--color-accent)] text-white";
+
+  // Style for INACTIVE button (when page is not selected)
+  const inactiveButtonStyle =
+    "w-[90%] flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-gray-500 hover:bg-white hover:text-[var(--color-accent)]";
+
+  // Get style for a nav button
+  function getNavStyle(path) {
+    if (isActive(path)) {
+      return activeButtonStyle;
+    } else {
+      return inactiveButtonStyle;
     }
-  `;
+  }
 
   return (
     <div className="w-full h-screen bg-[#F8F9FA] flex overflow-hidden">
@@ -84,10 +98,7 @@ export default function AdminPage() {
               className="h-20 w-20 object-contain"
             />
             <div>
-              <h1 className="text-xl font-semibold text-gray-900">
-                <span className="text-secondary font-bold">OU</span>
-                <span className="text-accent font-bold">Events</span>
-              </h1>
+              <h1 className="text-xl text-secondary font-bold">OUEvents</h1>
               <p className="text-[12px] text-secondary/80 font-medium">
                 Admin Panel
               </p>
@@ -97,23 +108,23 @@ export default function AdminPage() {
 
         {/* Navigation Links */}
         <div className="flex flex-col gap-3 px-3 py-4 flex-1">
-          <Link to="/admin" className={navClasses("/admin")}>
+          <Link to="/admin" className={getNavStyle("/admin")}>
             <LuLayoutDashboard size={18} />
             Dashboard
           </Link>
-          <Link to="/admin/users" className={navClasses("/admin/users")}>
+          <Link to="/admin/users" className={getNavStyle("/admin/users")}>
             <LuUsers size={18} />
             User Management
           </Link>
-          <Link to="/admin/events" className={navClasses("/admin/events")}>
+          <Link to="/admin/events" className={getNavStyle("/admin/events")}>
             <LuCalendar size={18} />
             Event Management
           </Link>
-          <Link to="/admin/reports" className={navClasses("/admin/reports")}>
+          <Link to="/admin/reports" className={getNavStyle("/admin/reports")}>
             <LuClipboardList size={18} />
             Reports
           </Link>
-          <Link to="/admin/feedback" className={navClasses("/admin/feedback")}>
+          <Link to="/admin/feedback" className={getNavStyle("/admin/feedback")}>
             <LuMessageSquare size={18} />
             Feedback
           </Link>
@@ -123,13 +134,15 @@ export default function AdminPage() {
         <div className="px-3 py-4 border-t border-gray-100">
           <div className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
             <div className="h-9 w-9 rounded-full bg-[var(--color-accent)] flex items-center justify-center text-white text-sm font-semibold">
-              A
+              {user?.firstName?.charAt(0).toUpperCase() || "A"}
             </div>
             <div className="overflow-hidden">
               <p className="text-sm font-medium text-gray-900 truncate">
-                Admin User
+                {user ? `${user.firstName} ${user.lastName}` : "Admin User"}
               </p>
-              <p className="text-xs text-gray-400 truncate">admin@ousl.lk</p>
+              <p className="text-xs text-gray-400 truncate">
+                {user?.email || "admin@ousl.lk"}
+              </p>
             </div>
           </div>
         </div>

@@ -3,6 +3,7 @@ import {
   createUser,
   loginUser,
   getUser,
+  googleLogin,
 } from "../controllers/userController.js";
 
 const userRouter = express.Router();
@@ -10,5 +11,6 @@ const userRouter = express.Router();
 userRouter.post("/", createUser);
 userRouter.post("/login", loginUser);
 userRouter.get("/me", getUser);
+userRouter.post("/google-login", googleLogin);
 
 export default userRouter;
