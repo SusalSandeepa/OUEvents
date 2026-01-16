@@ -4,20 +4,20 @@ import { Link } from "react-router-dom";
 
 export default function SignupPage() {
   return (
-    <div className="w-full h-full bg-primary flex">
+    <div className="flex w-full h-full bg-primary">
       <div className="w-[50%] h-full flex justify-center items-center">
         <div className="w-[500px] h-[750px] bg-[#fdfbf9] shadow-2xl rounded-3xl">
           <div className="w-full h-[120px] flex justify-center items-center pt-4">
             <img
               src={logo}
               alt="Logo"
-              className="h-full w-auto object-contain"
+              className="object-contain w-auto h-full"
             />
           </div>
-          <div className="text-secondary text-2xl font-bold text-center">
+          <div className="text-2xl font-bold text-center text-secondary">
             Create Account
           </div>
-          <div className="text-secondary text-sm text-center mt-2">
+          <div className="mt-2 text-sm text-center text-secondary">
             Sign up to get started
           </div>
 
@@ -83,11 +83,11 @@ export default function SignupPage() {
           </div>
 
           <div className="flex justify-center mt-4">
-            <p className="text-secondary text-sm">
+            <p className="text-sm text-secondary">
               Already have an account?{" "}
               <Link
                 to="/login"
-                className="text-accent hover:underline cursor-pointer font-medium"
+                className="font-medium cursor-pointer text-accent hover:underline"
               >
                 Sign In
               </Link>
@@ -97,26 +97,29 @@ export default function SignupPage() {
       </div>
 
       <div className="w-[50%] h-full flex flex-col justify-center items-center">
-        <div className="text-center px-16">
-          <p className="text-accent text-base uppercase tracking-widest mb-4">
+        <div className="px-16 text-center">
+          <p className="mb-4 text-base tracking-widest uppercase text-accent">
             Start Your Journey
           </p>
-          <h1 className="text-8xl font-bold text-secondary leading-none tracking-tight">
-            OU<span className="text-accent">Events</span>
+          <h1 className="font-bold leading-none tracking-tight text-8xl text-secondary">
+            <Link to="/" aria-label="Go to home">
+              OU
+            </Link>
+            <span className="text-accent">Events</span>
           </h1>
           <div className="w-24 h-1.5 bg-accent mx-auto my-10 rounded-full"></div>
-          <p className="text-3xl text-secondary/80 font-light">
+          <p className="text-3xl font-light text-secondary/80">
             Be Part of Something{" "}
-            <span className="text-accent font-medium italic">Amazing</span>
+            <span className="italic font-medium text-accent">Amazing</span>
           </p>
-          <div className="flex justify-center items-center gap-5 mt-10 text-secondary/60 text-base tracking-wide">
+          <div className="flex items-center justify-center gap-5 mt-10 text-base tracking-wide text-secondary/60">
             <span>Discover</span>
             <span className="text-accent">•</span>
             <span>Engage</span>
             <span className="text-accent">•</span>
             <span>Experience</span>
           </div>
-          <p className="text-secondary/50 mt-10 text-base max-w-sm mx-auto leading-relaxed">
+          <p className="max-w-sm mx-auto mt-10 text-base leading-relaxed text-secondary/50">
             Join our community and never miss an event at the Open University of
             Sri Lanka
           </p>
