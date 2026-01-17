@@ -48,7 +48,7 @@ export default function Navbar() {
 
           {/* HAMBURGER (mobile only) */}
           <button
-            className="text-2xl md:hidden"
+            className="text-2xl md:hidden text-[#2f3e4e]"
             onClick={() => setMenuOpen(!menuOpen)}
           >
             ☰
