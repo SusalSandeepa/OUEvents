@@ -3,7 +3,7 @@
  * Team members display with social links
  * Responsive grid: 1 col mobile, 3 cols desktop
  */
-import { FaGithub, FaLinkedin } from 'react-icons/fa';
+import { FaGithub, FaLinkedin } from "react-icons/fa";
 
 const ProjectTeam = () => {
   // Team members data
@@ -32,17 +32,9 @@ const ProjectTeam = () => {
   ];
 
   return (
-    <section
-      className="
-        bg-white
-        rounded-2xl md:rounded-3xl
-        p-6 md:p-10
-        shadow-sm
-        border border-gray-100
-      "
-    >
+    <section className="p-6 bg-white border border-gray-100 shadow-sm rounded-2xl md:rounded-3xl md:p-10">
       {/* ===== SECTION HEADER ===== */}
-      <div className="text-center mb-8 md:mb-12">
+      <div className="mb-8 text-center md:mb-12">
         {/* Label */}
         <span
           className="
@@ -68,19 +60,13 @@ const ProjectTeam = () => {
         </h2>
 
         {/* Subtitle */}
-        <p className="text-gray-500 mt-2 text-sm md:text-base">
-          Developed as part of EEY4189 Software Engineering course
+        <p className="mt-2 text-sm text-gray-500 md:text-base">
+          Developed as part of EEY4189 - Software Design in Group(2025) Course
         </p>
       </div>
 
       {/* ===== TEAM MEMBERS GRID ===== */}
-      <div
-        className="
-          grid
-          grid-cols-1 md:grid-cols-3
-          gap-6 md:gap-8
-        "
-      >
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-3 md:gap-8">
         {teamMembers.map((member, index) => (
           <div
             key={index}
@@ -163,7 +149,7 @@ const ProjectTeam = () => {
             </p>
 
             {/* Social Links */}
-            <div className="mt-4 flex justify-center gap-4 md:gap-6">
+            <div className="flex justify-center gap-4 mt-4 md:gap-6">
               {/* GitHub Link */}
               <a
                 href={member.github}
