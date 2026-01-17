@@ -9,7 +9,7 @@ const Hero = () => {
             Discover & Join <span className="text-[#7a1d1a]">OUSL Events</span>
           </h1>
 
-          <p className="mt-4 text-lg text-gray-600">
+          <p className="mt-4 text-lg tracking-wide text-gray-600">
             Your central hub for all workshops, seminars, and activities
             happening at the Open University of Sri Lanka. Browse, register, and
             stay updated.
@@ -31,7 +31,7 @@ const Hero = () => {
 
       {/* UPCOMING EVENTS*/}
       <div className="w-full px-8 mt-20 mb-24">
-        <h2 className="mb-10 text-3xl font-bold text-text-dark">
+        <h2 className="mb-10 text-3xl font-bold text-[#2f3e4e]">
           Upcoming Events
         </h2>
 

@@ -1,6 +1,7 @@
 import logo from "../assets/logo.png";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export default function Navbar() {
   const [active, setActive] = useState("Home");
@@ -17,11 +18,13 @@ export default function Navbar() {
   );
 
   return (
-    <nav className="flex items-center justify-between w-full px-8 py-3 bg-white border-b border-gray-200">
+    <nav className="sticky top-0 z-50 flex items-center justify-between w-full px-8 py-3 bg-white border-b border-gray-200 shadow">
       {/* LEFT */}
       <div className="flex items-center space-x-4">
-        <img src={logo} alt="Logo" className="w-auto h-20" />
-        <span className="text-2xl font-bold text-[#2f3e4e]">OUEvents</span>
+        <Link to="/" className="flex items-center space-x-4">
+          <img src={logo} alt="Logo" className="w-auto h-20" />
+          <span className="text-3xl font-bold text-[#2f3e4e]">OUEvents</span>
+        </Link>
       </div>
 
       {/* CENTER */}
