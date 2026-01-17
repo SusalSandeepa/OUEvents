@@ -10,17 +10,17 @@ export default function Navbar() {
     <>
       {/* NAVBAR */}
       <nav className="sticky top-0 z-50 w-full bg-white border-b border-gray-200 shadow">
-        <div className="flex items-center justify-between px-6 py-3">
+        <div className="flex items-center justify-between px-4 py-0">
           {/* LEFT */}
           <Link to="/" className="flex items-center space-x-4">
             <img src={logo} alt="Logo" className="w-auto h-10 md:h-20" />
-            <span className="text-2xl md:text-3xl font-bold text-[#2f3e4e]">
+            <span className="text-2xl md:text-2xl px-4 font-bold text-[#2f3e4e]">
               OUEvents
             </span>
           </Link>
 
           {/* CENTER (desktop only) */}
-          <div className="items-center hidden space-x-8 text-lg md:flex">
+          <div className="items-center hidden space-x-8 text-lg text-gray-600 md:flex">
             <Link to="/" className="hover:text-[#7a1d1a]">
               Home
             </Link>
@@ -33,10 +33,10 @@ export default function Navbar() {
           </div>
 
           {/* RIGHT (desktop only) */}
-          <div className="items-center hidden space-x-6 md:flex">
+          <div className="items-center hidden px-4 space-x-8 md:flex">
             <button
               onClick={() => navigate("/login")}
-              className="border border-[#7a1d1a] text-[#7a1d1a] px-4 py-1.5 rounded-lg font-medium hover:bg-[#7a1d1a] hover:text-white transition"
+              className="tracking-wide border border-[#7a1d1a] text-[#7a1d1a] px-4 py-1.5 rounded-lg font-medium hover:bg-[#7a1d1a] hover:text-white transition"
             >
               Log In
             </button>
