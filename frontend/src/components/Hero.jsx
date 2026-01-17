@@ -1,3 +1,5 @@
+import heroImage from "../assets/heroimage2.jpeg";
+
 const Hero = () => {
   return (
     <section className="w-full">
@@ -24,8 +26,12 @@ const Hero = () => {
         </div>
 
         {/* Image */}
-        <div className="items-center justify-center hidden bg-white border-2 border-gray-300 border-dashed rounded-lg md:flex h-96">
-          <p className="text-gray-500">[Hero Image Placeholder]</p>
+        <div className="items-center justify-center hidden bg-white border-2 border-gray-300 rounded-lg md:flex h-96">
+          <img
+            src={heroImage}
+            alt="OUEvents Hero"
+            className="object-cover w-full h-full rounded-lg"
+          />
         </div>
       </div>
 
