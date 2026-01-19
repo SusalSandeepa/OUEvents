@@ -79,7 +79,7 @@ export default function LoginPage() {
         {
           email,
           password,
-        }
+        },
       );
       localStorage.setItem("token", response.data.token);
 
@@ -254,9 +254,12 @@ export default function LoginPage() {
                 Remember me
               </label>
             </div>
-            <div className="w-[50%] flex items-center justify-end text-sm mr-[50px] text-accent hover:underline cursor-pointer">
+            <Link
+              to="/forgot-password"
+              className="w-[50%] flex items-center justify-end text-sm mr-[50px] text-accent hover:underline cursor-pointer"
+            >
               Forgot Password?
-            </div>
+            </Link>
           </div>
 
           <div className="flex justify-center mt-6">

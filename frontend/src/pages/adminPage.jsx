@@ -12,6 +12,11 @@ import {
   LuCalendar,
   LuClipboardList,
   LuMessageSquare,
+  LuLogOut,
+  LuBookOpenCheck,
+  LuUser,
+  LuSettings,
+  LuChevronUp,
 } from "react-icons/lu";
 import AdminEventPage from "./admin/adminEventPage";
 import CreateEventForm from "./admin/createEventForm";
@@ -24,8 +29,10 @@ import axios from "axios";
 export default function AdminPage() {
   const location = useLocation();
   const navigate = useNavigate();
-  const [userLoaded, setUserLoaded] = useState(false);
+  const [userLoading, setUserLoading] = useState(true);
   const [user, setUser] = useState(null);
+  const [imageError, setImageError] = useState(false);
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -47,13 +54,23 @@ export default function AdminPage() {
           navigate("/login");
           return;
         }
+        console.log("User data:", res.data.user); // Debug: check if image exists
+        console.log(
+          "Image value:",
+          res.data.user?.image,
+          "Type:",
+          typeof res.data.user?.image
+        );
         setUser(res.data.user);
-        setUserLoaded(true);
+        setUserLoading(false);
       })
       .catch((err) => {
         toast.error("Authorization failed, please login again", {
           id: "auth-error",
         });
+        localStorage.removeItem("token");
+        setUser(null);
+        setUserLoading(false);
         navigate("/login");
         return;
       });
@@ -89,7 +106,7 @@ export default function AdminPage() {
   return (
     <div className="w-full h-screen bg-[#F8F9FA] flex overflow-hidden">
       {/* Sidebar */}
-      <div className="w-[260px] h-full flex flex-col bg-white border-r border-gray-200 z-10">
+      <div className="w-[280px] h-full flex flex-col bg-white border-r border-gray-200 z-10">
         {/* Logo Section - Clean & Minimal */}
         <div className="px-5 py-6 border-b border-gray-100">
           <div className="flex items-center gap-1">
@@ -123,6 +140,13 @@ export default function AdminPage() {
             <LuCalendar size={18} />
             Event Management
           </Link>
+          <Link
+            to="/admin/registrations"
+            className={getNavStyle("/admin/registrations")}
+          >
+            <LuBookOpenCheck size={18} />
+            Event Registrations
+          </Link>
           <Link to="/admin/reports" className={getNavStyle("/admin/reports")}>
             <LuClipboardList size={18} />
             Reports
@@ -139,15 +163,57 @@ export default function AdminPage() {
             <div className="h-9 w-9 rounded-full bg-[var(--color-accent)] flex items-center justify-center text-white text-sm font-semibold">
               {user?.firstName?.charAt(0).toUpperCase() || "A"}
             </div>
-            <div className="overflow-hidden">
-              <p className="text-sm font-medium text-gray-900 truncate">
-                {user ? `${user.firstName} ${user.lastName}` : "Admin User"}
+          )}
+
+          {/* Profile Card */}
+          <div
+            onClick={() => setShowProfileMenu(!showProfileMenu)}
+            className="flex items-center gap-3 p-3 rounded-xl bg-gray-50 border border-gray-200 shadow-sm cursor-pointer hover:bg-gray-100"
+          >
+            {/* Profile Picture or Initial Letter */}
+            {user?.image && !imageError ? (
+              <img
+                src={user.image}
+                referrerPolicy="no-referrer"
+                className="h-10 w-10 rounded-full object-cover border-2 border-white shadow-sm"
+                onError={() => setImageError(true)}
+              />
+            ) : (
+              <div className="h-10 w-10 rounded-full bg-[var(--color-accent)] flex items-center justify-center text-white font-bold shadow-sm">
+                {user?.firstName?.[0]?.toUpperCase()}
+              </div>
+            )}
+
+            {/* User Name and Email */}
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold text-gray-800 truncate">
+                {user?.firstName} {user?.lastName}
               </p>
-              <p className="text-xs text-gray-400 truncate">
-                {user?.email || "admin@ousl.lk"}
-              </p>
+              <p className="text-xs text-gray-500 truncate">{user?.email}</p>
             </div>
+
+            {/* Chevron Icon */}
+            <LuChevronUp
+              size={16}
+              className={`text-gray-400 transition-transform ${
+                showProfileMenu ? "" : "rotate-180"
+              }`}
+            />
           </div>
+
+          {/* Logout Button - separate below */}
+          <button
+            onClick={() => {
+              localStorage.removeItem("token");
+              setUser(null);
+              navigate("/login");
+              toast.success("Logged out successfully");
+            }}
+            className="w-full mt-2 flex items-center justify-center gap-2 p-2 rounded-lg text-gray-500 hover:bg-red-50 hover:text-red-500 transition-colors"
+          >
+            <LuLogOut size={16} />
+            <span className="text-sm">Logout</span>
+          </button>
         </div>
       </div>
 
@@ -181,7 +247,38 @@ export default function AdminPage() {
                   </h2>
                 }
               />
-              <Route path="/feedback" element={<AdminFeedbackPage />} />
+              <Route
+                path="/registrations"
+                element={
+                  <h2 className="text-lg font-semibold opacity-50">
+                    Event Registrations Module
+                  </h2>
+                }
+              />
+              <Route
+                path="/feedback"
+                element={
+                  <h2 className="text-lg font-semibold opacity-50">
+                    Feedback Summary Module
+                  </h2>
+                }
+              />
+              <Route
+                path="/profile"
+                element={
+                  <h2 className="text-lg font-semibold opacity-50">
+                    Profile Module
+                  </h2>
+                }
+              />
+              <Route
+                path="/settings"
+                element={
+                  <h2 className="text-lg font-semibold opacity-50">
+                    Settings Module
+                  </h2>
+                }
+              />
               <Route path="/events/create" element={<CreateEventForm />} />
               <Route path="/events/update" element={<UpdateEventForm />} />
             </Routes>
