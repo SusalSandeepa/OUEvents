@@ -1,30 +1,58 @@
 import User from "../models/user.js";
+import OTP from "../models/otpModel.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import axios from "axios";
+import nodemailer from "nodemailer";
+import dotenv from "dotenv";
+import { getOTPEmail } from "../utils/otpEmail.js";
 
-export function createUser(req, res) {
-  const hashedPassword = bcrypt.hashSync(req.body.password, 10); // Hash the password with a salt round of 10
+dotenv.config();
 
-  const user = new User({
-    email: req.body.email,
-    firstName: req.body.firstName,
-    lastName: req.body.lastName,
-    password: hashedPassword,
-  });
+//Create a transporter to send emails
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false,
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.APP_PASSWORD,
+  },
+  tls: {
+    rejectUnauthorized: false, // Bypass SSL certificate issues
+  },
+});
 
-  user
-    .save()
-    .then(() => {
-      res.json({
-        message: "User created successfully",
+export async function createUser(req, res) {
+  try {
+    // Check if email already exists
+    const existingUser = await User.findOne({ email: req.body.email });
+    if (existingUser) {
+      return res.status(409).json({
+        message: "This email already exists, please login",
       });
-    })
-    .catch(() => {
-      res.json({
-        message: "Failed to create user",
-      });
+    }
+
+    const hashedPassword = bcrypt.hashSync(req.body.password, 10);
+
+    const user = new User({
+      email: req.body.email,
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      password: hashedPassword,
     });
+
+    await user.save();
+    res.json({
+      message: "User created successfully",
+    });
+  } catch (error) {
+    console.error("Failed to create user", error);
+    res.status(500).json({
+      message: "Failed to create user",
+    });
+  }
 }
 
 export function loginUser(req, res) {
@@ -38,7 +66,7 @@ export function loginUser(req, res) {
     } else {
       const isPasswordMatching = bcrypt.compareSync(
         req.body.password,
-        user.password
+        user.password,
       ); // Compare the provided password with the hashed password
       if (isPasswordMatching) {
         const token = jwt.sign(
@@ -48,8 +76,10 @@ export function loginUser(req, res) {
             lastName: user.lastName,
             role: user.role,
             isEmailVerified: user.isEmailVerified,
+            image: user.image,
           },
-          process.env.JWT_SECRET
+          process.env.JWT_SECRET,
+          { expiresIn: "7d" }, // Token expires in 7 days
         );
 
         res.json({
@@ -61,6 +91,7 @@ export function loginUser(req, res) {
             lastName: user.lastName,
             role: user.role,
             isEmailVerified: user.isEmailVerified,
+            image: user.image,
           },
         });
       } else {
@@ -95,15 +126,36 @@ export function isUser(req) {
 }
 
 //Get user details from token
-export function getUser(req, res) {
+export async function getUser(req, res) {
   if (req.user == null) {
     res.status(401).json({
       message: "Unauthorized",
     });
     return;
-  } else {
+  }
+
+  // Fetch fresh user data from database
+  try {
+    const user = await User.findOne({ email: req.user.email });
+    if (user == null) {
+      res.status(404).json({
+        message: "User not found",
+      });
+      return;
+    }
     res.json({
-      user: req.user,
+      user: {
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        role: user.role,
+        isEmailVerified: user.isEmailVerified,
+        image: user.image,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to get user details",
     });
   }
 }
@@ -127,7 +179,7 @@ export async function googleLogin(req, res) {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      }
+      },
     );
     const googleUser = googleResponse.data;
     //Check if user exists
@@ -156,7 +208,8 @@ export async function googleLogin(req, res) {
           isEmailVerified: savedUser.isEmailVerified,
           image: savedUser.image,
         },
-        process.env.JWT_SECRET
+        process.env.JWT_SECRET,
+        { expiresIn: "7d" },
       );
       res.json({
         message: "Google login successful",
@@ -182,7 +235,8 @@ export async function googleLogin(req, res) {
           isEmailVerified: user.isEmailVerified,
           image: user.image,
         },
-        process.env.JWT_SECRET
+        process.env.JWT_SECRET,
+        { expiresIn: "7d" },
       );
       res.json({
         message: "Google login successful",
@@ -203,5 +257,95 @@ export async function googleLogin(req, res) {
     res.status(500).json({
       message: "Google login failed",
     });
+  }
+}
+
+//Send OTP to user's email
+export async function sendOTP(req, res) {
+  const email = req.params.email;
+
+  if (email == null) {
+    res.status(400).json({
+      message: "Email is required",
+    });
+    return;
+  }
+
+  //Generate a random OTP between 10000 to 99999
+  const otp = Math.floor(Math.random() * 90000) + 10000;
+
+  try {
+    //Delete previous OTPs
+    await OTP.deleteMany({ email: email });
+
+    //Save new OTP
+    const newOTP = new OTP({
+      email: email,
+      otp: otp,
+    });
+    await newOTP.save();
+
+    //Send OTP to user's email
+    await transporter.sendMail({
+      from: {
+        name: "OUEvents",
+        address: process.env.EMAIL_USER,
+      },
+      to: email,
+      subject: "🔐 Your OUEvents Password Reset Code",
+      text: `Your OTP for password reset is: ${otp}. This code expires in 10 minutes.`,
+      html: getOTPEmail(otp),
+    });
+
+    res.json({
+      message: "OTP sent successfully",
+    });
+    return;
+  } catch (error) {
+    console.error("Failed to send OTP", error);
+    res.status(500).json({
+      message: "Failed to send OTP",
+    });
+    return;
+  }
+}
+
+//Change password via OTP
+export async function changePasswordViaOTP(req, res) {
+  const email = req.body.email;
+  const otp = req.body.otp;
+  const newPassword = req.body.newPassword;
+
+  try {
+    //Check if OTP is valid
+    const otpRecord = await OTP.findOne({
+      email: email,
+      otp: otp,
+    });
+
+    if (otpRecord == null) {
+      res.status(400).json({
+        message: "Invalid OTP",
+      });
+      return;
+    }
+
+    //Delete OTP when password is changed
+    await OTP.deleteMany({ email: email });
+
+    //Hash the new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    await User.updateOne({ email: email }, { password: hashedPassword });
+    res.json({
+      message: "Password changed successfully",
+    });
+    return;
+  } catch (error) {
+    console.error("Failed to change password", error);
+    res.status(500).json({
+      message: "Failed to change password",
+    });
+    return;
   }
 }
