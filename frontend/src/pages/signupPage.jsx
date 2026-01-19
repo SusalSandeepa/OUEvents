@@ -15,11 +15,41 @@ export default function SignupPage() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  // Error states for inline validation
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [confirmPasswordError, setConfirmPasswordError] = useState("");
+
   async function register() {
-    if (password !== confirmPassword) {
-      toast.error("Passwords do not match");
-      return;
+    // Clear previous errors
+    setEmailError("");
+    setPasswordError("");
+    setConfirmPasswordError("");
+
+    let hasError = false;
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setEmailError("Please enter a valid email address");
+      hasError = true;
     }
+
+    // Password validation: at least 1 digit, 1 lowercase, 1 uppercase, and 8+ characters
+    const passwordRegex = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}/;
+    if (!passwordRegex.test(password)) {
+      setPasswordError(
+        "Use 8+ characters with uppercase, lowercase & a number",
+      );
+      hasError = true;
+    }
+
+    if (password !== confirmPassword) {
+      setConfirmPasswordError("Passwords do not match");
+      hasError = true;
+    }
+
+    if (hasError) return;
 
     try {
       const response = await axios.post(
@@ -29,13 +59,18 @@ export default function SignupPage() {
           firstName: firstName,
           lastName: lastName,
           password: password,
-        }
+        },
       );
       toast.success("Your registration is successful, Please login");
       navigate("/login");
     } catch (error) {
       console.log(error);
-      toast.error("Failed to create account");
+      // Check if email already exists (409 status)
+      if (error.response && error.response.status === 409) {
+        setEmailError("This email already exists, please login");
+      } else {
+        toast.error("Failed to create account");
+      }
     }
   }
 
@@ -66,7 +101,7 @@ export default function SignupPage() {
   return (
     <div className="flex w-full h-full bg-primary">
       <div className="w-[50%] h-full flex justify-center items-center">
-        <div className="w-[500px] h-[680px] bg-[#fdfbf9] shadow-2xl rounded-3xl">
+        <div className="w-[500px]  bg-[#fdfbf9] shadow-2xl rounded-3xl">
           <div className="w-full h-[120px] flex justify-center items-center pt-4">
             <img
               src={logo}
@@ -117,11 +152,19 @@ export default function SignupPage() {
             <input
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setEmailError("");
+              }}
               placeholder="you@example.com"
               autoComplete="email"
-              className="w-[400px] h-[40px] border bg-white border-gray-300 rounded-lg p-2 mt-2 ml-[50px]"
+              className={`w-[400px] h-[40px] border bg-white rounded-lg p-2 mt-2 ml-[50px] ${emailError ? "border-red-500" : "border-gray-300"}`}
             />
+            {emailError && (
+              <p className="text-red-500 text-xs ml-[50px] mt-1">
+                {emailError}
+              </p>
+            )}
           </div>
 
           <div className="text-secondary ml-[50px] mt-3 text-sm font-medium">
@@ -132,9 +175,12 @@ export default function SignupPage() {
               <input
                 type={showPassword ? "text" : "password"}
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  setPasswordError("");
+                }}
                 placeholder="Create a password"
-                className="w-full h-[40px] border bg-white border-gray-300 rounded-lg p-2 pr-10"
+                className={`w-full h-[40px] border bg-white rounded-lg p-2 pr-10 ${passwordError ? "border-red-500" : "border-gray-300"}`}
               />
               <button
                 type="button"
@@ -144,6 +190,11 @@ export default function SignupPage() {
                 {passwordIcon}
               </button>
             </div>
+            {passwordError && (
+              <p className="text-red-500 text-xs ml-[50px] mt-1">
+                {passwordError}
+              </p>
+            )}
           </div>
 
           <div className="text-secondary ml-[50px] mt-3 text-sm font-medium">
@@ -154,9 +205,12 @@ export default function SignupPage() {
               <input
                 type={showConfirmPassword ? "text" : "password"}
                 value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
+                onChange={(e) => {
+                  setConfirmPassword(e.target.value);
+                  setConfirmPasswordError("");
+                }}
                 placeholder="Confirm your password"
-                className="w-full h-[40px] border bg-white border-gray-300 rounded-lg p-2 pr-10"
+                className={`w-full h-[40px] border bg-white rounded-lg p-2 pr-10 ${confirmPasswordError ? "border-red-500" : "border-gray-300"}`}
               />
               <button
                 type="button"
@@ -166,6 +220,11 @@ export default function SignupPage() {
                 {confirmPasswordIcon}
               </button>
             </div>
+            {confirmPasswordError && (
+              <p className="text-red-500 text-xs ml-[50px] mt-1">
+                {confirmPasswordError}
+              </p>
+            )}
           </div>
 
           <div className="flex justify-center mt-6">
@@ -177,7 +236,7 @@ export default function SignupPage() {
             </button>
           </div>
 
-          <div className="flex justify-center mt-4">
+          <div className="flex justify-center mt-4 mb-6">
             <p className="text-sm text-secondary">
               Already have an account?{" "}
               <Link
