@@ -93,6 +93,12 @@ export default function LoginPage() {
       }
 
       const user = response.data.user;
+
+      if (user.isBlock == true) {
+        toast.error("Your account has been blocked");
+        return;
+      }
+
       if (user.role == "admin") {
         navigate("/admin");
       } else {
