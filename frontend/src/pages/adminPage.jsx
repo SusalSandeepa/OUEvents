@@ -18,7 +18,8 @@ import {
   LuSettings,
   LuChevronUp,
 } from "react-icons/lu";
-import AdminEventPage from "./admin/adminEventPage";
+import AdminEventManagement from "./admin/adminEventManagement";
+import AdminUserManagement from "./admin/adminUserManagement";
 import CreateEventForm from "./admin/createEventForm";
 import UpdateEventForm from "./admin/updateEventForm";
 import { useState, useEffect } from "react";
@@ -58,7 +59,7 @@ export default function AdminPage() {
           "Image value:",
           res.data.user?.image,
           "Type:",
-          typeof res.data.user?.image
+          typeof res.data.user?.image,
         );
         setUser(res.data.user);
         setUserLoading(false);
@@ -247,15 +248,8 @@ export default function AdminPage() {
                   </h2>
                 }
               />
-              <Route
-                path="/users"
-                element={
-                  <h2 className="text-lg font-semibold opacity-50">
-                    User Management Module
-                  </h2>
-                }
-              />
-              <Route path="/events" element={<AdminEventPage />} />
+              <Route path="/users" element={<AdminUserManagement />} />
+              <Route path="/events" element={<AdminEventManagement />} />
               <Route
                 path="/reports"
                 element={

@@ -10,7 +10,6 @@ import {
   LuX,
   LuPlus,
   LuCalendar,
-  LuClock,
   LuRefreshCw,
 } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
@@ -69,7 +68,7 @@ export function EventDeleteConfirm(props) {
   );
 }
 
-export default function AdminEventPage() {
+export default function AdminEventManagement() {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -97,7 +96,7 @@ export default function AdminEventPage() {
   async function fetchEvents() {
     try {
       const response = await axios.get(
-        import.meta.env.VITE_API_URL + "api/events"
+        import.meta.env.VITE_API_URL + "api/events",
       );
       setEvents(response.data);
     } catch (error) {
@@ -131,7 +130,7 @@ export default function AdminEventPage() {
       result = result.filter(
         (event) =>
           event.title.toLowerCase().includes(query) ||
-          event.eventID.toLowerCase().includes(query)
+          event.eventID.toLowerCase().includes(query),
       );
     }
 
@@ -169,10 +168,10 @@ export default function AdminEventPage() {
   // For tab counts (before search/category filters)
   const now = new Date();
   const upcomingEvents = events.filter(
-    (event) => new Date(event.eventDateTime) >= now
+    (event) => new Date(event.eventDateTime) >= now,
   );
   const pastEvents = events.filter(
-    (event) => new Date(event.eventDateTime) < now
+    (event) => new Date(event.eventDateTime) < now,
   );
 
   return (
@@ -332,8 +331,8 @@ export default function AdminEventPage() {
           {searchQuery || categoryFilter
             ? "No events match your search criteria."
             : activeTab === "upcoming"
-            ? "No upcoming events found. Create your first event!"
-            : "No past events found."}
+              ? "No upcoming events found. Create your first event!"
+              : "No past events found."}
         </div>
       ) : (
         <div className="bg-white rounded-xl shadow-sm overflow-hidden">
@@ -405,8 +404,8 @@ export default function AdminEventPage() {
                         activeTab === "past"
                           ? "bg-gray-100 text-gray-600"
                           : event.status === "active"
-                          ? "bg-green-100 text-green-700"
-                          : "bg-gray-100 text-gray-600"
+                            ? "bg-green-100 text-green-700"
+                            : "bg-gray-100 text-gray-600"
                       }`}
                     >
                       {activeTab === "past" ? "inactive" : event.status}

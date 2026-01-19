@@ -6,6 +6,8 @@ import {
   googleLogin,
   sendOTP,
   changePasswordViaOTP,
+  blockOrUnblockUser,
+  getAllUsers,
 } from "../controllers/userController.js";
 
 const userRouter = express.Router();
@@ -16,5 +18,7 @@ userRouter.get("/me", getUser);
 userRouter.post("/google-login", googleLogin);
 userRouter.get("/send-otp/:email", sendOTP);
 userRouter.post("/change-password", changePasswordViaOTP);
+userRouter.put("/block/:email", blockOrUnblockUser);
+userRouter.get("/all-users", getAllUsers);
 
 export default userRouter;
