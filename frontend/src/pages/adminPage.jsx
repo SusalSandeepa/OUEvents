@@ -16,6 +16,7 @@ import {
 import AdminEventPage from "./admin/adminEventPage";
 import CreateEventForm from "./admin/createEventForm";
 import UpdateEventForm from "./admin/updateEventForm";
+import AdminFeedbackPage from "./admin/AdminFeedbackPage";
 import { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
 import axios from "axios";
@@ -92,13 +93,15 @@ export default function AdminPage() {
         {/* Logo Section - Clean & Minimal */}
         <div className="px-5 py-6 border-b border-gray-100">
           <div className="flex items-center gap-1">
-            <img
-              src={logo}
-              alt="OUEvents Logo"
-              className="h-20 w-20 object-contain"
-            />
+            <Link to="/" aria-label="Go to home">
+              <img
+                src={logo}
+                alt="OUEvents Logo"
+                className="object-contain w-20 h-20"
+              />
+            </Link>
             <div>
-              <h1 className="text-xl text-secondary font-bold">OUEvents</h1>
+              <h1 className="text-xl font-bold text-secondary">OUEvents</h1>
               <p className="text-[12px] text-secondary/80 font-medium">
                 Admin Panel
               </p>
@@ -107,7 +110,7 @@ export default function AdminPage() {
         </div>
 
         {/* Navigation Links */}
-        <div className="flex flex-col gap-3 px-3 py-4 flex-1">
+        <div className="flex flex-col flex-1 gap-3 px-3 py-4">
           <Link to="/admin" className={getNavStyle("/admin")}>
             <LuLayoutDashboard size={18} />
             Dashboard
@@ -132,7 +135,7 @@ export default function AdminPage() {
 
         {/* User Profile Mini */}
         <div className="px-3 py-4 border-t border-gray-100">
-          <div className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+          <div className="flex items-center gap-3 px-3 py-2 transition-colors rounded-lg cursor-pointer hover:bg-gray-50">
             <div className="h-9 w-9 rounded-full bg-[var(--color-accent)] flex items-center justify-center text-white text-sm font-semibold">
               {user?.firstName?.charAt(0).toUpperCase() || "A"}
             </div>
@@ -150,8 +153,8 @@ export default function AdminPage() {
 
       {/* Main Content Area */}
       <div className="flex-1 h-full overflow-hidden bg-[#F3F4F6] p-6">
-        <div className="h-full w-full bg-white rounded-3xl shadow-sm border border-gray-100/50 overflow-hidden flex flex-col">
-          <div className="flex-1 overflow-y-auto p-8">
+        <div className="flex flex-col w-full h-full overflow-hidden bg-white border shadow-sm rounded-3xl border-gray-100/50">
+          <div className="flex-1 p-8 overflow-y-auto">
             <Routes>
               <Route
                 path="/"
@@ -178,14 +181,7 @@ export default function AdminPage() {
                   </h2>
                 }
               />
-              <Route
-                path="/feedback"
-                element={
-                  <h2 className="text-lg font-semibold opacity-50">
-                    Feedback Summary Module
-                  </h2>
-                }
-              />
+              <Route path="/feedback" element={<AdminFeedbackPage />} />
               <Route path="/events/create" element={<CreateEventForm />} />
               <Route path="/events/update" element={<UpdateEventForm />} />
             </Routes>
