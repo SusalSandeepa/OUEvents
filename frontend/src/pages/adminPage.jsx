@@ -12,10 +12,16 @@ import {
   LuCalendar,
   LuClipboardList,
   LuMessageSquare,
+  LuLogOut,
+  LuBookOpenCheck,
+  LuUser,
+  LuSettings,
+  LuChevronUp,
 } from "react-icons/lu";
 import AdminEventPage from "./admin/adminEventPage";
 import CreateEventForm from "./admin/createEventForm";
 import UpdateEventForm from "./admin/updateEventForm";
+import AdminFeedbackPage from "./admin/AdminFeedbackPage";
 import { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
 import axios from "axios";
@@ -23,7 +29,10 @@ import axios from "axios";
 export default function AdminPage() {
   const location = useLocation();
   const navigate = useNavigate();
-  const [userLoaded, setUserLoaded] = useState(false);
+  const [userLoading, setUserLoading] = useState(true);
+  const [user, setUser] = useState(null);
+  const [imageError, setImageError] = useState(false);
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -45,49 +54,71 @@ export default function AdminPage() {
           navigate("/login");
           return;
         }
-        setUserLoaded(true);
+        console.log("User data:", res.data.user); // Debug: check if image exists
+        console.log(
+          "Image value:",
+          res.data.user?.image,
+          "Type:",
+          typeof res.data.user?.image
+        );
+        setUser(res.data.user);
+        setUserLoading(false);
       })
       .catch((err) => {
         toast.error("Authorization failed, please login again", {
           id: "auth-error",
         });
+        localStorage.removeItem("token");
+        setUser(null);
+        setUserLoading(false);
         navigate("/login");
         return;
       });
   }, []);
 
+  // This function checks if a button should be highlighted
   const isActive = (path) => {
+    // If checking Dashboard and we are on Dashboard page, return true
     if (path === "/admin" && location.pathname === "/admin") return true;
+    // If checking other pages and URL starts with path, return true
     if (path !== "/admin" && location.pathname.startsWith(path)) return true;
+    // If nothing matched, return false
     return false;
   };
 
-  const navClasses = (path) => `
-    w-[90%] flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 font-medium
-    ${
-      isActive(path)
-        ? "bg-[var(--color-accent)] text-white shadow-lg shadow-[var(--color-accent)]/20"
-        : "text-gray-500 hover:bg-white hover:text-[var(--color-accent)] hover:shadow-sm"
+  // Style for ACTIVE button (when page is selected)
+  const activeButtonStyle =
+    "w-[90%] flex items-center gap-3 px-4 py-3 rounded-xl font-medium bg-[var(--color-accent)] text-white";
+
+  // Style for INACTIVE button (when page is not selected)
+  const inactiveButtonStyle =
+    "w-[90%] flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-gray-500 hover:bg-white hover:text-[var(--color-accent)]";
+
+  // Get style for a nav button
+  function getNavStyle(path) {
+    if (isActive(path)) {
+      return activeButtonStyle;
+    } else {
+      return inactiveButtonStyle;
     }
-  `;
+  }
 
   return (
     <div className="w-full h-screen bg-[#F8F9FA] flex overflow-hidden">
       {/* Sidebar */}
-      <div className="w-[260px] h-full flex flex-col bg-white border-r border-gray-200 z-10">
+      <div className="w-[280px] h-full flex flex-col bg-white border-r border-gray-200 z-10">
         {/* Logo Section - Clean & Minimal */}
         <div className="px-5 py-6 border-b border-gray-100">
           <div className="flex items-center gap-1">
-            <img
-              src={logo}
-              alt="OUEvents Logo"
-              className="h-20 w-20 object-contain"
-            />
+            <Link to="/" aria-label="Go to home">
+              <img
+                src={logo}
+                alt="OUEvents Logo"
+                className="object-contain w-20 h-20"
+              />
+            </Link>
             <div>
-              <h1 className="text-xl font-semibold text-gray-900">
-                <span className="text-secondary font-bold">OU</span>
-                <span className="text-accent font-bold">Events</span>
-              </h1>
+              <h1 className="text-xl font-bold text-secondary">OUEvents</h1>
               <p className="text-[12px] text-secondary/80 font-medium">
                 Admin Panel
               </p>
@@ -96,24 +127,31 @@ export default function AdminPage() {
         </div>
 
         {/* Navigation Links */}
-        <div className="flex flex-col gap-3 px-3 py-4 flex-1">
-          <Link to="/admin" className={navClasses("/admin")}>
+        <div className="flex flex-col flex-1 gap-3 px-3 py-4">
+          <Link to="/admin" className={getNavStyle("/admin")}>
             <LuLayoutDashboard size={18} />
             Dashboard
           </Link>
-          <Link to="/admin/users" className={navClasses("/admin/users")}>
+          <Link to="/admin/users" className={getNavStyle("/admin/users")}>
             <LuUsers size={18} />
             User Management
           </Link>
-          <Link to="/admin/events" className={navClasses("/admin/events")}>
+          <Link to="/admin/events" className={getNavStyle("/admin/events")}>
             <LuCalendar size={18} />
             Event Management
           </Link>
-          <Link to="/admin/reports" className={navClasses("/admin/reports")}>
+          <Link
+            to="/admin/registrations"
+            className={getNavStyle("/admin/registrations")}
+          >
+            <LuBookOpenCheck size={18} />
+            Event Registrations
+          </Link>
+          <Link to="/admin/reports" className={getNavStyle("/admin/reports")}>
             <LuClipboardList size={18} />
             Reports
           </Link>
-          <Link to="/admin/feedback" className={navClasses("/admin/feedback")}>
+          <Link to="/admin/feedback" className={getNavStyle("/admin/feedback")}>
             <LuMessageSquare size={18} />
             Feedback
           </Link>
@@ -121,24 +159,61 @@ export default function AdminPage() {
 
         {/* User Profile Mini */}
         <div className="px-3 py-4 border-t border-gray-100">
-          <div className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
-            <div className="h-9 w-9 rounded-full bg-[var(--color-accent)] flex items-center justify-center text-white text-sm font-semibold">
-              A
-            </div>
-            <div className="overflow-hidden">
-              <p className="text-sm font-medium text-gray-900 truncate">
-                Admin User
+          {/* Profile Card */}
+          <div
+            onClick={() => setShowProfileMenu(!showProfileMenu)}
+            className="flex items-center gap-3 p-3 rounded-xl bg-gray-50 border border-gray-200 shadow-sm cursor-pointer hover:bg-gray-100"
+          >
+            {/* Profile Picture or Initial Letter */}
+            {user?.image && !imageError ? (
+              <img
+                src={user.image}
+                referrerPolicy="no-referrer"
+                className="h-10 w-10 rounded-full object-cover border-2 border-white shadow-sm"
+                onError={() => setImageError(true)}
+              />
+            ) : (
+              <div className="h-10 w-10 rounded-full bg-[var(--color-accent)] flex items-center justify-center text-white font-bold shadow-sm">
+                {user?.firstName?.[0]?.toUpperCase()}
+              </div>
+            )}
+
+            {/* User Name and Email */}
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold text-gray-800 truncate">
+                {user?.firstName} {user?.lastName}
               </p>
-              <p className="text-xs text-gray-400 truncate">admin@ousl.lk</p>
+              <p className="text-xs text-gray-500 truncate">{user?.email}</p>
             </div>
+
+            {/* Chevron Icon */}
+            <LuChevronUp
+              size={16}
+              className={`text-gray-400 transition-transform ${showProfileMenu ? "" : "rotate-180"
+                }`}
+            />
           </div>
+
+          {/* Logout Button - separate below */}
+          <button
+            onClick={() => {
+              localStorage.removeItem("token");
+              setUser(null);
+              navigate("/login");
+              toast.success("Logged out successfully");
+            }}
+            className="w-full mt-2 flex items-center justify-center gap-2 p-2 rounded-lg text-gray-500 hover:bg-red-50 hover:text-red-500 transition-colors"
+          >
+            <LuLogOut size={16} />
+            <span className="text-sm">Logout</span>
+          </button>
         </div>
       </div>
 
       {/* Main Content Area */}
       <div className="flex-1 h-full overflow-hidden bg-[#F3F4F6] p-6">
-        <div className="h-full w-full bg-white rounded-3xl shadow-sm border border-gray-100/50 overflow-hidden flex flex-col">
-          <div className="flex-1 overflow-y-auto p-8">
+        <div className="flex flex-col w-full h-full overflow-hidden bg-white border shadow-sm rounded-3xl border-gray-100/50">
+          <div className="flex-1 p-8 overflow-y-auto">
             <Routes>
               <Route
                 path="/"
@@ -166,10 +241,27 @@ export default function AdminPage() {
                 }
               />
               <Route
-                path="/feedback"
+                path="/registrations"
                 element={
                   <h2 className="text-lg font-semibold opacity-50">
-                    Feedback Summary Module
+                    Event Registrations Module
+                  </h2>
+                }
+              />
+              <Route path="/feedback" element={<AdminFeedbackPage />} />
+              <Route
+                path="/profile"
+                element={
+                  <h2 className="text-lg font-semibold opacity-50">
+                    Profile Module
+                  </h2>
+                }
+              />
+              <Route
+                path="/settings"
+                element={
+                  <h2 className="text-lg font-semibold opacity-50">
+                    Settings Module
                   </h2>
                 }
               />
