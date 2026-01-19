@@ -5,6 +5,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 import CountdownBadge2 from "./CountdownBadge2";
+import FeedbackForm from "../../components/FeedbackForm";
+import FeedbackList from "../../components/FeedbackList";
 
 // --- Helpers ---------------------------------------------------------
 
@@ -59,6 +61,12 @@ const EventDetail = () => {
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(null);
 
+  // Feedback-related state
+  const [isRegistered, setIsRegistered] = useState(false);
+  const [hasSubmittedFeedback, setHasSubmittedFeedback] = useState(false);
+  const [feedbackList, setFeedbackList] = useState([]);
+  const [feedbackLoading, setFeedbackLoading] = useState(false);
+
   useEffect(() => {
     if (!id) return;
 
@@ -112,6 +120,69 @@ const EventDetail = () => {
       isMounted = false;
     };
   }, [id]);
+
+  // Fetch feedback-related data when event is loaded
+  useEffect(() => {
+    if (!event || !id) return;
+
+    const token = localStorage.getItem("token");
+    let isMounted = true;
+
+    const fetchFeedbackData = async () => {
+      setFeedbackLoading(true);
+
+      try {
+        // Fetch event feedback list
+        const feedbackRes = await axios.get(
+          `${import.meta.env.VITE_API_URL}api/feedback/event/${id}`
+        );
+        if (isMounted) {
+          setFeedbackList(feedbackRes.data || []);
+        }
+
+        // Only check registration and user feedback if logged in
+        if (token) {
+          // Check if user is registered for this event
+          const regRes = await axios.get(
+            `${import.meta.env.VITE_API_URL}api/registrations/check/${id}`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+          if (isMounted) {
+            setIsRegistered(regRes.data?.isRegistered || false);
+          }
+
+          // Check if user has already submitted feedback
+          const userFeedbackRes = await axios.get(
+            `${import.meta.env.VITE_API_URL}api/feedback/check/${id}`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+          if (isMounted) {
+            setHasSubmittedFeedback(userFeedbackRes.data?.hasSubmitted || false);
+          }
+        }
+      } catch (err) {
+        console.error("Error fetching feedback data:", err);
+      } finally {
+        if (isMounted) setFeedbackLoading(false);
+      }
+    };
+
+    fetchFeedbackData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [event, id]);
+
+  // Handle successful feedback submission
+  const handleFeedbackSuccess = (newFeedback) => {
+    setHasSubmittedFeedback(true);
+    setFeedbackList((prev) => [newFeedback, ...prev]);
+  };
 
   const handleBackToEvents = () => {
     navigate("/events");
@@ -405,6 +476,73 @@ const EventDetail = () => {
                     Registration is free for all university students.
                   </p>
                 </section>
+
+                {/* Feedback Section - Only for inactive events */}
+                {event.status === "inactive" && (
+                  <section className="mt-8 md:mt-10 space-y-6">
+                    <div className="border-t border-gray-100 pt-8">
+                      <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-5 w-5 text-[var(--color-accent,#7a1d1a)]"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                        </svg>
+                        Event Feedback
+                      </h2>
+
+                      {/* Feedback Form - Only for registered users who haven't submitted yet */}
+                      {isRegistered && !hasSubmittedFeedback && (
+                        <div className="mb-6">
+                          <FeedbackForm
+                            eventID={id}
+                            onSuccess={handleFeedbackSuccess}
+                          />
+                        </div>
+                      )}
+
+                      {/* Message for non-registered users */}
+                      {!isRegistered && (
+                        <div className="mb-6 bg-gray-50 rounded-2xl p-4 text-center">
+                          <p className="text-gray-600 text-sm">
+                            Only registered attendees can submit feedback for this event.
+                          </p>
+                        </div>
+                      )}
+
+                      {/* Message if already submitted */}
+                      {isRegistered && hasSubmittedFeedback && (
+                        <div className="mb-6 bg-green-50 rounded-2xl p-4 text-center">
+                          <p className="text-green-700 text-sm font-medium">
+                            ✓ Thank you! You have already submitted your feedback.
+                          </p>
+                        </div>
+                      )}
+
+                      {/* Feedback List */}
+                      <FeedbackList
+                        feedbackList={feedbackList}
+                        loading={feedbackLoading}
+                      />
+                    </div>
+                  </section>
+                )}
+
+                {/* Show feedback list for active events too (if any exists) */}
+                {event.status === "active" && feedbackList.length > 0 && (
+                  <section className="mt-8 md:mt-10">
+                    <FeedbackList
+                      feedbackList={feedbackList}
+                      loading={feedbackLoading}
+                    />
+                  </section>
+                )}
               </div>
             </article>
           )}
