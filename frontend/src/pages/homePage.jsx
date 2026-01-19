@@ -4,6 +4,7 @@ import Hero from "../components/Hero";
 import Events from "./Events/Events";
 import About from "./About/About";
 import EventDetail from "./EventDetail/EventDetail.jsx";
+import EventRegistration from "./EventDetail/EventRegistration.jsx";
 import { Routes, Route } from "react-router-dom";
 
 export default function HomePage() {
@@ -16,6 +17,7 @@ export default function HomePage() {
             <Route index element={<Hero />} />
             <Route path="events" element={<Events />} />
             <Route path="events/:id" element={<EventDetail />} />
+            <Route path="events/:id/register" element={<EventRegistration />} />
             <Route path="about" element={<About />} />
           </Routes>
         </main>
