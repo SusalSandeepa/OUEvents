@@ -159,12 +159,6 @@ export default function AdminPage() {
 
         {/* User Profile Mini */}
         <div className="px-3 py-4 border-t border-gray-100">
-          <div className="flex items-center gap-3 px-3 py-2 transition-colors rounded-lg cursor-pointer hover:bg-gray-50">
-            <div className="h-9 w-9 rounded-full bg-[var(--color-accent)] flex items-center justify-center text-white text-sm font-semibold">
-              {user?.firstName?.charAt(0).toUpperCase() || "A"}
-            </div>
-          )}
-
           {/* Profile Card */}
           <div
             onClick={() => setShowProfileMenu(!showProfileMenu)}
@@ -195,9 +189,8 @@ export default function AdminPage() {
             {/* Chevron Icon */}
             <LuChevronUp
               size={16}
-              className={`text-gray-400 transition-transform ${
-                showProfileMenu ? "" : "rotate-180"
-              }`}
+              className={`text-gray-400 transition-transform ${showProfileMenu ? "" : "rotate-180"
+                }`}
             />
           </div>
 
@@ -255,14 +248,7 @@ export default function AdminPage() {
                   </h2>
                 }
               />
-              <Route
-                path="/feedback"
-                element={
-                  <h2 className="text-lg font-semibold opacity-50">
-                    Feedback Summary Module
-                  </h2>
-                }
-              />
+              <Route path="/feedback" element={<AdminFeedbackPage />} />
               <Route
                 path="/profile"
                 element={
