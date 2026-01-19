@@ -11,6 +11,7 @@
 //     * Only keep events where targetDateTime >= now.
 //     * When the event's time is over, its card disappears automatically.
 // - Applying search (by title / venue / description).
+// - Applying category filter (dropdown populated from unique event categories).
 // - Applying sorting (A–Z by title OR by start time using targetDateTime).
 // - Handling pagination.
 // - Deciding which visual state to show:
@@ -44,6 +45,10 @@ import React, {
   useMemo,
   useState,
 } from "react";
+
+// NOTE: useMemo is used to derive:
+//   1. Unique categories list (for filter dropdown)
+//   2. Filtered events (time-based, category, search, sorted, paginated)
 import axios from "axios";
 
 import { useTimeTicker } from "../../context/TimeTickerContext";
@@ -78,8 +83,9 @@ const Events = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
 
-  // UI state: search, sort, pagination
+  // UI state: search, category filter, sort, pagination
   const [searchQuery, setSearchQuery] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState(""); // Empty string means "All Categories"
   const [sortBy, setSortBy] = useState(SORT_BY.START_TIME);
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -173,12 +179,33 @@ const Events = () => {
     });
   }, [events, now]);
 
-  // === 2) Search filter (by title / venue / description) ===
+  // === 1b) Get unique categories from upcoming events (for filter dropdown) ===
+  //
+  // Extract all unique category values and sort them alphabetically.
+  // This list populates the category filter dropdown in EventsToolbar.
+  const categories = useMemo(() => {
+    const uniqueCategories = [
+      ...new Set(upcomingEvents.map((event) => event.category)),
+    ];
+    // Filter out falsy values (null, undefined, empty string) and sort
+    return uniqueCategories.filter(Boolean).sort();
+  }, [upcomingEvents]);
+
+  // === 2) Category filter ===
+  //
+  // If a category is selected, filter events to only show that category.
+  // Empty string ("All Categories") shows all events.
+  const categoryFilteredEvents = useMemo(() => {
+    if (!categoryFilter) return upcomingEvents;
+    return upcomingEvents.filter((event) => event.category === categoryFilter);
+  }, [upcomingEvents, categoryFilter]);
+
+  // === 3) Search filter (by title / venue / description) ===
   const searchedEvents = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
-    if (!q) return upcomingEvents;
+    if (!q) return categoryFilteredEvents;
 
-    return upcomingEvents.filter((event) => {
+    return categoryFilteredEvents.filter((event) => {
       const title = (event.title || "").toLowerCase();
       const venue = (event.venue || "").toLowerCase();
       const description = (event.description || "").toLowerCase();
@@ -189,9 +216,9 @@ const Events = () => {
         description.includes(q)
       );
     });
-  }, [searchQuery, upcomingEvents]);
+  }, [searchQuery, categoryFilteredEvents]);
 
-  // === 3) Sorting (A–Z by title OR by start time using targetDateTime) ===
+  // === 4) Sorting (A–Z by title OR by start time using targetDateTime) ===
   const sortedEvents = useMemo(() => {
     const eventsCopy = [...searchedEvents];
 
@@ -216,7 +243,7 @@ const Events = () => {
     return eventsCopy;
   }, [searchedEvents, sortBy]);
 
-  // === 4) Pagination ===
+  // === 5) Pagination ===
   const totalItems = sortedEvents.length;
   const totalPages = totalItems === 0 ? 1 : Math.ceil(totalItems / PAGE_SIZE);
 
@@ -240,7 +267,14 @@ const Events = () => {
   // Search input change (from EventsToolbar)
   const handleSearchChange = useCallback((value) => {
     setSearchQuery(value);
-    setCurrentPage(1); // reset to first page when search changes
+    setCurrentPage(1); // Reset to first page when search changes
+  }, []);
+
+  // Category filter change (from EventsToolbar)
+  // Resets pagination when category changes to prevent showing empty pages
+  const handleCategoryChange = useCallback((value) => {
+    setCategoryFilter(value);
+    setCurrentPage(1); // Reset to first page when category changes
   }, []);
 
   // Sort dropdown change (from EventsToolbar)
@@ -290,9 +324,21 @@ const Events = () => {
            - sortBy: one of SORT_BY.TITLE / SORT_BY.START_TIME
            - onSortChange(value: string): void
         */}
+        {/* Expected props:
+           - searchQuery: string
+           - onSearchChange(value: string): void
+           - categoryFilter: string (empty = "All Categories")
+           - categories: string[] (unique category values for dropdown)
+           - onCategoryChange(value: string): void
+           - sortBy: one of SORT_BY.TITLE / SORT_BY.START_TIME
+           - onSortChange(value: string): void
+        */}
         <EventsToolbar
           searchQuery={searchQuery}
           onSearchChange={handleSearchChange}
+          categoryFilter={categoryFilter}
+          categories={categories}
+          onCategoryChange={handleCategoryChange}
           sortBy={sortBy}
           onSortChange={handleSortChange}
         />
