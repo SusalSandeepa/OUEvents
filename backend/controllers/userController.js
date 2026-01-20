@@ -69,6 +69,14 @@ export function loginUser(req, res) {
         user.password,
       ); // Compare the provided password with the hashed password
       if (isPasswordMatching) {
+        // Check if user is blocked BEFORE generating token
+        if (user.isBlock) {
+          res.status(403).json({
+            message: "Your account has been blocked. Please contact admin.",
+          });
+          return;
+        }
+
         const token = jwt.sign(
           {
             email: user.email,
@@ -92,7 +100,6 @@ export function loginUser(req, res) {
             role: user.role,
             isEmailVerified: user.isEmailVerified,
             image: user.image,
-            isBlock: user.isBlock,
           },
         });
       } else {
@@ -263,6 +270,14 @@ export async function googleLogin(req, res) {
       });
       return;
     } else {
+      // Check if existing user is blocked
+      if (user.isBlock) {
+        res.status(403).json({
+          message: "Your account has been blocked. Please contact admin.",
+        });
+        return;
+      }
+
       // Generate a JWT token when a user logs in
       const jwtToken = jwt.sign(
         {
