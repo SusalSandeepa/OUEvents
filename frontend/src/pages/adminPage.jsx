@@ -25,6 +25,8 @@ import UpdateEventForm from "./admin/updateEventForm";
 import AdminFeedbackPage from "./admin/AdminFeedbackPage";
 import AdminDashboard from "./admin/adminDashboard";
 import AdminReportsPage from "./admin/AdminReportsPage";
+import Settings from "./admin/settings";
+import MyProfile from "./admin/myProfile";
 import { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
 import axios from "axios";
@@ -190,7 +192,9 @@ export default function AdminPage() {
             className="flex items-center gap-3 p-3 rounded-xl bg-gray-50 border border-gray-200 shadow-sm cursor-pointer hover:bg-gray-100"
           >
             {/* Profile Picture or Initial Letter */}
-            {user?.image && !imageError ? (
+            {userLoading ? (
+              <div className="h-10 w-10 rounded-full bg-gray-200 animate-pulse"></div>
+            ) : user?.image && !imageError ? (
               <img
                 src={user.image}
                 referrerPolicy="no-referrer"
@@ -205,10 +209,21 @@ export default function AdminPage() {
 
             {/* User Name and Email */}
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-gray-800 truncate">
-                {user?.firstName} {user?.lastName}
-              </p>
-              <p className="text-xs text-gray-500 truncate">{user?.email}</p>
+              {userLoading ? (
+                <>
+                  <div className="h-4 w-24 bg-gray-200 rounded animate-pulse mb-1"></div>
+                  <div className="h-3 w-32 bg-gray-200 rounded animate-pulse"></div>
+                </>
+              ) : (
+                <>
+                  <p className="text-sm font-semibold text-gray-800 truncate">
+                    {user?.firstName} {user?.lastName}
+                  </p>
+                  <p className="text-xs text-gray-500 truncate">
+                    {user?.email}
+                  </p>
+                </>
+              )}
             </div>
 
             {/* Chevron Icon */}
@@ -244,10 +259,7 @@ export default function AdminPage() {
               <Route path="/" element={<AdminDashboard />} />
               <Route path="/users" element={<AdminUserManagement />} />
               <Route path="/events" element={<AdminEventManagement />} />
-              <Route
-                path="/reports"
-                element={<AdminReportsPage />}
-              />
+              <Route path="/reports" element={<AdminReportsPage />} />
               <Route
                 path="/registrations"
                 element={
@@ -257,22 +269,8 @@ export default function AdminPage() {
                 }
               />
               <Route path="/feedback" element={<AdminFeedbackPage />} />
-              <Route
-                path="/profile"
-                element={
-                  <h2 className="text-lg font-semibold opacity-50">
-                    Profile Module
-                  </h2>
-                }
-              />
-              <Route
-                path="/settings"
-                element={
-                  <h2 className="text-lg font-semibold opacity-50">
-                    Settings Module
-                  </h2>
-                }
-              />
+              <Route path="/profile" element={<MyProfile />} />
+              <Route path="/settings" element={<Settings />} />
               <Route path="/events/create" element={<CreateEventForm />} />
               <Route path="/events/update" element={<UpdateEventForm />} />
             </Routes>
