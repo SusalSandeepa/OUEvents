@@ -188,7 +188,7 @@ export default function AdminEventManagement() {
         />
       )}
       {/* Header */}
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex justify-between items-center mb-8">
         <h2 className="text-xl text-secondary font-semibold">
           Event Management
         </h2>
@@ -202,7 +202,7 @@ export default function AdminEventManagement() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-2 mb-4">
+      <div className="flex gap-2 mb-6">
         <button
           onClick={() => setActiveTab("upcoming")}
           className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
@@ -232,7 +232,7 @@ export default function AdminEventManagement() {
       </div>
 
       {/* Search and Filter Bar */}
-      <div className="flex flex-wrap gap-3 mb-4 items-center">
+      <div className="flex flex-wrap gap-3 mb-6 items-center">
         {/* Search Input */}
         <div className="relative flex-1 min-w-[200px] max-w-[400px]">
           <LuSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />

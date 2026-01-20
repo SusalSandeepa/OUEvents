@@ -5,6 +5,7 @@ import userRouter from "./routes/userRouter.js";
 import eventRouter from "./routes/eventRouter.js";
 import eventRegistrationRouter from "./routes/eventRegistrationRouter.js";
 import feedbackRouter from "./routes/feedbackRouter.js";
+import statsRouter from "./routes/statsRouter.js";
 import jwt from "jsonwebtoken";
 import cors from "cors";
 
@@ -36,7 +37,7 @@ app.use((req, res, next) => {
         } else {
           req.user = decoded; // attach decoded user details to the request object
         }
-      }
+      },
     );
   }
   next(); // proceed to the next middleware or route handler
@@ -50,7 +51,7 @@ mongoose
     // connect to MongoDB
     () => {
       console.log("Database Connected");
-    }
+    },
   )
   .catch(() => {
     console.log("Database Connection Failed");
@@ -60,6 +61,7 @@ app.use("/api/users", userRouter);
 app.use("/api/events", eventRouter);
 app.use("/api/registrations", eventRegistrationRouter);
 app.use("/api/feedback", feedbackRouter);
+app.use("/api/stats", statsRouter);
 
 app.listen(5000, () => {
   console.log("Server is running on port 5000");
