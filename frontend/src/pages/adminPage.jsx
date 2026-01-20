@@ -22,6 +22,7 @@ import AdminEventPage from "./admin/adminEventPage";
 import CreateEventForm from "./admin/createEventForm";
 import UpdateEventForm from "./admin/updateEventForm";
 import AdminFeedbackPage from "./admin/AdminFeedbackPage";
+import AdminReportsPage from "./admin/AdminReportsPage";
 import { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
 import axios from "axios";
@@ -234,11 +235,7 @@ export default function AdminPage() {
               <Route path="/events" element={<AdminEventPage />} />
               <Route
                 path="/reports"
-                element={
-                  <h2 className="text-lg font-semibold opacity-50">
-                    Registration Reports Module
-                  </h2>
-                }
+                element={<AdminReportsPage />}
               />
               <Route
                 path="/registrations"
