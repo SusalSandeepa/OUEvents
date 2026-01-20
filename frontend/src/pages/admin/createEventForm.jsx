@@ -69,15 +69,15 @@ export default function CreateEventForm() {
       const imageUrl = await mediaUpload(image);
 
       const event = {
-        eventID: eventID,
-        title: title,
-        description: description,
+        eventID: eventID.trim(),
+        title: title.trim(),
+        description: description.trim(),
         eventDateTime: new Date(date + " " + time),
-        location: location,
+        location: location.trim(),
         image: imageUrl,
         category: category,
         status: status,
-        organizer: organizer,
+        organizer: organizer.trim(),
       };
 
       // Call backend API to create event

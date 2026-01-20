@@ -72,14 +72,14 @@ export default function UpdateEventForm() {
       }
 
       const event = {
-        title: title,
-        description: description,
+        title: title.trim(),
+        description: description.trim(),
         eventDateTime: new Date(date + " " + time),
-        location: location,
+        location: location.trim(),
         image: imageUrl,
         category: category,
         status: status,
-        organizer: organizer,
+        organizer: organizer.trim(),
       };
 
       // Call backend API to update event

@@ -2,46 +2,47 @@ import mongoose from "mongoose";
 
 const eventSchema = new mongoose.Schema(
     {
-        eventID : {
+        eventID: {
             type: String,
             required: true,
-            unique: true
+            unique: true,
+            trim: true
         },
-        title : {
+        title: {
             type: String,
             required: true
         },
-        description : {
+        description: {
             type: String,
             required: true
         },
-        eventDateTime : {
+        eventDateTime: {
             type: Date,
             required: true
         },
-        location : {
+        location: {
             type: String,
             required: true
         },
-        image : {
+        image: {
             type: String,
             required: true
         },
-        category : {
+        category: {
             type: String,
             required: true
         },
-        status : {
+        status: {
             type: String,
-            enum : ["active","inactive"],
-            default : "active",
+            enum: ["active", "inactive"],
+            default: "active",
             required: true
         },
-        organizer : {
+        organizer: {
             type: String,
             required: true
         },
-        createdAt : {
+        createdAt: {
             type: Date,
             default: Date.now
         }
@@ -49,4 +50,4 @@ const eventSchema = new mongoose.Schema(
     }
 )
 
-export default mongoose.model("Event",eventSchema)
+export default mongoose.model("Event", eventSchema)
