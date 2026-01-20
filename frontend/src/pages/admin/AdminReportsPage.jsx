@@ -222,31 +222,41 @@ export default function AdminReportsPage() {
     const paginatedData = reportData.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
     // Icon mapping for metrics coming from backend
-    const metricIconMap = {
-        'fa-calendar': <LuCalendar size={20} />,
-        'fa-play-circle': <LuCirclePlay size={20} />,
-        'fa-pause-circle': <LuCirclePause size={20} />,
-        'fa-users': <LuUsers size={20} />,
-        'fa-user-check': <LuUserCheck size={20} />,
-        'fa-user-tie': <LuUserCog size={20} />,
-        'fa-ticket': <LuTicket size={20} />,
-        'fa-xmark': <LuX size={20} />,
-        'fa-comments': <LuMessageSquare size={20} />,
-        'fa-star': <LuStar size={20} />,
-        'fa-face-smile': <LuSmile size={20} />,
-    };
+    const metricIconMap = (color) => ({
+        'fa-calendar': <LuCalendar className="w-6 h-6" color={color} />,
+        'fa-play-circle': <LuCirclePlay className="w-6 h-6" color={color} />,
+        'fa-pause-circle': <LuCirclePause className="w-6 h-6" color={color} />,
+        'fa-users': <LuUsers className="w-6 h-6" color={color} />,
+        'fa-user-check': <LuUserCheck className="w-6 h-6" color={color} />,
+        'fa-user-tie': <LuUserCog className="w-6 h-6" color={color} />,
+        'fa-ticket': <LuTicket className="w-6 h-6" color={color} />,
+        'fa-xmark': <LuX className="w-6 h-6" color={color} />,
+        'fa-comments': <LuMessageSquare className="w-6 h-6" color={color} />,
+        'fa-star': <LuStar className="w-6 h-6" color={color} />,
+        'fa-face-smile': <LuSmile className="w-6 h-6" color={color} />,
+    });
 
-    const renderSecondaryCard = (label, value, icon) => (
-        <div className="bg-secondary/10 rounded-2xl p-6 border border-secondary/20 group">
-            <div className="flex items-center justify-between mb-4">
-                <div className="w-12 h-12 bg-secondary/20 rounded-xl flex items-center justify-center text-secondary">
-                    {icon}
+    const renderSecondaryCard = (label, value, icon, colorClass = "bg-blue-50", iconColor = "#3b82f6") => {
+        // Clone icon with color and size classes to match dashboard exactly
+        const coloredIcon = React.cloneElement(icon, {
+            className: "w-6 h-6",
+            color: iconColor
+        });
+
+        return (
+            <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm hover:shadow-md transition-shadow group">
+                <div className="flex items-center justify-between">
+                    <div>
+                        <p className="text-sm text-gray-500 font-medium">{label}</p>
+                        <p className="text-3xl font-bold text-gray-800 mt-1">{value.toLocaleString()}</p>
+                    </div>
+                    <div className={`w-12 h-12 ${colorClass} rounded-xl flex items-center justify-center`}>
+                        {coloredIcon}
+                    </div>
                 </div>
             </div>
-            <p className="text-3xl font-black text-secondary mb-1">{value}</p>
-            <p className="text-xs text-secondary/50 font-bold uppercase tracking-widest">{label}</p>
-        </div>
-    );
+        );
+    };
 
     const renderStars = (rating) => {
         return (
@@ -259,57 +269,125 @@ export default function AdminReportsPage() {
     };
 
     return (
-        <div className="flex flex-col w-full h-full overflow-hidden bg-[#F8F9FA]">
+        <div className="bg-white min-h-full space-y-8">
             {/* Printable View Styles */}
             <style>
                 {`
                     @media print {
-                        body * { visibility: hidden; }
-                        #print-section, #print-section * { visibility: visible; }
-                        #print-section { position: absolute; left: 0; top: 0; width: 100%; }
-                        .no-print { display: none !important; }
+                        @page { size: landscape; margin: 10mm; }
+                        
+                        /* Reset global layout from AdminPage.jsx */
+                        html, body { 
+                            height: auto !important; 
+                            overflow: visible !important;
+                            background: white !important;
+                            width: 100% !important;
+                            margin: 0 !important;
+                            padding: 0 !important;
+                        }
+
+                        /* Disable h-screen and overflow-hidden on all parent containers */
+                        .h-screen, .h-full { height: auto !important; }
+                        .overflow-hidden, .overflow-y-auto, .overflow-x-auto { 
+                            overflow: visible !important; 
+                        }
+                        
+                        /* Hide Sidebar completely in print */
+                        .w-\\[280px\\] { display: none !important; }
+                        
+                        /* Reset Main Content Area Wrapper */
+                        .flex-1.p-6 { 
+                            padding: 0 !important; 
+                            background: white !important;
+                        }
+                        
+                        /* Reset the inner content container */
+                        .flex.flex-col.w-full.h-full.overflow-hidden.bg-white.border.shadow-sm.rounded-3xl {
+                            border: none !important;
+                            box-shadow: none !important;
+                            border-radius: 0 !important;
+                            height: auto !important;
+                            width: 100% !important;
+                        }
+
+                        /* Individual page padding reset */
+                        .flex-1.p-8 { 
+                            padding: 1rem !important; 
+                            height: auto !important;
+                        }
+
+                        #print-section { 
+                            position: static !important;
+                            overflow: visible !important;
+                            height: auto !important;
+                            box-shadow: none !important;
+                            border: 1px solid #eee !important;
+                            margin-top: 2rem !important;
+                            width: 100% !important;
+                        }
+
+                        /* Force grid layouts to keep desktop columns in print */
+                        .grid-cols-1.sm\\:grid-cols-2.lg\\:grid-cols-4,
+                        .grid-cols-1.md\\:grid-cols-3 {
+                            grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+                            display: grid !important;
+                        }
+                        
+                        /* Special case for 4 columns */
+                        .grid-cols-1.sm\\:grid-cols-2.lg\\:grid-cols-4 {
+                            grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+                        }
+
+                        .no-print { 
+                            display: none !important; 
+                        }
+
+                        /* Ensure text and colors are clear for printing */
+                        * { 
+                            -webkit-print-color-adjust: exact !important;
+                            print-color-adjust: exact !important;
+                        }
                     }
                 `}
             </style>
 
-            <div className="flex-1 p-4 md:p-8 overflow-y-auto">
+            <div>
                 {/* Page Title & Export */}
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8 no-print">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
                     <div>
-                        <h2 className="text-2xl md:text-3xl text-secondary font-black tracking-tight">Reports Dashboard</h2>
-                        <p className="text-gray-500 text-sm mt-1 font-medium">Detailed analysis and data export for OUEvents</p>
+                        <h2 className="text-2xl font-bold text-gray-800">Reports Dashboard</h2>
+                        <p className="text-gray-500 text-sm mt-1">Detailed analysis and data export for OUEvents</p>
                     </div>
-                    <div className="flex flex-wrap gap-2 w-full md:w-auto">
-                        <button onClick={exportToCSV} className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-green-50 text-green-700 rounded-xl text-xs font-bold hover:bg-green-100 border border-green-200 transition-all active:scale-95">
+                    <div className="flex flex-wrap gap-2 w-full md:w-auto no-print">
+                        <button onClick={exportToCSV} className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-green-50 text-green-700 rounded-xl text-xs font-semibold hover:bg-green-100 border border-green-200 transition-all active:scale-95">
                             <LuFileSpreadsheet size={16} /> Excel
                         </button>
-                        <button onClick={exportToJSON} className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-blue-50 text-blue-700 rounded-xl text-xs font-bold hover:bg-blue-100 border border-blue-200 transition-all active:scale-95">
+                        <button onClick={exportToJSON} className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-blue-50 text-blue-700 rounded-xl text-xs font-semibold hover:bg-blue-100 border border-blue-200 transition-all active:scale-95">
                             <LuFileJson size={16} /> JSON
                         </button>
-                        <button onClick={exportToPDF} className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-red-50 text-[#7a1e1e] rounded-xl text-xs font-bold hover:bg-red-100 border border-red-200 transition-all active:scale-95">
+                        <button onClick={exportToPDF} className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-red-50 text-accent rounded-xl text-xs font-semibold hover:bg-red-100 border border-red-200 transition-all active:scale-95">
                             <LuFileText size={16} /> PDF
                         </button>
                     </div>
                 </div>
 
                 {/* Top Metrics Row - Mobile Responsive Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8 no-print">
-                    {renderSecondaryCard("Total Events", generalStats.totalEvents, <LuCalendar size={24} />)}
-                    {renderSecondaryCard("Total Users", generalStats.totalUsers, <LuUsers size={24} />)}
-                    {renderSecondaryCard("Registrations", generalStats.totalRegistrations, <LuClipboardList size={24} />)}
-                    {renderSecondaryCard("Avg. Rating", generalStats.avgRating, <LuStar size={24} />)}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
+                    {renderSecondaryCard("Total Events", generalStats.totalEvents, <LuCalendar />, "bg-emerald-50", "#10b981")}
+                    {renderSecondaryCard("Total Users", generalStats.totalUsers, <LuUsers />, "bg-blue-50", "#3b82f6")}
+                    {renderSecondaryCard("Registrations", generalStats.totalRegistrations, <LuClipboardList />, "bg-violet-50", "#8b5cf6")}
+                    {renderSecondaryCard("Avg. Rating", generalStats.avgRating, <LuStar />, "bg-amber-50", "#f59e0b")}
                 </div>
 
-                {/* Report Type Tabs - Scrollable on mobile */}
-                <div className="overflow-x-auto no-scrollbar mb-6 no-print">
-                    <div className="flex gap-2 bg-gray-100 p-1.5 rounded-2xl w-fit min-w-full md:min-w-0">
+                <div className="overflow-x-auto no-scrollbar mb-6">
+                    <div className="flex gap-2 p-1.5 w-fit min-w-full md:min-w-0">
                         {Object.keys(reportConfigs).map(key => (
                             <button
                                 key={key}
                                 onClick={() => setCurrentTab(key)}
-                                className={`flex items-center whitespace-nowrap px-4 md:px-6 py-2.5 text-xs md:text-sm font-bold rounded-xl transition-all duration-300 ${currentTab === key
-                                    ? 'bg-[#7a1e1e] text-white shadow-lg shadow-[#7a1e1e]/20'
-                                    : 'text-gray-500 hover:text-secondary hover:bg-white/50'
+                                className={`flex items-center whitespace-nowrap px-4 md:px-6 py-2.5 text-xs md:text-sm font-semibold rounded-xl transition-all duration-300 ${currentTab === key
+                                    ? 'bg-accent text-white shadow-lg shadow-accent/20'
+                                    : 'text-gray-500 hover:text-secondary hover:bg-gray-50'
                                     }`}
                             >
                                 {reportConfigs[key].icon}
@@ -320,81 +398,86 @@ export default function AdminReportsPage() {
                 </div>
 
                 {/* Filters Section - Mobile Responsive */}
-                <div className="bg-white p-4 md:p-6 rounded-[2rem] border border-gray-100 shadow-sm mb-6 no-print">
+                <div className="bg-white p-4 md:p-6 rounded-2xl border border-gray-100 shadow-sm mb-6">
                     <div className="flex flex-col lg:flex-row gap-4">
-                        <div className="relative flex-1">
-                            <LuSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                        <div
+                            className="relative flex-shrink-0 transition-all duration-300 h-[46px] flex items-center"
+                            style={{
+                                width: `calc(${Math.min(Math.max(filters.search.length, 15), 40)}ch + 4rem)`
+                            }}
+                        >
+                            <LuSearch className="absolute left-4 text-gray-400 pointer-events-none" size={18} />
                             <input
                                 name="search"
                                 value={filters.search}
                                 onChange={handleFilterChange}
                                 placeholder="Search records..."
-                                className="w-full pl-11 pr-4 py-3.5 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-[#7a1e1e]/20 transition text-sm font-medium"
+                                className="w-full h-full pl-11 pr-4 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-accent/20 transition text-sm text-gray-600"
                                 type="text"
                             />
                         </div>
 
                         <div className="flex flex-wrap items-center gap-3">
                             {currentTab !== 'users' && (
-                                <div className="flex items-center gap-2 bg-gray-50 p-1.5 rounded-2xl">
+                                <div className="flex items-center gap-2 bg-white border border-gray-200 p-1.5 rounded-lg h-[46px]">
                                     <input
                                         type="date"
                                         name="startDate"
                                         value={filters.startDate}
                                         onChange={handleFilterChange}
-                                        className="bg-transparent border-none text-xs px-2 py-1 focus:ring-0 cursor-pointer font-bold text-secondary"
+                                        className="bg-transparent border-none text-xs px-2 py-1 focus:ring-0 cursor-pointer font-medium text-gray-700"
                                     />
-                                    <span className="text-gray-400 font-bold text-[10px] uppercase">to</span>
+                                    <span className="text-gray-400 font-semibold text-[10px] uppercase">to</span>
                                     <input
                                         type="date"
                                         name="endDate"
                                         value={filters.endDate}
                                         onChange={handleFilterChange}
-                                        className="bg-transparent border-none text-xs px-2 py-1 focus:ring-0 cursor-pointer font-bold text-secondary"
+                                        className="bg-transparent border-none text-xs px-2 py-1 focus:ring-0 cursor-pointer font-medium text-gray-700"
                                     />
                                 </div>
                             )}
 
                             {currentTab === 'events' && (
                                 <>
-                                    <select name="category" value={filters.category} onChange={handleFilterChange} className="px-4 py-3 bg-gray-50 border-none rounded-2xl text-xs font-bold text-secondary focus:ring-2 focus:ring-[#7a1e1e]/20 cursor-pointer">
+                                    <select name="category" value={filters.category} onChange={handleFilterChange} className="px-4 py-3 bg-white border border-gray-200 rounded-lg text-xs font-medium text-gray-700 focus:ring-2 focus:ring-accent/20 cursor-pointer h-[46px]">
                                         {reportConfigs.events.filterOptions.category.map(opt => <option key={opt}>{opt}</option>)}
                                     </select>
-                                    <select name="status" value={filters.status} onChange={handleFilterChange} className="px-4 py-3 bg-gray-50 border-none rounded-2xl text-xs font-bold text-secondary focus:ring-2 focus:ring-[#7a1e1e]/20 cursor-pointer">
+                                    <select name="status" value={filters.status} onChange={handleFilterChange} className="px-4 py-3 bg-white border border-gray-200 rounded-lg text-xs font-medium text-gray-700 focus:ring-2 focus:ring-accent/20 cursor-pointer h-[46px]">
                                         {reportConfigs.events.filterOptions.status.map(opt => <option key={opt}>{opt}</option>)}
                                     </select>
                                 </>
                             )}
                             {currentTab === 'users' && (
                                 <>
-                                    <select name="role" value={filters.role} onChange={handleFilterChange} className="px-4 py-3 bg-gray-50 border-none rounded-2xl text-xs font-bold text-secondary focus:ring-2 focus:ring-[#7a1e1e]/20 cursor-pointer">
+                                    <select name="role" value={filters.role} onChange={handleFilterChange} className="px-4 py-3 bg-white border border-gray-200 rounded-lg text-xs font-medium text-gray-700 focus:ring-2 focus:ring-accent/20 cursor-pointer h-[46px]">
                                         {reportConfigs.users.filterOptions.role.map(opt => <option key={opt}>{opt}</option>)}
                                     </select>
-                                    <select name="status" value={filters.status} onChange={handleFilterChange} className="px-4 py-3 bg-gray-50 border-none rounded-2xl text-xs font-bold text-secondary focus:ring-2 focus:ring-[#7a1e1e]/20 cursor-pointer">
+                                    <select name="status" value={filters.status} onChange={handleFilterChange} className="px-4 py-3 bg-white border border-gray-200 rounded-lg text-xs font-medium text-gray-700 focus:ring-2 focus:ring-accent/20 cursor-pointer h-[46px]">
                                         {reportConfigs.users.filterOptions.status.map(opt => <option key={opt}>{opt}</option>)}
                                     </select>
                                 </>
                             )}
                             {currentTab === 'registrations' && (
                                 <>
-                                    <select name="faculty" value={filters.faculty} onChange={handleFilterChange} className="px-4 py-3 bg-gray-50 border-none rounded-2xl text-xs font-bold text-secondary focus:ring-2 focus:ring-[#7a1e1e]/20 cursor-pointer">
+                                    <select name="faculty" value={filters.faculty} onChange={handleFilterChange} className="px-4 py-3 bg-white border border-gray-200 rounded-lg text-xs font-medium text-gray-700 focus:ring-2 focus:ring-accent/20 cursor-pointer h-[46px]">
                                         {reportConfigs.registrations.filterOptions.faculty.map(opt => <option key={opt}>{opt}</option>)}
                                     </select>
-                                    <select name="status" value={filters.status} onChange={handleFilterChange} className="px-4 py-3 bg-gray-50 border-none rounded-2xl text-xs font-bold text-secondary focus:ring-2 focus:ring-[#7a1e1e]/20 cursor-pointer">
+                                    <select name="status" value={filters.status} onChange={handleFilterChange} className="px-4 py-3 bg-white border border-gray-200 rounded-lg text-xs font-medium text-gray-700 focus:ring-2 focus:ring-accent/20 cursor-pointer h-[46px]">
                                         {reportConfigs.registrations.filterOptions.status.map(opt => <option key={opt}>{opt}</option>)}
                                     </select>
                                 </>
                             )}
                             {currentTab === 'feedback' && (
-                                <select name="rating" value={filters.rating} onChange={handleFilterChange} className="px-4 py-3 bg-gray-50 border-none rounded-2xl text-xs font-bold text-secondary focus:ring-2 focus:ring-[#7a1e1e]/20 cursor-pointer">
+                                <select name="rating" value={filters.rating} onChange={handleFilterChange} className="px-4 py-3 bg-white border border-gray-200 rounded-lg text-xs font-medium text-gray-700 focus:ring-2 focus:ring-accent/20 cursor-pointer h-[46px]">
                                     {reportConfigs.feedback.filterOptions.rating.map(opt => <option key={opt}>{opt}</option>)}
                                 </select>
                             )}
 
-                            <div className="flex gap-2 w-full lg:w-auto">
+                            <div className="flex gap-2 w-full lg:w-auto no-print">
                                 <button
                                     onClick={fetchReportsData}
-                                    className="flex-1 lg:flex-none flex items-center justify-center gap-2 px-8 py-3.5 bg-[#7a1e1e] text-white rounded-2xl text-sm font-black hover:opacity-90 transition shadow-xl shadow-[#7a1e1e]/20 active:scale-95"
+                                    className="flex-1 lg:flex-none flex items-center justify-center gap-2 px-8 py-3.5 bg-accent text-white rounded-xl text-sm font-bold hover:opacity-90 transition shadow-xl shadow-accent/20 active:scale-95"
                                 >
                                     <LuRotateCcw size={18} /> GENERATE
                                 </button>
@@ -403,18 +486,17 @@ export default function AdminReportsPage() {
                     </div>
                 </div>
 
-                {/* Data Table */}
-                <div id="print-section" className="bg-white rounded-[2rem] shadow-xl overflow-hidden border border-gray-100 mb-8">
+                <div id="print-section" className="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100 mb-8">
                     <div className="overflow-x-auto no-scrollbar">
                         <table className="w-full">
-                            <thead className="bg-gray-50 border-b border-gray-100">
+                            <thead className="bg-white border-b border-gray-100">
                                 <tr>
                                     {reportConfigs[currentTab].headers.map(h => (
-                                        <th key={h} className="text-left px-6 py-5 text-xs font-black text-secondary/60 uppercase tracking-[0.1em]">{h}</th>
+                                        <th key={h} className="text-left px-6 py-4 text-xs font-semibold text-secondary uppercase tracking-wider">{h}</th>
                                     ))}
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-gray-50">
+                            <tbody className="divide-y divide-gray-100/50">
                                 {loading ? (
                                     <tr>
                                         <td colSpan={reportConfigs[currentTab].headers.length} className="px-6 py-20 text-center text-gray-400">
@@ -432,18 +514,18 @@ export default function AdminReportsPage() {
                                     </tr>
                                 ) : (
                                     paginatedData.map((row, idx) => (
-                                        <tr key={idx} className="hover:bg-gray-50/70 transition-colors group">
-                                            <td className="px-6 py-5 text-xs font-black text-secondary/30">{(currentPage - 1) * pageSize + idx + 1}</td>
+                                        <tr key={idx} className="hover:bg-gray-50/40 transition-colors group">
+                                            <td className="px-6 py-5 text-sm font-medium text-gray-400">{(currentPage - 1) * pageSize + idx + 1}</td>
                                             {currentTab === 'events' && (
                                                 <>
-                                                    <td className="px-6 py-5 text-xs font-mono text-[#7a1e1e] font-black uppercase">{row.eventID}</td>
-                                                    <td className="px-6 py-5 text-xs font-black text-secondary leading-tight">{row.title}</td>
-                                                    <td className="px-6 py-5"><span className="px-3 py-1 text-xs font-black bg-sky-50 text-sky-700 rounded-lg uppercase tracking-wider">{row.category}</span></td>
-                                                    <td className="px-6 py-5 text-xs font-bold text-secondary/70">{new Date(row.eventDateTime).toLocaleString()}</td>
-                                                    <td className="px-6 py-5 text-xs font-bold text-secondary/70">{row.location}</td>
-                                                    <td className="px-6 py-5 text-xs font-black text-secondary/80">{row.organizer}</td>
+                                                    <td className="px-6 py-5 text-sm font-mono text-accent font-bold uppercase">{row.eventID}</td>
+                                                    <td className="px-6 py-5 text-sm font-semibold text-gray-800 leading-tight">{row.title}</td>
+                                                    <td className="px-6 py-5"><span className="px-3 py-1 text-xs font-medium bg-sky-50 text-sky-700 rounded-lg uppercase tracking-wider">{row.category}</span></td>
+                                                    <td className="px-6 py-5 text-sm text-gray-500">{new Date(row.eventDateTime).toLocaleString()}</td>
+                                                    <td className="px-6 py-5 text-sm text-gray-500">{row.location}</td>
+                                                    <td className="px-6 py-5 text-sm font-semibold text-gray-700">{row.organizer}</td>
                                                     <td className="px-6 py-5">
-                                                        <span className={`px-3 py-1 text-xs font-black rounded-lg uppercase tracking-widest ${row.status === 'active' ? 'bg-green-100 text-green-700' : 'bg-red-50 text-red-600'}`}>
+                                                        <span className={`px-3 py-1 text-xs font-medium rounded-lg uppercase tracking-widest ${row.status === 'active' ? 'bg-green-100 text-green-700' : 'bg-red-50 text-red-600'}`}>
                                                             {row.status}
                                                         </span>
                                                     </td>
@@ -451,10 +533,10 @@ export default function AdminReportsPage() {
                                             )}
                                             {currentTab === 'users' && (
                                                 <>
-                                                    <td className="px-6 py-5 text-xs font-mono text-blue-600 font-black">{row.email}</td>
-                                                    <td className="px-6 py-5 text-xs font-black text-secondary">{row.firstName} {row.lastName}</td>
+                                                    <td className="px-6 py-5 text-sm font-mono text-blue-600 font-semibold">{row.email}</td>
+                                                    <td className="px-6 py-5 text-sm font-semibold text-gray-800">{row.firstName} {row.lastName}</td>
                                                     <td className="px-6 py-5">
-                                                        <span className="px-3 py-1 text-xs font-black bg-indigo-50 text-indigo-700 rounded-lg uppercase tracking-widest">
+                                                        <span className="px-3 py-1 text-xs font-medium bg-indigo-50 text-indigo-700 rounded-lg uppercase tracking-widest">
                                                             {row.role}
                                                         </span>
                                                     </td>
@@ -468,7 +550,7 @@ export default function AdminReportsPage() {
                                                         </div>
                                                     </td>
                                                     <td className="px-6 py-5">
-                                                        <span className={`px-3 py-1 text-xs font-black rounded-lg uppercase tracking-widest ${row.isBlock ? 'bg-red-50 text-red-600' : 'bg-green-100 text-green-700'}`}>
+                                                        <span className={`px-3 py-1 text-xs font-medium rounded-lg uppercase tracking-widest ${row.isBlock ? 'bg-red-50 text-red-600' : 'bg-green-100 text-green-700'}`}>
                                                             {row.isBlock ? 'Blocked' : 'Active'}
                                                         </span>
                                                     </td>
@@ -476,13 +558,13 @@ export default function AdminReportsPage() {
                                             )}
                                             {currentTab === 'registrations' && (
                                                 <>
-                                                    <td className="px-6 py-5 text-xs font-mono text-[#7a1e1e] font-black uppercase">{row.eventID}</td>
-                                                    <td className="px-6 py-5 text-xs font-mono text-blue-600 font-black">{row.userEmail}</td>
-                                                    <td className="px-6 py-5 text-xs font-black text-secondary uppercase leading-none">{row.regNo}</td>
-                                                    <td className="px-6 py-5"><span className="px-3 py-1 text-xs font-black bg-purple-50 text-purple-600 rounded-lg uppercase tracking-wider">{row.faculty}</span></td>
-                                                    <td className="px-6 py-5 text-xs font-bold text-secondary/70">{new Date(row.registrationDate).toLocaleDateString()}</td>
+                                                    <td className="px-6 py-5 text-sm font-mono text-accent font-semibold uppercase">{row.eventID}</td>
+                                                    <td className="px-6 py-5 text-sm font-mono text-blue-600 font-semibold">{row.userEmail}</td>
+                                                    <td className="px-6 py-5 text-sm font-semibold text-gray-800 uppercase leading-none">{row.regNo}</td>
+                                                    <td className="px-6 py-5"><span className="px-3 py-1 text-xs font-medium bg-purple-50 text-purple-600 rounded-lg uppercase tracking-wider">{row.faculty}</span></td>
+                                                    <td className="px-6 py-5 text-sm text-gray-500">{new Date(row.registrationDate).toLocaleDateString()}</td>
                                                     <td className="px-6 py-5">
-                                                        <span className="px-3 py-1 text-xs font-black bg-amber-50 text-amber-700 rounded-lg uppercase tracking-widest">
+                                                        <span className="px-3 py-1 text-xs font-medium bg-amber-50 text-amber-700 rounded-lg uppercase tracking-widest">
                                                             {row.status}
                                                         </span>
                                                     </td>
@@ -490,11 +572,11 @@ export default function AdminReportsPage() {
                                             )}
                                             {currentTab === 'feedback' && (
                                                 <>
-                                                    <td className="px-6 py-5 text-xs font-mono text-[#7a1e1e] font-black uppercase">{row.eventID}</td>
-                                                    <td className="px-6 py-5 text-xs font-mono text-blue-600 font-black">{row.userEmail}</td>
+                                                    <td className="px-6 py-5 text-sm font-mono text-accent font-semibold uppercase">{row.eventID}</td>
+                                                    <td className="px-6 py-5 text-sm font-mono text-blue-600 font-semibold">{row.userEmail}</td>
                                                     <td className="px-6 py-5">{renderStars(row.rating)}</td>
-                                                    <td className="px-6 py-5 text-xs font-medium text-secondary/70 max-w-xs">{row.comment || <span className="text-gray-300 italic">No comment</span>}</td>
-                                                    <td className="px-6 py-5 text-xs font-bold text-secondary/60">{new Date(row.createdAt).toLocaleDateString()}</td>
+                                                    <td className="px-6 py-5 text-sm font-medium text-gray-600 max-w-xs">{row.comment || <span className="text-gray-300 italic">No comment</span>}</td>
+                                                    <td className="px-6 py-5 text-sm text-gray-500">{new Date(row.createdAt).toLocaleDateString()}</td>
                                                 </>
                                             )}
                                         </tr>
@@ -506,15 +588,15 @@ export default function AdminReportsPage() {
 
                     {/* Real Pagination UI */}
                     {!loading && reportData.length > 0 && (
-                        <div className="px-6 py-6 bg-gray-50 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4 no-print">
-                            <div className="text-xs font-black text-secondary/60 uppercase tracking-widest">
-                                PAGE <span className="text-secondary">{currentPage}</span> OF <span className="text-secondary">{totalPages}</span> — <span className="text-secondary">{reportData.length}</span> RECORDS TOTAL
+                        <div className="px-6 py-4 bg-white border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4 no-print">
+                            <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                PAGE <span className="text-gray-800">{currentPage}</span> OF <span className="text-gray-800">{totalPages}</span> — <span className="text-gray-800">{reportData.length}</span> RECORDS TOTAL
                             </div>
                             <div className="flex gap-2">
                                 <button
                                     onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                                     disabled={currentPage === 1}
-                                    className="flex items-center gap-1 px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-[10px] font-black text-secondary hover:bg-white hover:text-[#7a1e1e] hover:border-[#7a1e1e] transition-all disabled:opacity-30 disabled:hover:border-gray-200 disabled:hover:text-secondary group"
+                                    className="flex items-center gap-1 px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-[10px] font-semibold text-gray-700 hover:bg-white hover:text-accent hover:border-accent transition-all disabled:opacity-30 disabled:hover:border-gray-200 disabled:hover:text-gray-700 group"
                                 >
                                     <LuChevronLeft size={14} className="group-hover:-translate-x-0.5 transition-transform" /> PREV
                                 </button>
@@ -524,7 +606,7 @@ export default function AdminReportsPage() {
                                         <button
                                             key={i}
                                             onClick={() => setCurrentPage(i + 1)}
-                                            className={`w-9 h-9 rounded-xl text-[10px] font-black transition-all ${currentPage === i + 1 ? 'bg-[#7a1e1e] text-white' : 'bg-white border border-gray-100 text-secondary hover:bg-gray-100'}`}
+                                            className={`w-9 h-9 rounded-xl text-[10px] font-semibold transition-all ${currentPage === i + 1 ? 'bg-accent text-white' : 'bg-white border border-gray-100 text-gray-700 hover:bg-gray-100'}`}
                                         >
                                             {i + 1}
                                         </button>
@@ -534,7 +616,7 @@ export default function AdminReportsPage() {
                                 <button
                                     onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                                     disabled={currentPage === totalPages}
-                                    className="flex items-center gap-1 px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-[10px] font-black text-secondary hover:bg-white hover:text-[#7a1e1e] hover:border-[#7a1e1e] transition-all disabled:opacity-30 disabled:hover:border-gray-200 disabled:hover:text-secondary group"
+                                    className="flex items-center gap-1 px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-[10px] font-semibold text-gray-700 hover:bg-white hover:text-accent hover:border-accent transition-all disabled:opacity-30 disabled:hover:border-gray-200 disabled:hover:text-gray-700 group"
                                 >
                                     NEXT <LuChevronRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
                                 </button>
@@ -544,18 +626,29 @@ export default function AdminReportsPage() {
                 </div>
 
                 {/* Summary Metrics Row - Added at Bottom */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-6 no-print">
-                    {metrics.map((metric, idx) => (
-                        <div key={idx} className="bg-secondary/10 p-5 rounded-2xl border border-secondary/20 flex items-center justify-between">
-                            <div>
-                                <p className="text-secondary/60 text-[10px] font-black uppercase tracking-[0.2em] mb-1">{metric.label}</p>
-                                <h4 className="text-2xl font-black text-secondary">{metric.value}</h4>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-6">
+                    {metrics.map((metric, idx) => {
+                        const iconColors = [
+                            { bg: "bg-blue-50/50", color: "#3b82f6" },
+                            { bg: "bg-emerald-50/50", color: "#10b981" },
+                            { bg: "bg-violet-50/50", color: "#8b5cf6" },
+                            { bg: "bg-amber-50/50", color: "#f59e0b" },
+                            { bg: "bg-red-50/50", color: "#ef4444" }
+                        ];
+                        const colors = iconColors[idx % iconColors.length];
+
+                        return (
+                            <div key={idx} className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm hover:shadow-md transition-shadow flex items-center justify-between group">
+                                <div>
+                                    <p className="text-sm text-gray-500 font-medium">{metric.label}</p>
+                                    <h4 className="text-2xl font-bold text-gray-800 mt-1">{metric.value.toLocaleString()}</h4>
+                                </div>
+                                <div className={`w-12 h-12 ${colors.bg} rounded-xl flex items-center justify-center`}>
+                                    {metricIconMap(colors.color)[metric.icon] || <LuRotateCcw className="w-6 h-6" color={colors.color} />}
+                                </div>
                             </div>
-                            <div className="w-10 h-10 bg-secondary/20 rounded-xl flex items-center justify-center text-secondary">
-                                {metricIconMap[metric.icon] || <LuRotateCcw size={20} />}
-                            </div>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
             </div>
         </div>
