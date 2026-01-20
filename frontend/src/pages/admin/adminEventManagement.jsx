@@ -189,9 +189,14 @@ export default function AdminEventManagement() {
       )}
       {/* Header */}
       <div className="flex justify-between items-center mb-8">
-        <h2 className="text-xl text-secondary font-semibold">
-          Event Management
-        </h2>
+        <div>
+          <h2 className="text-2xl text-secondary font-bold">
+            Event Management
+          </h2>
+          <p className="text-gray-500 text-sm mt-1">
+            Create, update, and manage all your events in one place.
+          </p>
+        </div>
         <Link
           to="/admin/events/create"
           className="flex items-center gap-2 text-white font-medium text-base bg-accent px-4 py-2 rounded-xl hover:opacity-90 transition-opacity"

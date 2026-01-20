@@ -161,10 +161,13 @@ export default function AdminUserManagement() {
       )}
 
       {/* Header */}
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl text-secondary font-semibold">
-          User Management
-        </h2>
+      <div className="flex justify-between items-center mb-8">
+        <div>
+          <h2 className="text-2xl text-secondary font-bold">User Management</h2>
+          <p className="text-gray-500 text-sm mt-1">
+            Monitor and manage user accounts, roles, and access permissions.
+          </p>
+        </div>
       </div>
 
       {/* Search and Filter Bar */}
