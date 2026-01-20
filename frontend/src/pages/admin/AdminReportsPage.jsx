@@ -264,22 +264,91 @@ export default function AdminReportsPage() {
             <style>
                 {`
                     @media print {
-                        body * { visibility: hidden; }
-                        #print-section, #print-section * { visibility: visible; }
-                        #print-section { position: absolute; left: 0; top: 0; width: 100%; }
-                        .no-print { display: none !important; }
+                        @page { size: landscape; margin: 10mm; }
+                        
+                        /* Reset global layout from AdminPage.jsx */
+                        html, body { 
+                            height: auto !important; 
+                            overflow: visible !important;
+                            background: white !important;
+                            width: 100% !important;
+                            margin: 0 !important;
+                            padding: 0 !important;
+                        }
+
+                        /* Disable h-screen and overflow-hidden on all parent containers */
+                        .h-screen, .h-full { height: auto !important; }
+                        .overflow-hidden, .overflow-y-auto, .overflow-x-auto { 
+                            overflow: visible !important; 
+                        }
+                        
+                        /* Hide Sidebar completely in print */
+                        .w-\\[280px\\] { display: none !important; }
+                        
+                        /* Reset Main Content Area Wrapper */
+                        .flex-1.p-6 { 
+                            padding: 0 !important; 
+                            background: white !important;
+                        }
+                        
+                        /* Reset the inner content container */
+                        .flex.flex-col.w-full.h-full.overflow-hidden.bg-white.border.shadow-sm.rounded-3xl {
+                            border: none !important;
+                            box-shadow: none !important;
+                            border-radius: 0 !important;
+                            height: auto !important;
+                            width: 100% !important;
+                        }
+
+                        /* Individual page padding reset */
+                        .flex-1.p-8 { 
+                            padding: 1rem !important; 
+                            height: auto !important;
+                        }
+
+                        #print-section { 
+                            position: static !important;
+                            overflow: visible !important;
+                            height: auto !important;
+                            box-shadow: none !important;
+                            border: 1px solid #eee !important;
+                            margin-top: 2rem !important;
+                            width: 100% !important;
+                        }
+
+                        /* Force grid layouts to keep desktop columns in print */
+                        .grid-cols-1.sm\\:grid-cols-2.lg\\:grid-cols-4,
+                        .grid-cols-1.md\\:grid-cols-3 {
+                            grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+                            display: grid !important;
+                        }
+                        
+                        /* Special case for 4 columns */
+                        .grid-cols-1.sm\\:grid-cols-2.lg\\:grid-cols-4 {
+                            grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+                        }
+
+                        .no-print { 
+                            display: none !important; 
+                        }
+
+                        /* Ensure text and colors are clear for printing */
+                        * { 
+                            -webkit-print-color-adjust: exact !important;
+                            print-color-adjust: exact !important;
+                        }
                     }
                 `}
             </style>
 
             <div className="flex-1 p-4 md:p-8 overflow-y-auto">
                 {/* Page Title & Export */}
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8 no-print">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
                     <div>
                         <h2 className="text-2xl md:text-3xl text-secondary font-black tracking-tight">Reports Dashboard</h2>
                         <p className="text-gray-500 text-sm mt-1 font-medium">Detailed analysis and data export for OUEvents</p>
                     </div>
-                    <div className="flex flex-wrap gap-2 w-full md:w-auto">
+                    <div className="flex flex-wrap gap-2 w-full md:w-auto no-print">
                         <button onClick={exportToCSV} className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-green-50 text-green-700 rounded-xl text-xs font-bold hover:bg-green-100 border border-green-200 transition-all active:scale-95">
                             <LuFileSpreadsheet size={16} /> Excel
                         </button>
@@ -293,7 +362,7 @@ export default function AdminReportsPage() {
                 </div>
 
                 {/* Top Metrics Row - Mobile Responsive Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8 no-print">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
                     {renderSecondaryCard("Total Events", generalStats.totalEvents, <LuCalendar size={24} />)}
                     {renderSecondaryCard("Total Users", generalStats.totalUsers, <LuUsers size={24} />)}
                     {renderSecondaryCard("Registrations", generalStats.totalRegistrations, <LuClipboardList size={24} />)}
@@ -301,7 +370,7 @@ export default function AdminReportsPage() {
                 </div>
 
                 {/* Report Type Tabs - Scrollable on mobile */}
-                <div className="overflow-x-auto no-scrollbar mb-6 no-print">
+                <div className="overflow-x-auto no-scrollbar mb-6">
                     <div className="flex gap-2 bg-gray-100 p-1.5 rounded-2xl w-fit min-w-full md:min-w-0">
                         {Object.keys(reportConfigs).map(key => (
                             <button
@@ -320,16 +389,21 @@ export default function AdminReportsPage() {
                 </div>
 
                 {/* Filters Section - Mobile Responsive */}
-                <div className="bg-white p-4 md:p-6 rounded-[2rem] border border-gray-100 shadow-sm mb-6 no-print">
+                <div className="bg-white p-4 md:p-6 rounded-[2rem] border border-gray-100 shadow-sm mb-6">
                     <div className="flex flex-col lg:flex-row gap-4">
-                        <div className="relative flex-1">
-                            <LuSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                        <div
+                            className="relative flex-shrink-0 transition-all duration-300 h-[46px] flex items-center"
+                            style={{
+                                width: `calc(${Math.min(Math.max(filters.search.length, 15), 40)}ch + 4rem)`
+                            }}
+                        >
+                            <LuSearch className="absolute left-4 text-gray-400 pointer-events-none" size={18} />
                             <input
                                 name="search"
                                 value={filters.search}
                                 onChange={handleFilterChange}
                                 placeholder="Search records..."
-                                className="w-full pl-11 pr-4 py-3.5 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-[#7a1e1e]/20 transition text-sm font-medium"
+                                className="w-full h-full pl-11 pr-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-[#7a1e1e]/20 transition text-sm font-medium"
                                 type="text"
                             />
                         </div>
@@ -357,41 +431,41 @@ export default function AdminReportsPage() {
 
                             {currentTab === 'events' && (
                                 <>
-                                    <select name="category" value={filters.category} onChange={handleFilterChange} className="px-4 py-3 bg-gray-50 border-none rounded-2xl text-xs font-bold text-secondary focus:ring-2 focus:ring-[#7a1e1e]/20 cursor-pointer">
+                                    <select name="category" value={filters.category} onChange={handleFilterChange} className="px-4 py-3 bg-gray-50 border-none rounded-2xl text-xs font-bold text-secondary focus:ring-2 focus:ring-[#7a1e1e]/20 cursor-pointer h-[46px]">
                                         {reportConfigs.events.filterOptions.category.map(opt => <option key={opt}>{opt}</option>)}
                                     </select>
-                                    <select name="status" value={filters.status} onChange={handleFilterChange} className="px-4 py-3 bg-gray-50 border-none rounded-2xl text-xs font-bold text-secondary focus:ring-2 focus:ring-[#7a1e1e]/20 cursor-pointer">
+                                    <select name="status" value={filters.status} onChange={handleFilterChange} className="px-4 py-3 bg-gray-50 border-none rounded-2xl text-xs font-bold text-secondary focus:ring-2 focus:ring-[#7a1e1e]/20 cursor-pointer h-[46px]">
                                         {reportConfigs.events.filterOptions.status.map(opt => <option key={opt}>{opt}</option>)}
                                     </select>
                                 </>
                             )}
                             {currentTab === 'users' && (
                                 <>
-                                    <select name="role" value={filters.role} onChange={handleFilterChange} className="px-4 py-3 bg-gray-50 border-none rounded-2xl text-xs font-bold text-secondary focus:ring-2 focus:ring-[#7a1e1e]/20 cursor-pointer">
+                                    <select name="role" value={filters.role} onChange={handleFilterChange} className="px-4 py-3 bg-gray-50 border-none rounded-2xl text-xs font-bold text-secondary focus:ring-2 focus:ring-[#7a1e1e]/20 cursor-pointer h-[46px]">
                                         {reportConfigs.users.filterOptions.role.map(opt => <option key={opt}>{opt}</option>)}
                                     </select>
-                                    <select name="status" value={filters.status} onChange={handleFilterChange} className="px-4 py-3 bg-gray-50 border-none rounded-2xl text-xs font-bold text-secondary focus:ring-2 focus:ring-[#7a1e1e]/20 cursor-pointer">
+                                    <select name="status" value={filters.status} onChange={handleFilterChange} className="px-4 py-3 bg-gray-50 border-none rounded-2xl text-xs font-bold text-secondary focus:ring-2 focus:ring-[#7a1e1e]/20 cursor-pointer h-[46px]">
                                         {reportConfigs.users.filterOptions.status.map(opt => <option key={opt}>{opt}</option>)}
                                     </select>
                                 </>
                             )}
                             {currentTab === 'registrations' && (
                                 <>
-                                    <select name="faculty" value={filters.faculty} onChange={handleFilterChange} className="px-4 py-3 bg-gray-50 border-none rounded-2xl text-xs font-bold text-secondary focus:ring-2 focus:ring-[#7a1e1e]/20 cursor-pointer">
+                                    <select name="faculty" value={filters.faculty} onChange={handleFilterChange} className="px-4 py-3 bg-gray-50 border-none rounded-2xl text-xs font-bold text-secondary focus:ring-2 focus:ring-[#7a1e1e]/20 cursor-pointer h-[46px]">
                                         {reportConfigs.registrations.filterOptions.faculty.map(opt => <option key={opt}>{opt}</option>)}
                                     </select>
-                                    <select name="status" value={filters.status} onChange={handleFilterChange} className="px-4 py-3 bg-gray-50 border-none rounded-2xl text-xs font-bold text-secondary focus:ring-2 focus:ring-[#7a1e1e]/20 cursor-pointer">
+                                    <select name="status" value={filters.status} onChange={handleFilterChange} className="px-4 py-3 bg-gray-50 border-none rounded-2xl text-xs font-bold text-secondary focus:ring-2 focus:ring-[#7a1e1e]/20 cursor-pointer h-[46px]">
                                         {reportConfigs.registrations.filterOptions.status.map(opt => <option key={opt}>{opt}</option>)}
                                     </select>
                                 </>
                             )}
                             {currentTab === 'feedback' && (
-                                <select name="rating" value={filters.rating} onChange={handleFilterChange} className="px-4 py-3 bg-gray-50 border-none rounded-2xl text-xs font-bold text-secondary focus:ring-2 focus:ring-[#7a1e1e]/20 cursor-pointer">
+                                <select name="rating" value={filters.rating} onChange={handleFilterChange} className="px-4 py-3 bg-gray-50 border-none rounded-2xl text-xs font-bold text-secondary focus:ring-2 focus:ring-[#7a1e1e]/20 cursor-pointer h-[46px]">
                                     {reportConfigs.feedback.filterOptions.rating.map(opt => <option key={opt}>{opt}</option>)}
                                 </select>
                             )}
 
-                            <div className="flex gap-2 w-full lg:w-auto">
+                            <div className="flex gap-2 w-full lg:w-auto no-print">
                                 <button
                                     onClick={fetchReportsData}
                                     className="flex-1 lg:flex-none flex items-center justify-center gap-2 px-8 py-3.5 bg-[#7a1e1e] text-white rounded-2xl text-sm font-black hover:opacity-90 transition shadow-xl shadow-[#7a1e1e]/20 active:scale-95"
@@ -544,7 +618,7 @@ export default function AdminReportsPage() {
                 </div>
 
                 {/* Summary Metrics Row - Added at Bottom */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-6 no-print">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-6">
                     {metrics.map((metric, idx) => (
                         <div key={idx} className="bg-secondary/10 p-5 rounded-2xl border border-secondary/20 flex items-center justify-between">
                             <div>
