@@ -1,17 +1,14 @@
 const Footer = () => {
   return (
     <footer className="bg-[var(--color-accent)] text-white/90">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-14">
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 text-center md:text-left">
-
+      <div className="container px-4 mx-auto sm:px-6 lg:px-8 py-14">
+        <div className="grid grid-cols-1 gap-10 text-center md:grid-cols-3 md:text-left">
           {/* Brand */}
           <div>
-            <h3 className="mb-2 text-2xl font-bold text-white">
-              OUEvents
-            </h3>
+            <h3 className="mb-2 text-2xl font-bold text-white">OUEvents</h3>
             <p className="text-sm leading-relaxed text-white/75">
-              Seamlessly connecting the OUSL community through organized and collaborative events.
+              Seamlessly connecting the OUSL community through organized and
+              collaborative events.
             </p>
           </div>
 
@@ -33,16 +30,14 @@ const Footer = () => {
               info@ousl.ac.lk
             </a>
           </div>
-
         </div>
 
         {/* Bottom Bar */}
-        <div className="mt-12 border-t border-white/15 pt-6 text-center">
+        <div className="pt-6 mt-12 text-center border-t border-white/15">
           <p className="text-xs tracking-wide text-white/60">
             © 2025 OUEvents — Open University of Sri Lanka
           </p>
         </div>
-
       </div>
     </footer>
   );
