@@ -69,6 +69,14 @@ export function loginUser(req, res) {
         user.password,
       ); // Compare the provided password with the hashed password
       if (isPasswordMatching) {
+        // Check if user is blocked BEFORE generating token
+        if (user.isBlock) {
+          res.status(403).json({
+            message: "Your account has been blocked. Please contact admin.",
+          });
+          return;
+        }
+
         const token = jwt.sign(
           {
             email: user.email,
@@ -123,6 +131,43 @@ export function isUser(req) {
   }
 
   return true;
+}
+
+export async function blockOrUnblockUser(req, res) {
+  if (!isAdmin(req)) {
+    res.status(401).json({
+      message: "Unauthorized",
+    });
+    return;
+  }
+
+  // make sure admin cannot block or unblock himself
+  if (req.user.email == req.body.email) {
+    res.status(400).json({
+      message: "You cannot block or unblock yourself",
+    });
+    return;
+  }
+
+  try {
+    //update user isBlock status
+    await User.updateOne(
+      {
+        email: req.params.email,
+      },
+      {
+        isBlock: req.body.isBlock,
+      },
+    );
+    res.json({
+      message: "User blocked or unblocked successfully",
+    });
+  } catch (error) {
+    console.error("Failed to block or unblock user", error);
+    res.status(500).json({
+      message: "Failed to block or unblock user",
+    });
+  }
 }
 
 //Get user details from token
@@ -225,6 +270,14 @@ export async function googleLogin(req, res) {
       });
       return;
     } else {
+      // Check if existing user is blocked
+      if (user.isBlock) {
+        res.status(403).json({
+          message: "Your account has been blocked. Please contact admin.",
+        });
+        return;
+      }
+
       // Generate a JWT token when a user logs in
       const jwtToken = jwt.sign(
         {
@@ -347,5 +400,22 @@ export async function changePasswordViaOTP(req, res) {
       message: "Failed to change password",
     });
     return;
+  }
+}
+
+export async function getAllUsers(req, res) {
+  if (!isAdmin(req)) {
+    res.status(403).json({
+      message: "Forbidden",
+    });
+    return;
+  }
+  try {
+    const users = await User.find();
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({
+      message: "Failed to get users",
+    });
   }
 }

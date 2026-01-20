@@ -28,7 +28,22 @@ export default function LoginPage() {
         })
         .catch((error) => {
           console.error("Login failed", error);
-          toast.error("Login failed. Please check your credentials");
+
+          // Step 1: Check if server sent a response
+          const serverResponse = error.response;
+
+          // Step 2: Get the status code from response
+          const statusCode = serverResponse ? serverResponse.status : null;
+
+          // Step 3: Check if status is 403 (blocked user)
+          const isBlocked = statusCode === 403;
+
+          // Step 4: Show the correct message
+          if (isBlocked) {
+            toast.error("Your account has been blocked. Please contact admin.");
+          } else {
+            toast.error("Login failed. Please try again");
+          }
         });
     },
   });
@@ -93,6 +108,7 @@ export default function LoginPage() {
       }
 
       const user = response.data.user;
+
       if (user.role == "admin") {
         navigate("/admin");
       } else {
@@ -101,7 +117,22 @@ export default function LoginPage() {
       toast.success("Login successful");
     } catch (err) {
       console.error("Login failed", err);
-      toast.error("Login failed. Please check your credentials");
+
+      // Step 1: Check if server sent a response
+      const serverResponse = err.response;
+
+      // Step 2: Get the status code from response
+      const statusCode = serverResponse ? serverResponse.status : null;
+
+      // Step 3: Check if status is 403 (blocked user)
+      const isBlocked = statusCode === 403;
+
+      // Step 4: Show the correct message
+      if (isBlocked) {
+        toast.error("Your account has been blocked. Please contact admin.");
+      } else {
+        toast.error("Login failed. Please check your credentials");
+      }
     }
   }
 

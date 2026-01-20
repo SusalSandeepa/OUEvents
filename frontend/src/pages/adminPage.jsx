@@ -18,10 +18,12 @@ import {
   LuSettings,
   LuChevronUp,
 } from "react-icons/lu";
-import AdminEventPage from "./admin/adminEventPage";
+import AdminEventManagement from "./admin/adminEventManagement";
+import AdminUserManagement from "./admin/adminUserManagement";
 import CreateEventForm from "./admin/createEventForm";
 import UpdateEventForm from "./admin/updateEventForm";
 import AdminFeedbackPage from "./admin/AdminFeedbackPage";
+import AdminDashboard from "./admin/adminDashboard";
 import AdminReportsPage from "./admin/AdminReportsPage";
 import { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
@@ -60,7 +62,7 @@ export default function AdminPage() {
           "Image value:",
           res.data.user?.image,
           "Type:",
-          typeof res.data.user?.image
+          typeof res.data.user?.image,
         );
         setUser(res.data.user);
         setUserLoading(false);
@@ -159,7 +161,29 @@ export default function AdminPage() {
         </div>
 
         {/* User Profile Mini */}
-        <div className="px-3 py-4 border-t border-gray-100">
+        <div className="px-3 py-4 border-t border-gray-100 relative">
+          {/* Profile Dropdown Menu */}
+          {showProfileMenu && (
+            <div className="absolute bottom-full left-3 right-3 mb-2 bg-white rounded-xl border border-gray-200 shadow-lg overflow-hidden z-50">
+              <Link
+                to="/admin/profile"
+                onClick={() => setShowProfileMenu(false)}
+                className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+              >
+                <LuUser size={16} />
+                My Profile
+              </Link>
+              <Link
+                to="/admin/settings"
+                onClick={() => setShowProfileMenu(false)}
+                className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors border-t border-gray-100"
+              >
+                <LuSettings size={16} />
+                Settings
+              </Link>
+            </div>
+          )}
+
           {/* Profile Card */}
           <div
             onClick={() => setShowProfileMenu(!showProfileMenu)}
@@ -190,8 +214,9 @@ export default function AdminPage() {
             {/* Chevron Icon */}
             <LuChevronUp
               size={16}
-              className={`text-gray-400 transition-transform ${showProfileMenu ? "" : "rotate-180"
-                }`}
+              className={`text-gray-400 transition-transform ${
+                showProfileMenu ? "" : "rotate-180"
+              }`}
             />
           </div>
 
@@ -216,23 +241,9 @@ export default function AdminPage() {
         <div className="flex flex-col w-full h-full overflow-hidden bg-white border shadow-sm rounded-3xl border-gray-100/50">
           <div className="flex-1 p-8 overflow-y-auto">
             <Routes>
-              <Route
-                path="/"
-                element={
-                  <h2 className="text-lg font-semibold opacity-50">
-                    Dashboard Stats & Overview
-                  </h2>
-                }
-              />
-              <Route
-                path="/users"
-                element={
-                  <h2 className="text-lg font-semibold opacity-50">
-                    User Management Module
-                  </h2>
-                }
-              />
-              <Route path="/events" element={<AdminEventPage />} />
+              <Route path="/" element={<AdminDashboard />} />
+              <Route path="/users" element={<AdminUserManagement />} />
+              <Route path="/events" element={<AdminEventManagement />} />
               <Route
                 path="/reports"
                 element={<AdminReportsPage />}
