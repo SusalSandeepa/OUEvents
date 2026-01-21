@@ -69,6 +69,14 @@ export function loginUser(req, res) {
         user.password,
       ); // Compare the provided password with the hashed password
       if (isPasswordMatching) {
+        // Check if user is blocked BEFORE generating token
+        if (user.isBlock) {
+          res.status(403).json({
+            message: "Your account has been blocked. Please contact admin.",
+          });
+          return;
+        }
+
         const token = jwt.sign(
           {
             email: user.email,
@@ -123,6 +131,43 @@ export function isUser(req) {
   }
 
   return true;
+}
+
+export async function blockOrUnblockUser(req, res) {
+  if (!isAdmin(req)) {
+    res.status(401).json({
+      message: "Unauthorized",
+    });
+    return;
+  }
+
+  // make sure admin cannot block or unblock himself
+  if (req.user.email == req.body.email) {
+    res.status(400).json({
+      message: "You cannot block or unblock yourself",
+    });
+    return;
+  }
+
+  try {
+    //update user isBlock status
+    await User.updateOne(
+      {
+        email: req.params.email,
+      },
+      {
+        isBlock: req.body.isBlock,
+      },
+    );
+    res.json({
+      message: "User blocked or unblocked successfully",
+    });
+  } catch (error) {
+    console.error("Failed to block or unblock user", error);
+    res.status(500).json({
+      message: "Failed to block or unblock user",
+    });
+  }
 }
 
 //Get user details from token
@@ -225,6 +270,14 @@ export async function googleLogin(req, res) {
       });
       return;
     } else {
+      // Check if existing user is blocked
+      if (user.isBlock) {
+        res.status(403).json({
+          message: "Your account has been blocked. Please contact admin.",
+        });
+        return;
+      }
+
       // Generate a JWT token when a user logs in
       const jwtToken = jwt.sign(
         {
@@ -347,5 +400,127 @@ export async function changePasswordViaOTP(req, res) {
       message: "Failed to change password",
     });
     return;
+  }
+}
+
+export async function getAllUsers(req, res) {
+  if (!isAdmin(req)) {
+    res.status(403).json({
+      message: "Forbidden",
+    });
+    return;
+  }
+  try {
+    const users = await User.find();
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({
+      message: "Failed to get users",
+    });
+  }
+}
+
+// Update user profile (firstName, lastName, image)
+export async function updateProfile(req, res) {
+  if (req.user == null) {
+    res.status(401).json({
+      message: "Unauthorized",
+    });
+    return;
+  }
+
+  // Get the new values from request body
+  const newFirstName = req.body.firstName;
+  const newLastName = req.body.lastName;
+  const newImage = req.body.image;
+
+  try {
+    //Update the user in database
+    await User.updateOne(
+      { email: req.user.email }, // find user by email
+      {
+        firstName: newFirstName,
+        lastName: newLastName,
+        image: newImage,
+      },
+    );
+
+    //Get the updated user from database
+    const updatedUser = await User.findOne({ email: req.user.email });
+
+    //Create a new token with updated user info
+    const newToken = jwt.sign(
+      {
+        email: updatedUser.email,
+        firstName: updatedUser.firstName,
+        lastName: updatedUser.lastName,
+        role: updatedUser.role,
+        isEmailVerified: updatedUser.isEmailVerified,
+        image: updatedUser.image,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" },
+    );
+
+    //Send success response with new token and user data
+    res.json({
+      message: "Profile updated successfully",
+      token: newToken,
+      user: {
+        email: updatedUser.email,
+        firstName: updatedUser.firstName,
+        lastName: updatedUser.lastName,
+        role: updatedUser.role,
+        isEmailVerified: updatedUser.isEmailVerified,
+        image: updatedUser.image,
+      },
+    });
+  } catch (error) {
+    console.error("Failed to update profile", error);
+    res.status(500).json({
+      message: "Failed to update profile",
+    });
+  }
+}
+
+// Change password for logged-in user
+export async function changePassword(req, res) {
+  if (req.user == null) {
+    res.status(401).json({
+      message: "Unauthorized",
+    });
+    return;
+  }
+
+  const currentPassword = req.body.currentPassword;
+  const newPassword = req.body.newPassword;
+
+  try {
+    const user = await User.findOne({ email: req.user.email });
+
+    // Check if current password is correct
+    const isMatch = bcrypt.compareSync(currentPassword, user.password);
+    if (!isMatch) {
+      res.status(400).json({
+        message: "Current password is incorrect",
+      });
+      return;
+    }
+
+    // Hash new password and update
+    const hashedPassword = bcrypt.hashSync(newPassword, 10);
+    await User.updateOne(
+      { email: req.user.email },
+      { password: hashedPassword },
+    );
+
+    res.json({
+      message: "Password changed successfully",
+    });
+  } catch (error) {
+    console.error("Failed to change password", error);
+    res.status(500).json({
+      message: "Failed to change password",
+    });
   }
 }

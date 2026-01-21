@@ -4,20 +4,27 @@
 // --------------
 // This component sits at the top of the Events page content and provides:
 // - A search input (always visible, even when results are shown).
+// - A category filter dropdown (populated from unique event categories).
 // - An "Order by" dropdown (A–Z by title OR by start time).
 //
 // RESPONSIBILITIES:
 // - Purely presentational: it does NOT fetch data or filter events itself.
-// - It only calls the callbacks given via props when the user types or changes sort.
+// - It only calls the callbacks given via props when the user types or changes filters/sort.
 // - Layout:
-//   * Mobile: stacked vertically (search on top, sort below).
-//   * Desktop: horizontal row (search left, sort right).
+//   * Mobile: stacked vertically (search on top, category filter, then sort below).
+//   * Desktop: horizontal row (search left, category filter center, sort right).
 //
 // PROPS:
 // - searchQuery: string
 //     Current value of the search term.
 // - onSearchChange: (value: string) => void
 //     Called whenever the search input changes.
+// - categoryFilter: string
+//     Current selected category. Empty string means "All Categories".
+// - categories: string[]
+//     Array of unique category values to populate the dropdown.
+// - onCategoryChange: (value: string) => void
+//     Called whenever the category filter changes.
 // - sortBy: string
 //     Current sort key. Expected values (aligned with Event.jsx):
 //       "targetDateTime"  → Order by start time
@@ -31,7 +38,8 @@
 //     --color-primary:   #faf7f2
 //     --color-secondary: #2f3e4e
 //
-// FIXES & OPTIMIZATIONS (v2):
+// FIXES & OPTIMIZATIONS (v3):
+// - Added category filter dropdown similar to admin event management page
 // - Changed input type from "search" to "text" to remove native browser X button
 // - This prevents the double X mark issue (native + custom clear button)
 // - Added explicit cursor-pointer to clear button for better UX
@@ -39,6 +47,7 @@
 // - Fixed nested div issue in sort dropdown wrapper
 
 import React from "react";
+import { LuFilter, LuArrowUpDown } from "react-icons/lu";
 
 const SORT_OPTIONS = [
   {
@@ -54,6 +63,9 @@ const SORT_OPTIONS = [
 const EventsToolbar = ({
   searchQuery,
   onSearchChange,
+  categoryFilter,
+  categories,
+  onCategoryChange,
   sortBy,
   onSortChange,
 }) => {
@@ -70,6 +82,11 @@ const EventsToolbar = ({
   // Handle change in the "Order by" dropdown
   const handleSortSelectChange = (e) => {
     onSortChange(e.target.value);
+  };
+
+  // Handle change in the category filter dropdown
+  const handleCategorySelectChange = (e) => {
+    onCategoryChange(e.target.value);
   };
 
   // Check if search has content (for showing clear button)
@@ -180,12 +197,94 @@ const EventsToolbar = ({
       </div>
 
       {/* ===============================================================
+          CATEGORY FILTER DROPDOWN
+          ===============================================================
+          - Dropdown populated from unique category values passed via props
+          - "All Categories" option (empty string) shows all events
+          - Styled consistently with search input and sort dropdown */}
+      <div className="relative w-full md:w-52">
+        <select
+          aria-label="Filter by category"
+          value={categoryFilter}
+          onChange={handleCategorySelectChange}
+          className="
+            w-full
+            appearance-none
+            cursor-pointer
+            rounded-lg
+            border border-slate-300
+            bg-white
+            py-2.5 sm:py-3
+            pl-10 pr-10
+            text-sm sm:text-base
+            text-slate-800
+            shadow-sm
+            transition-all
+            duration-200
+            hover:border-slate-400
+            focus:border-transparent
+            focus:outline-none
+            focus:ring-2
+            focus:ring-[var(--color-accent)]
+          "
+        >
+          {/* Default option to show all categories */}
+          <option value="">All Categories</option>
+          {/* Map through available categories from props */}
+          {categories && categories.map((category) => (
+            <option key={category} value={category}>
+              {category}
+            </option>
+          ))}
+        </select>
+
+        {/* Left filter icon (category indicator) */}
+        <div
+          className="
+            pointer-events-none
+            absolute inset-y-0 left-0
+            flex items-center justify-center
+            pl-3
+            text-slate-400
+          "
+          aria-hidden="true"
+        >
+          <LuFilter className="h-5 w-5" />
+        </div>
+
+        {/* Dropdown chevron icon */}
+        <div
+          className="
+            pointer-events-none
+            absolute inset-y-0 right-0
+            flex items-center justify-center
+            pr-3
+            text-slate-400
+          "
+          aria-hidden="true"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-5 w-5"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="m6 9 6 6 6-6" />
+          </svg>
+        </div>
+      </div>
+
+      {/* ===============================================================
           SORT / ORDER-BY DROPDOWN
           ===============================================================
-          - Fixed: removed unnecessary nested div
+          - Left icon (LuArrowUpDown) for visual consistency with admin page
           - Custom chevron icon for consistent styling
           - Same hover/focus states as search input */}
-      <div className="relative w-full md:w-56">
+      <div className="relative w-full md:w-64">
         <select
           aria-label="Order events"
           value={sortBy}
@@ -198,7 +297,7 @@ const EventsToolbar = ({
             border border-slate-300
             bg-white
             py-2.5 sm:py-3
-            pl-3 pr-10
+            pl-10 pr-10
             text-sm sm:text-base
             text-slate-800
             shadow-sm
@@ -217,6 +316,20 @@ const EventsToolbar = ({
             </option>
           ))}
         </select>
+
+        {/* Left sort icon (sort indicator) */}
+        <div
+          className="
+            pointer-events-none
+            absolute inset-y-0 left-0
+            flex items-center justify-center
+            pl-3
+            text-slate-400
+          "
+          aria-hidden="true"
+        >
+          <LuArrowUpDown className="h-5 w-5" />
+        </div>
 
         {/* Dropdown chevron icon */}
         <div

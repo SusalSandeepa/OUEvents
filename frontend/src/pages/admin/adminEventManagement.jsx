@@ -10,7 +10,6 @@ import {
   LuX,
   LuPlus,
   LuCalendar,
-  LuClock,
   LuRefreshCw,
 } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
@@ -69,7 +68,7 @@ export function EventDeleteConfirm(props) {
   );
 }
 
-export default function AdminEventPage() {
+export default function AdminEventManagement() {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -97,7 +96,7 @@ export default function AdminEventPage() {
   async function fetchEvents() {
     try {
       const response = await axios.get(
-        import.meta.env.VITE_API_URL + "api/events"
+        import.meta.env.VITE_API_URL + "api/events",
       );
       setEvents(response.data);
     } catch (error) {
@@ -131,7 +130,7 @@ export default function AdminEventPage() {
       result = result.filter(
         (event) =>
           event.title.toLowerCase().includes(query) ||
-          event.eventID.toLowerCase().includes(query)
+          event.eventID.toLowerCase().includes(query),
       );
     }
 
@@ -169,10 +168,10 @@ export default function AdminEventPage() {
   // For tab counts (before search/category filters)
   const now = new Date();
   const upcomingEvents = events.filter(
-    (event) => new Date(event.eventDateTime) >= now
+    (event) => new Date(event.eventDateTime) >= now,
   );
   const pastEvents = events.filter(
-    (event) => new Date(event.eventDateTime) < now
+    (event) => new Date(event.eventDateTime) < now,
   );
 
   return (
@@ -189,10 +188,15 @@ export default function AdminEventPage() {
         />
       )}
       {/* Header */}
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl text-secondary font-semibold">
-          Event Management
-        </h2>
+      <div className="flex justify-between items-center mb-8">
+        <div>
+          <h2 className="text-2xl text-secondary font-bold">
+            Event Management
+          </h2>
+          <p className="text-gray-500 text-sm mt-1">
+            Create, update, and manage all your events in one place.
+          </p>
+        </div>
         <Link
           to="/admin/events/create"
           className="flex items-center gap-2 text-white font-medium text-base bg-accent px-4 py-2 rounded-xl hover:opacity-90 transition-opacity"
@@ -203,7 +207,7 @@ export default function AdminEventPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-2 mb-4">
+      <div className="flex gap-2 mb-6">
         <button
           onClick={() => setActiveTab("upcoming")}
           className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
@@ -233,7 +237,7 @@ export default function AdminEventPage() {
       </div>
 
       {/* Search and Filter Bar */}
-      <div className="flex flex-wrap gap-3 mb-4 items-center">
+      <div className="flex flex-wrap gap-3 mb-6 items-center">
         {/* Search Input */}
         <div className="relative flex-1 min-w-[200px] max-w-[400px]">
           <LuSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -332,8 +336,8 @@ export default function AdminEventPage() {
           {searchQuery || categoryFilter
             ? "No events match your search criteria."
             : activeTab === "upcoming"
-            ? "No upcoming events found. Create your first event!"
-            : "No past events found."}
+              ? "No upcoming events found. Create your first event!"
+              : "No past events found."}
         </div>
       ) : (
         <div className="bg-white rounded-xl shadow-sm overflow-hidden">
@@ -405,8 +409,8 @@ export default function AdminEventPage() {
                         activeTab === "past"
                           ? "bg-gray-100 text-gray-600"
                           : event.status === "active"
-                          ? "bg-green-100 text-green-700"
-                          : "bg-gray-100 text-gray-600"
+                            ? "bg-green-100 text-green-700"
+                            : "bg-gray-100 text-gray-600"
                       }`}
                     >
                       {activeTab === "past" ? "inactive" : event.status}
