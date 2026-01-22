@@ -101,7 +101,9 @@ const EventDetail = () => {
             startDateTime: data.eventDateTime || data.startDateTime,
             targetDateTime: data.eventDateTime || data.targetDateTime,
             organizerName: data.organizer || data.organizerName,
+            status: data.status, // Explicitly preserve status field
           };
+          console.log("Event loaded - Status:", mappedEvent.status, "Full event:", mappedEvent);
           setEvent(mappedEvent);
         }
       } catch (err) {
@@ -432,14 +434,24 @@ const EventDetail = () => {
                   </div>
                 </section>
 
-                {/* Register Button */}
+                {/* Action Button - Register or Feedback based on event status */}
                 <section className="mt-8 md:mt-10">
                   <button
                     type="button"
-                    onClick={handleRegisterClick}
+                    onClick={() => {
+                      if (event.status === "active") {
+                        handleRegisterClick();
+                      } else {
+                        // Scroll to feedback section
+                        document.getElementById("feedback-section")?.scrollIntoView({
+                          behavior: "smooth",
+                          block: "start"
+                        });
+                      }
+                    }}
                     className="w-full bg-[var(--color-accent,#7a1d1a)] hover:bg-[#5e1512] text-white py-4 md:py-5 rounded-2xl font-semibold text-base md:text-lg shadow-lg shadow-red-900/20 transition-all duration-150 active:scale-95 flex items-center justify-center gap-2"
                   >
-                    Register Now
+                    {event.status === "active" ? "Register Now" : "Give Feedback"}
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       className="h-4 w-4"
@@ -457,29 +469,52 @@ const EventDetail = () => {
                   </button>
 
                   <p className="text-center text-gray-400 text-xs mt-3">
-                    <span className="inline-flex items-center justify-center mr-1 align-middle">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-3 w-3"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        aria-hidden="true"
-                      >
-                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" />
-                        <path d="m9 12 2 2 4-4" />
-                      </svg>
-                    </span>
-                    Registration is free for all university students.
+                    {event.status === "active" ? (
+                      <>
+                        <span className="inline-flex items-center justify-center mr-1 align-middle">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-3 w-3"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            aria-hidden="true"
+                          >
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" />
+                            <path d="m9 12 2 2 4-4" />
+                          </svg>
+                        </span>
+                        Registration is free for all university students.
+                      </>
+                    ) : (
+                      <>
+                        <span className="inline-flex items-center justify-center mr-1 align-middle">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-3 w-3"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            aria-hidden="true"
+                          >
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                          </svg>
+                        </span>
+                        Share your experience with this event.
+                      </>
+                    )}
                   </p>
                 </section>
 
                 {/* Feedback Section - Only for inactive events */}
                 {event.status === "inactive" && (
-                  <section className="mt-8 md:mt-10 space-y-6">
+                  <section id="feedback-section" className="mt-8 md:mt-10 space-y-6">
                     <div className="border-t border-gray-100 pt-8">
                       <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
                         <svg
