@@ -65,9 +65,10 @@ export default function CreateEventForm() {
     }
 
     try {
-      // Upload image and get URL
+      // First, upload the image to cloud storage
       const imageUrl = await mediaUpload(image);
 
+      // Create the event object with all form data
       const event = {
         eventID: eventID.trim(),
         title: title.trim(),
@@ -80,18 +81,29 @@ export default function CreateEventForm() {
         organizer: organizer.trim(),
       };
 
-      // Call backend API to create event
+      // Send event data to backend API
       await axios.post(import.meta.env.VITE_API_URL + "api/events", event, {
         headers: {
           Authorization: "Bearer " + token,
         },
       });
+
       toast.success("Event created successfully");
       navigate("/admin/events");
     } catch (error) {
-      console.error("An error occurred:", error);
-      toast.error("An error occurred while uploading the image");
-      return;
+      console.error("Error:", error);
+
+      // Get error message from backend response
+      const errorMsg = error.response?.data?.message || "";
+
+      // Show appropriate error message based on error type
+      if (errorMsg.includes("E11000") || errorMsg.includes("duplicate")) {
+        toast.error("Event ID already exists. Please use a different ID.");
+      } else if (errorMsg) {
+        toast.error(errorMsg);
+      } else {
+        toast.error("Something went wrong. Please try again.");
+      }
     }
   }
 
