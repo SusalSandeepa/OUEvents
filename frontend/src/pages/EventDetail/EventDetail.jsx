@@ -103,7 +103,12 @@ const EventDetail = () => {
             organizerName: data.organizer || data.organizerName,
             status: data.status, // Explicitly preserve status field
           };
-          console.log("Event loaded - Status:", mappedEvent.status, "Full event:", mappedEvent);
+          console.log(
+            "Event loaded - Status:",
+            mappedEvent.status,
+            "Full event:",
+            mappedEvent,
+          );
           setEvent(mappedEvent);
         }
       } catch (err) {
@@ -136,7 +141,7 @@ const EventDetail = () => {
       try {
         // Fetch event feedback list
         const feedbackRes = await axios.get(
-          `${import.meta.env.VITE_API_URL}api/feedback/event/${id}`
+          `${import.meta.env.VITE_API_URL}api/feedback/event/${id}`,
         );
         if (isMounted) {
           setFeedbackList(feedbackRes.data || []);
@@ -149,7 +154,7 @@ const EventDetail = () => {
             `${import.meta.env.VITE_API_URL}api/registrations/check/${id}`,
             {
               headers: { Authorization: `Bearer ${token}` },
-            }
+            },
           );
           if (isMounted) {
             setIsRegistered(regRes.data?.isRegistered || false);
@@ -160,10 +165,12 @@ const EventDetail = () => {
             `${import.meta.env.VITE_API_URL}api/feedback/check/${id}`,
             {
               headers: { Authorization: `Bearer ${token}` },
-            }
+            },
           );
           if (isMounted) {
-            setHasSubmittedFeedback(userFeedbackRes.data?.hasSubmitted || false);
+            setHasSubmittedFeedback(
+              userFeedbackRes.data?.hasSubmitted || false,
+            );
           }
         }
       } catch (err) {
@@ -418,7 +425,7 @@ const EventDetail = () => {
                       style={{ backgroundColor: "var(--color-accent,#7a1d1a)" }}
                     >
                       {getOrganizerInitials(
-                        event.organizerName || event.organizedBy
+                        event.organizerName || event.organizedBy,
                       )}
                     </div>
                     <div>
@@ -443,15 +450,19 @@ const EventDetail = () => {
                         handleRegisterClick();
                       } else {
                         // Scroll to feedback section
-                        document.getElementById("feedback-section")?.scrollIntoView({
-                          behavior: "smooth",
-                          block: "start"
-                        });
+                        document
+                          .getElementById("feedback-section")
+                          ?.scrollIntoView({
+                            behavior: "smooth",
+                            block: "start",
+                          });
                       }
                     }}
                     className="w-full bg-[var(--color-accent,#7a1d1a)] hover:bg-[#5e1512] text-white py-4 md:py-5 rounded-2xl font-semibold text-base md:text-lg shadow-lg shadow-red-900/20 transition-all duration-150 active:scale-95 flex items-center justify-center gap-2"
                   >
-                    {event.status === "active" ? "Register Now" : "Give Feedback"}
+                    {event.status === "active"
+                      ? "Register Now"
+                      : "Give Feedback"}
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       className="h-4 w-4"
@@ -514,7 +525,10 @@ const EventDetail = () => {
 
                 {/* Feedback Section - Only for inactive events */}
                 {event.status === "inactive" && (
-                  <section id="feedback-section" className="mt-8 md:mt-10 space-y-6">
+                  <section
+                    id="feedback-section"
+                    className="mt-8 md:mt-10 space-y-6"
+                  >
                     <div className="border-t border-gray-100 pt-8">
                       <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
                         <svg
@@ -546,7 +560,8 @@ const EventDetail = () => {
                       {!isRegistered && (
                         <div className="mb-6 bg-gray-50 rounded-2xl p-4 text-center">
                           <p className="text-gray-600 text-sm">
-                            Only registered attendees can submit feedback for this event.
+                            Only registered attendees can submit feedback for
+                            this event.
                           </p>
                         </div>
                       )}
@@ -555,7 +570,8 @@ const EventDetail = () => {
                       {isRegistered && hasSubmittedFeedback && (
                         <div className="mb-6 bg-green-50 rounded-2xl p-4 text-center">
                           <p className="text-green-700 text-sm font-medium">
-                            ✓ Thank you! You have already submitted your feedback.
+                            ✓ Thank you! You have already submitted your
+                            feedback.
                           </p>
                         </div>
                       )}
