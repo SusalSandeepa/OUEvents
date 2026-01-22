@@ -39,12 +39,7 @@
 //     --color-primary:   #faf7f2
 //     --color-secondary: #2f3e4e
 
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 // NOTE: useMemo is used to derive:
 //   1. Unique categories list (for filter dropdown)
@@ -157,11 +152,10 @@ const Events = () => {
     };
   }, [reloadToken]);
 
-  // === 1) Show all events (both upcoming and past) ===
+  // === 1) Filter out expired events (only show upcoming events) ===
   //
-  // Changed from filtering only upcoming events to showing all events.
-  // This allows users to access past events to submit feedback.
-  // Events are sorted by time, so past events will naturally appear later.
+  // Only keep events where targetDateTime >= now (current time).
+  // When the event's time passes, its card disappears automatically.
   //
   // If targetDateTime is missing or invalid, we choose to drop that event
   // to avoid showing broken data.
@@ -175,8 +169,8 @@ const Events = () => {
       const target = new Date(rawTarget);
       if (Number.isNaN(target.getTime())) return false;
 
-      // Show all events (removed the time filter)
-      return true;
+      // Only show upcoming events (target time must be in the future)
+      return target >= now;
     });
   }, [events, now]);
 
@@ -211,11 +205,7 @@ const Events = () => {
       const venue = (event.venue || "").toLowerCase();
       const description = (event.description || "").toLowerCase();
 
-      return (
-        title.includes(q) ||
-        venue.includes(q) ||
-        description.includes(q)
-      );
+      return title.includes(q) || venue.includes(q) || description.includes(q);
     });
   }, [searchQuery, categoryFilteredEvents]);
 
@@ -314,7 +304,8 @@ const Events = () => {
             All Events
           </h1>
           <p className="mt-2 max-w-2xl text-sm sm:text-base text-slate-600">
-            Explore enriching opportunities across our vibrant academic community
+            Explore enriching opportunities across our vibrant academic
+            community
           </p>
         </header>
 

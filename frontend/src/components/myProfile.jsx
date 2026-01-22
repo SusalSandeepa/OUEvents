@@ -3,7 +3,7 @@ import axios from "axios";
 import { toast } from "react-hot-toast";
 import { LuSave, LuX, LuPencil, LuUser, LuUpload } from "react-icons/lu";
 import { MdVerified, MdOutlineAdminPanelSettings } from "react-icons/md";
-import mediaUpload from "../../../utils/mediaUpload";
+import mediaUpload from "../../utils/mediaUpload";
 
 export default function MyProfile() {
   const [loading, setLoading] = useState(true);
@@ -99,7 +99,7 @@ export default function MyProfile() {
   const imageSrc = image instanceof File ? URL.createObjectURL(image) : image;
 
   return (
-    <div>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Header section */}
       <div className="flex justify-between items-center mb-8">
         <div>
