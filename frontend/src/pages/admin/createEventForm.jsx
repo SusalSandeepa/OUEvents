@@ -251,6 +251,20 @@ export default function CreateEventForm() {
               className="w-full h-11 px-4 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent/20 focus:border-accent outline-none transition-all"
             />
           </div>
+
+          <div>
+            <label className="block text-sm font-medium text-secondary mb-2">
+              Status <span className="text-red-500">*</span>
+            </label>
+            <select
+              value={status}
+              onChange={(e) => setStatus(e.target.value)}
+              className="w-full h-11 px-4 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent/20 focus:border-accent outline-none transition-all"
+            >
+              <option value="active">Active</option>
+              <option value="pending">Pending</option>
+            </select>
+          </div>
         </div>
 
         {/* Image Upload */}

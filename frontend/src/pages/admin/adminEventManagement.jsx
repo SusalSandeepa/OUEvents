@@ -73,7 +73,7 @@ export default function AdminEventManagement() {
   const [loading, setLoading] = useState(true);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [eventToDelete, setEventToDelete] = useState(null);
-  const [activeTab, setActiveTab] = useState("upcoming"); // "upcoming" or "past"
+  const [activeTab, setActiveTab] = useState("upcoming"); // "upcoming", "past", or "pending"
 
   // Search and Filter states
   const [searchQuery, setSearchQuery] = useState("");
@@ -95,8 +95,14 @@ export default function AdminEventManagement() {
 
   async function fetchEvents() {
     try {
+      const token = localStorage.getItem("token");
       const response = await axios.get(
         import.meta.env.VITE_API_URL + "api/events",
+        {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        }
       );
       setEvents(response.data);
     } catch (error) {
@@ -118,10 +124,16 @@ export default function AdminEventManagement() {
   const processedEvents = useMemo(() => {
     const now = new Date();
 
-    // First filter by tab (upcoming/past)
+    // First filter by tab (upcoming/past/pending)
     let result = events.filter((event) => {
       const eventDate = new Date(event.eventDateTime);
-      return activeTab === "upcoming" ? eventDate >= now : eventDate < now;
+      if (activeTab === "pending") {
+        return event.status === "pending";
+      } else if (activeTab === "upcoming") {
+        return eventDate >= now && event.status !== "pending";
+      } else {
+        return eventDate < now && event.status !== "pending";
+      }
     });
 
     // Then filter by search query
@@ -168,10 +180,13 @@ export default function AdminEventManagement() {
   // For tab counts (before search/category filters)
   const now = new Date();
   const upcomingEvents = events.filter(
-    (event) => new Date(event.eventDateTime) >= now,
+    (event) => new Date(event.eventDateTime) >= now && event.status !== "pending",
   );
   const pastEvents = events.filter(
-    (event) => new Date(event.eventDateTime) < now,
+    (event) => new Date(event.eventDateTime) < now && event.status !== "pending",
+  );
+  const pendingEvents = events.filter(
+    (event) => event.status === "pending",
   );
 
   return (
@@ -232,6 +247,19 @@ export default function AdminEventManagement() {
           Past Events
           <span className="ml-2 px-2 py-0.5 text-xs rounded-full bg-white/20">
             {pastEvents.length}
+          </span>
+        </button>
+        <button
+          onClick={() => setActiveTab("pending")}
+          className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+            activeTab === "pending"
+              ? "bg-accent text-white"
+              : "bg-gray-100 text-secondary hover:bg-gray-200"
+          }`}
+        >
+          Pending Events
+          <span className="ml-2 px-2 py-0.5 text-xs rounded-full bg-white/20">
+            {pendingEvents.length}
           </span>
         </button>
       </div>
@@ -323,7 +351,7 @@ export default function AdminEventManagement() {
       {!loading && (
         <div className="text-sm text-gray-500 mb-3">
           Showing {processedEvents.length} of{" "}
-          {activeTab === "upcoming" ? upcomingEvents.length : pastEvents.length}{" "}
+          {activeTab === "upcoming" ? upcomingEvents.length : activeTab === "past" ? pastEvents.length : pendingEvents.length}{" "}
           {activeTab} events
         </div>
       )}
@@ -337,7 +365,9 @@ export default function AdminEventManagement() {
             ? "No events match your search criteria."
             : activeTab === "upcoming"
               ? "No upcoming events found. Create your first event!"
-              : "No past events found."}
+              : activeTab === "past"
+                ? "No past events found."
+                : "No pending events found."}
         </div>
       ) : (
         <div className="bg-white rounded-xl shadow-sm overflow-hidden">
@@ -408,12 +438,14 @@ export default function AdminEventManagement() {
                       className={`px-2 py-1 text-xs font-medium rounded-full ${
                         activeTab === "past"
                           ? "bg-gray-100 text-gray-600"
-                          : event.status === "active"
-                            ? "bg-green-100 text-green-700"
-                            : "bg-gray-100 text-gray-600"
+                          : activeTab === "pending"
+                            ? "bg-yellow-100 text-yellow-700"
+                            : event.status === "active"
+                              ? "bg-green-100 text-green-700"
+                              : "bg-gray-100 text-gray-600"
                       }`}
                     >
-                      {activeTab === "past" ? "inactive" : event.status}
+                      {activeTab === "past" ? "inactive" : activeTab === "pending" ? "pending" : event.status}
                     </span>
                   </td>
                   <td className="px-4 py-3">

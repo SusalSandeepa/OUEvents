@@ -30,6 +30,7 @@ export default function MyEvents() {
   // Fetch user's registered events
   useEffect(() => {
     const token = localStorage.getItem("token");
+    
     if (!token) {
       toast.error("Please login to view your events");
       navigate("/login");
@@ -37,7 +38,7 @@ export default function MyEvents() {
     }
 
     axios
-      .get(import.meta.env.VITE_API_URL + "api/registrations/my-events", {
+      .get(import.meta.env.VITE_API_URL + "api/registrations/my", {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
@@ -45,7 +46,7 @@ export default function MyEvents() {
         setLoading(false);
       })
       .catch((err) => {
-        console.error(err);
+        console.error("Error fetching my events:", err);
         toast.error("Failed to load your events");
         setLoading(false);
       });
@@ -208,8 +209,8 @@ export default function MyEvents() {
   };
 
   return (
-    <section className="py-8 px-4">
-      <div className="max-w-6xl mx-auto">
+    <section className="py-8 px-4 min-h-screen flex flex-col">
+      <div className="max-w-6xl mx-auto flex-1">
         {/* Page Header */}
         <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">
           My Events
@@ -261,7 +262,7 @@ export default function MyEvents() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {upcomingEvents.map((item) => (
                 <EventCard
-                  key={item.registration._id}
+                  key={item._id}
                   item={item}
                   isPast={false}
                 />
@@ -277,7 +278,7 @@ export default function MyEvents() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {pastEvents.map((item) => (
               <EventCard
-                key={item.registration._id}
+                key={item._id}
                 item={item}
                 isPast={true}
               />
