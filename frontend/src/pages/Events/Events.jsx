@@ -157,14 +157,15 @@ const Events = () => {
     };
   }, [reloadToken]);
 
-  // === 1) Time-based filtering using only targetDateTime (UTC) ===
+  // === 1) Show all events (both upcoming and past) ===
   //
-  // Keep only events whose targetDateTime is in the future or now:
-  //   targetDateTime >= now
+  // Changed from filtering only upcoming events to showing all events.
+  // This allows users to access past events to submit feedback.
+  // Events are sorted by time, so past events will naturally appear later.
   //
   // If targetDateTime is missing or invalid, we choose to drop that event
   // to avoid showing broken data.
-  const upcomingEvents = useMemo(() => {
+  const allValidEvents = useMemo(() => {
     if (!events || events.length === 0) return [];
 
     return events.filter((event) => {
@@ -174,31 +175,31 @@ const Events = () => {
       const target = new Date(rawTarget);
       if (Number.isNaN(target.getTime())) return false;
 
-      // Keep only events where targetDateTime is still in the future
-      return target >= now;
+      // Show all events (removed the time filter)
+      return true;
     });
   }, [events, now]);
 
-  // === 1b) Get unique categories from upcoming events (for filter dropdown) ===
+  // === 1b) Get unique categories from all events (for filter dropdown) ===
   //
   // Extract all unique category values and sort them alphabetically.
   // This list populates the category filter dropdown in EventsToolbar.
   const categories = useMemo(() => {
     const uniqueCategories = [
-      ...new Set(upcomingEvents.map((event) => event.category)),
+      ...new Set(allValidEvents.map((event) => event.category)),
     ];
     // Filter out falsy values (null, undefined, empty string) and sort
     return uniqueCategories.filter(Boolean).sort();
-  }, [upcomingEvents]);
+  }, [allValidEvents]);
 
   // === 2) Category filter ===
   //
   // If a category is selected, filter events to only show that category.
   // Empty string ("All Categories") shows all events.
   const categoryFilteredEvents = useMemo(() => {
-    if (!categoryFilter) return upcomingEvents;
-    return upcomingEvents.filter((event) => event.category === categoryFilter);
-  }, [upcomingEvents, categoryFilter]);
+    if (!categoryFilter) return allValidEvents;
+    return allValidEvents.filter((event) => event.category === categoryFilter);
+  }, [allValidEvents, categoryFilter]);
 
   // === 3) Search filter (by title / venue / description) ===
   const searchedEvents = useMemo(() => {
