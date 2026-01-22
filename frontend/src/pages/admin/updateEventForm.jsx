@@ -257,6 +257,7 @@ export default function UpdateEventForm() {
               className="w-full h-11 px-4 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent/20 focus:border-accent outline-none transition-all"
             >
               <option value="active">Active</option>
+              <option value="pending">Pending</option>
               <option value="inactive">Inactive</option>
             </select>
           </div>
