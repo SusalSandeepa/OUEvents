@@ -230,7 +230,7 @@ export default function UpdateEventForm() {
           </div>
         </div>
 
-        {/* Organizer and Status */}
+        {/* Organizer */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label className="block text-sm font-medium text-secondary mb-2">
@@ -245,20 +245,6 @@ export default function UpdateEventForm() {
               placeholder="Organizing department or person"
               className="w-full h-11 px-4 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent/20 focus:border-accent outline-none transition-all"
             />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-secondary mb-2">
-              Status <span className="text-red-500">*</span>
-            </label>
-            <select
-              value={status}
-              onChange={(e) => setStatus(e.target.value)}
-              className="w-full h-11 px-4 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent/20 focus:border-accent outline-none transition-all"
-            >
-              <option value="active">Active</option>
-              <option value="inactive">Inactive</option>
-            </select>
           </div>
         </div>
 

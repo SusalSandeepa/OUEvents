@@ -1,6 +1,6 @@
 // src/pages/EventDetail/EventDetail.jsx
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -194,6 +194,16 @@ const EventDetail = () => {
     // Navigate to EventRegistration page for this event
     navigate(`/events/${id}/register`);
   };
+
+  // Compute effective status based on current time vs event datetime
+  // If event datetime has passed, automatically treat as inactive regardless of DB status
+  const effectiveStatus = useMemo(() => {
+    if (!event || !event.eventDateTime) return event?.status || "active";
+    const eventTime = new Date(event.eventDateTime);
+    const now = new Date();
+    // If event time has passed, it's inactive
+    return now > eventTime ? "inactive" : (event.status || "active");
+  }, [event]);
 
   const pageBgClass =
     "bg-[var(--color-page-bg,#faf7f2)] text-[var(--color-text,#111827)]";
@@ -439,7 +449,7 @@ const EventDetail = () => {
                   <button
                     type="button"
                     onClick={() => {
-                      if (event.status === "active") {
+                      if (effectiveStatus === "active") {
                         handleRegisterClick();
                       } else {
                         // Scroll to feedback section
@@ -451,7 +461,7 @@ const EventDetail = () => {
                     }}
                     className="w-full bg-[var(--color-accent,#7a1d1a)] hover:bg-[#5e1512] text-white py-4 md:py-5 rounded-2xl font-semibold text-base md:text-lg shadow-lg shadow-red-900/20 transition-all duration-150 active:scale-95 flex items-center justify-center gap-2"
                   >
-                    {event.status === "active" ? "Register Now" : "Give Feedback"}
+                    {effectiveStatus === "active" ? "Register Now" : "Give Feedback"}
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       className="h-4 w-4"
@@ -469,7 +479,7 @@ const EventDetail = () => {
                   </button>
 
                   <p className="text-center text-gray-400 text-xs mt-3">
-                    {event.status === "active" ? (
+                    {effectiveStatus === "active" ? (
                       <>
                         <span className="inline-flex items-center justify-center mr-1 align-middle">
                           <svg
@@ -513,7 +523,7 @@ const EventDetail = () => {
                 </section>
 
                 {/* Feedback Section - Only for inactive events */}
-                {event.status === "inactive" && (
+                {effectiveStatus === "inactive" && (
                   <section id="feedback-section" className="mt-8 md:mt-10 space-y-6">
                     <div className="border-t border-gray-100 pt-8">
                       <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
@@ -570,7 +580,7 @@ const EventDetail = () => {
                 )}
 
                 {/* Show feedback list for active events too (if any exists) */}
-                {event.status === "active" && feedbackList.length > 0 && (
+                {effectiveStatus === "active" && feedbackList.length > 0 && (
                   <section className="mt-8 md:mt-10">
                     <FeedbackList
                       feedbackList={feedbackList}
