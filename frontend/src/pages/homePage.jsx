@@ -5,6 +5,7 @@ import Events from "./Events/Events";
 import About from "./About/About";
 import EventDetail from "./EventDetail/EventDetail.jsx";
 import EventRegistration from "./EventDetail/EventRegistration.jsx";
+import MyEvents from "./MyEvents.jsx";
 import { Routes, Route } from "react-router-dom";
 import Settings from "../components/settings";
 import MyProfile from "../components/myProfile";
@@ -23,6 +24,7 @@ export default function HomePage() {
             <Route path="about" element={<About />} />
             <Route path="settings" element={<Settings />} />
             <Route path="myprofile" element={<MyProfile />} />
+            <Route path="my-events" element={<MyEvents />} />
           </Routes>
         </main>
         <Footer />

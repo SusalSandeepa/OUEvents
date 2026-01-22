@@ -1,5 +1,6 @@
 import EventRegistration from "../models/eventRegistration.js";
 import Event from "../models/event.js";
+import Feedback from "../models/feedback.js";
 import { isAdmin } from "./userController.js";
 
 // Register for an event
@@ -143,10 +144,48 @@ export function getMyRegistrations(req, res) {
     status: "registered",
   })
     .then((registrations) => {
-      res.json(registrations);
+      if (registrations.length === 0) {
+        return res.json([]);
+      }
+
+      // Fetch event details and check feedback for each registration
+      const promises = registrations.map((reg) => {
+        return Promise.all([
+          Event.findOne({ eventID: reg.eventID }),
+          Feedback.findOne({ eventID: reg.eventID, userEmail: req.user.email })
+        ]).then(([event, feedback]) => {
+          const regObj = reg.toObject();
+          return {
+            _id: regObj._id,
+            eventID: regObj.eventID,
+            userEmail: regObj.userEmail,
+            regNo: regObj.regNo,
+            academicYear: regObj.academicYear,
+            faculty: regObj.faculty,
+            status: regObj.status,
+            feedbackSubmitted: !!feedback,
+            event: event,
+          };
+        });
+      });
+
+      Promise.all(promises)
+        .then((registrationsWithEvents) => {
+          // Filter out events with pending status
+          const filteredEvents = registrationsWithEvents.filter(
+            (item) => item.event && item.event.status !== "pending"
+          );
+          res.json(filteredEvents);
+        })
+        .catch((err) => {
+          console.error("Error fetching event details:", err);
+          res.status(500).json({
+            message: "Failed to get event details",
+          });
+        });
     })
     .catch((err) => {
-      console.error(err);
+      console.error("Error fetching registrations:", err);
       res.status(500).json({
         message: "Failed to get registrations",
       });

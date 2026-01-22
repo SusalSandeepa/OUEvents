@@ -263,7 +263,6 @@ export default function CreateEventForm() {
             >
               <option value="active">Active</option>
               <option value="pending">Pending</option>
-              <option value="inactive">Inactive</option>
             </select>
           </div>
         </div>

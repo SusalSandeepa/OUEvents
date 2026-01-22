@@ -258,7 +258,6 @@ export default function UpdateEventForm() {
             >
               <option value="active">Active</option>
               <option value="pending">Pending</option>
-              <option value="inactive">Inactive</option>
             </select>
           </div>
         </div>
