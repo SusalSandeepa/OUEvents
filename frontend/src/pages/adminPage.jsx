@@ -17,6 +17,8 @@ import {
   LuUser,
   LuSettings,
   LuChevronUp,
+  LuMenu,
+  LuX,
 } from "react-icons/lu";
 import AdminEventManagement from "./admin/adminEventManagement";
 import AdminUserManagement from "./admin/adminUserManagement";
@@ -38,6 +40,7 @@ export default function AdminPage() {
   const [user, setUser] = useState(null);
   const [imageError, setImageError] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -109,17 +112,49 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="w-full h-screen bg-[#F8F9FA] flex overflow-hidden">
-      {/* Sidebar */}
-      <div className="w-[280px] h-full flex flex-col bg-white border-r border-gray-200 z-10">
-        {/* Logo Section - Clean & Minimal */}
-        <div className="px-5 py-6 border-b border-gray-100">
+    <div className="w-full h-screen bg-[#F8F9FA] flex flex-col lg:flex-row overflow-hidden">
+      {/* Mobile Header */}
+      <div className="lg:hidden flex items-center justify-between px-4 py-3 bg-white border-b border-gray-200 z-20">
+        <div className="flex items-center gap-2">
+          <Link to="/" aria-label="Go to home">
+            <img
+              src={logo}
+              alt="OUEvents Logo"
+              className="object-contain w-10 h-10"
+            />
+          </Link>
+          <span className="text-lg font-bold text-secondary">Admin Panel</span>
+        </div>
+        <button
+          onClick={() => setIsSidebarOpen(true)}
+          className="p-2 text-gray-600 rounded-lg hover:bg-gray-100"
+        >
+          <LuMenu size={24} />
+        </button>
+      </div>
+
+      {/* Mobile Sidebar Overlay */}
+      {isSidebarOpen && (
+        <div
+          className="lg:hidden fixed inset-0 z-40 bg-black/50 backdrop-blur-sm transition-opacity"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
+      {/* Sidebar - Desktop & Mobile */}
+      <div
+        className={`fixed lg:static inset-y-0 left-0 z-50 w-[280px] h-full flex flex-col bg-white border-r border-gray-200 transition-transform duration-300 ease-in-out lg:translate-x-0 ${
+          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        {/* Logo Section - Desktop Only (reused for mobile sidebar header) */}
+        <div className="px-5 py-6 border-b border-gray-100 flex items-center justify-between">
           <div className="flex items-center gap-1">
             <Link to="/" aria-label="Go to home">
               <img
                 src={logo}
                 alt="OUEvents Logo"
-                className="object-contain w-20 h-20"
+                className="object-contain w-20 h-20 lg:w-20 lg:h-20"
               />
             </Link>
             <div>
@@ -129,47 +164,78 @@ export default function AdminPage() {
               </p>
             </div>
           </div>
+          {/* Close Button for Mobile Sidebar */}
+          <button
+            onClick={() => setIsSidebarOpen(false)}
+            className="lg:hidden p-2 text-gray-500 hover:bg-gray-100 rounded-lg"
+          >
+            <LuX size={20} />
+          </button>
         </div>
 
         {/* Navigation Links */}
-        <div className="flex flex-col flex-1 gap-3 px-3 py-4">
-          <Link to="/admin" className={getNavStyle("/admin")}>
+        <div className="flex flex-col flex-1 gap-3 px-3 py-4 overflow-y-auto">
+          <Link
+            to="/admin"
+            className={getNavStyle("/admin")}
+            onClick={() => setIsSidebarOpen(false)}
+          >
             <LuLayoutDashboard size={18} />
             Dashboard
           </Link>
-          <Link to="/admin/users" className={getNavStyle("/admin/users")}>
+          <Link
+            to="/admin/users"
+            className={getNavStyle("/admin/users")}
+            onClick={() => setIsSidebarOpen(false)}
+          >
             <LuUsers size={18} />
             User Management
           </Link>
-          <Link to="/admin/events" className={getNavStyle("/admin/events")}>
+          <Link
+            to="/admin/events"
+            className={getNavStyle("/admin/events")}
+            onClick={() => setIsSidebarOpen(false)}
+          >
             <LuCalendar size={18} />
             Event Management
           </Link>
           <Link
             to="/admin/registrations"
             className={getNavStyle("/admin/registrations")}
+            onClick={() => setIsSidebarOpen(false)}
           >
             <LuBookOpenCheck size={18} />
             Event Registrations
           </Link>
-          <Link to="/admin/reports" className={getNavStyle("/admin/reports")}>
+          <Link
+            to="/admin/reports"
+            className={getNavStyle("/admin/reports")}
+            onClick={() => setIsSidebarOpen(false)}
+          >
             <LuClipboardList size={18} />
             Reports
           </Link>
-          <Link to="/admin/feedback" className={getNavStyle("/admin/feedback")}>
+          <Link
+            to="/admin/feedback"
+            className={getNavStyle("/admin/feedback")}
+            onClick={() => setIsSidebarOpen(false)}
+          >
             <LuMessageSquare size={18} />
             Feedback
           </Link>
         </div>
 
         {/* User Profile Mini */}
-        <div className="px-3 py-4 border-t border-gray-100 relative">
+        <div className="px-3 py-4 border-t border-gray-100 relative mt-auto">
           {/* Profile Dropdown Menu */}
           {showProfileMenu && (
             <div className="absolute bottom-full left-3 right-3 mb-2 bg-white rounded-xl border border-gray-200 shadow-lg overflow-hidden z-50">
               <Link
                 to="/admin/profile"
-                onClick={() => setShowProfileMenu(false)}
+                onClick={() => {
+                  setShowProfileMenu(false);
+                  setIsSidebarOpen(false);
+                }}
                 className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
               >
                 <LuUser size={16} />
@@ -177,7 +243,10 @@ export default function AdminPage() {
               </Link>
               <Link
                 to="/admin/settings"
-                onClick={() => setShowProfileMenu(false)}
+                onClick={() => {
+                  setShowProfileMenu(false);
+                  setIsSidebarOpen(false);
+                }}
                 className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors border-t border-gray-100"
               >
                 <LuSettings size={16} />
@@ -235,7 +304,7 @@ export default function AdminPage() {
             />
           </div>
 
-          {/* Logout Button - separate below */}
+          {/* Logout Button */}
           <button
             onClick={() => {
               localStorage.removeItem("token");
@@ -252,9 +321,9 @@ export default function AdminPage() {
       </div>
 
       {/* Main Content Area */}
-      <div className="flex-1 h-full overflow-hidden bg-[#F3F4F6] p-6">
+      <div className="flex-1 h-[calc(100vh-65px)] lg:h-full overflow-hidden bg-[#F3F4F6] p-4 lg:p-6">
         <div className="flex flex-col w-full h-full overflow-hidden bg-white border shadow-sm rounded-3xl border-gray-100/50">
-          <div className="flex-1 p-8 overflow-y-auto">
+          <div className="flex-1 p-4 lg:p-8 overflow-y-auto">
             <Routes>
               <Route path="/" element={<AdminDashboard />} />
               <Route path="/users" element={<AdminUserManagement />} />

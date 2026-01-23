@@ -102,7 +102,7 @@ export default function AdminEventManagement() {
           headers: {
             Authorization: "Bearer " + token,
           },
-        }
+        },
       );
       setEvents(response.data);
     } catch (error) {
@@ -180,14 +180,14 @@ export default function AdminEventManagement() {
   // For tab counts (before search/category filters)
   const now = new Date();
   const upcomingEvents = events.filter(
-    (event) => new Date(event.eventDateTime) >= now && event.status !== "pending",
+    (event) =>
+      new Date(event.eventDateTime) >= now && event.status !== "pending",
   );
   const pastEvents = events.filter(
-    (event) => new Date(event.eventDateTime) < now && event.status !== "pending",
+    (event) =>
+      new Date(event.eventDateTime) < now && event.status !== "pending",
   );
-  const pendingEvents = events.filter(
-    (event) => event.status === "pending",
-  );
+  const pendingEvents = events.filter((event) => event.status === "pending");
 
   return (
     <div>
@@ -351,7 +351,11 @@ export default function AdminEventManagement() {
       {!loading && (
         <div className="text-sm text-gray-500 mb-3">
           Showing {processedEvents.length} of{" "}
-          {activeTab === "upcoming" ? upcomingEvents.length : activeTab === "past" ? pastEvents.length : pendingEvents.length}{" "}
+          {activeTab === "upcoming"
+            ? upcomingEvents.length
+            : activeTab === "past"
+              ? pastEvents.length
+              : pendingEvents.length}{" "}
           {activeTab} events
         </div>
       )}
@@ -445,7 +449,11 @@ export default function AdminEventManagement() {
                               : "bg-gray-100 text-gray-600"
                       }`}
                     >
-                      {activeTab === "past" ? "inactive" : activeTab === "pending" ? "pending" : event.status}
+                      {activeTab === "past"
+                        ? "inactive"
+                        : activeTab === "pending"
+                          ? "pending"
+                          : event.status}
                     </span>
                   </td>
                   <td className="px-4 py-3">
