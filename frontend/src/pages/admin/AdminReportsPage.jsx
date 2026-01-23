@@ -475,8 +475,8 @@ export default function AdminReportsPage() {
           )}
         </div>
 
-        <div className="overflow-x-auto no-scrollbar mb-6">
-          <div className="flex gap-2 p-1.5 w-fit min-w-full md:min-w-0">
+        <div className="mb-6">
+          <div className="flex flex-wrap gap-2">
             {Object.keys(reportConfigs).map((key) => (
               <button
                 key={key}
@@ -652,7 +652,7 @@ export default function AdminReportsPage() {
                   {reportConfigs[currentTab].headers.map((h) => (
                     <th
                       key={h}
-                      className="text-left px-6 py-4 text-xs font-semibold text-secondary uppercase tracking-wider"
+                      className="text-left px-0.5 sm:px-3 md:px-6 py-1 sm:py-2 md:py-4 text-[8px] sm:text-xs md:text-xs font-semibold text-secondary uppercase tracking-wider"
                     >
                       {h}
                     </th>
@@ -694,34 +694,34 @@ export default function AdminReportsPage() {
                       key={idx}
                       className="hover:bg-gray-50/40 transition-colors group"
                     >
-                      <td className="px-6 py-5 text-sm font-medium text-gray-400">
+                      <td className="px-0.5 sm:px-3 md:px-6 py-1 sm:py-2 md:py-5 text-[7px] sm:text-xs md:text-sm font-medium text-gray-400">
                         {(currentPage - 1) * pageSize + idx + 1}
                       </td>
                       {currentTab === "events" && (
                         <>
-                          <td className="px-6 py-5 text-sm font-mono text-accent font-bold uppercase">
+                          <td className="px-0.5 sm:px-3 md:px-6 py-1 sm:py-2 md:py-5 text-[7px] sm:text-xs md:text-sm font-mono text-accent font-bold uppercase truncate max-w-[30px] sm:max-w-none">
                             {row.eventID}
                           </td>
-                          <td className="px-6 py-5 text-sm font-semibold text-gray-800 leading-tight">
+                          <td className="px-0.5 sm:px-3 md:px-6 py-1 sm:py-2 md:py-5 text-[7px] sm:text-xs md:text-sm font-semibold text-gray-800 leading-tight truncate max-w-[40px] sm:max-w-none">
                             {row.title}
                           </td>
-                          <td className="px-6 py-5">
-                            <span className="px-3 py-1 text-xs font-medium bg-sky-50 text-sky-700 rounded-lg uppercase tracking-wider">
+                          <td className="px-0.5 sm:px-3 md:px-6 py-1 sm:py-2 md:py-5">
+                            <span className="px-0.5 sm:px-2 md:px-3 py-0.5 sm:py-1 text-[7px] sm:text-xs md:text-xs font-medium bg-sky-50 text-sky-700 rounded-lg uppercase tracking-wider">
                               {row.category}
                             </span>
                           </td>
-                          <td className="px-6 py-5 text-sm text-gray-500">
+                          <td className="px-0.5 sm:px-3 md:px-6 py-1 sm:py-2 md:py-5 text-[7px] sm:text-xs md:text-sm text-gray-500 truncate max-w-[50px] sm:max-w-none">
                             {new Date(row.eventDateTime).toLocaleString()}
                           </td>
-                          <td className="px-6 py-5 text-sm text-gray-500">
+                          <td className="px-0.5 sm:px-3 md:px-6 py-1 sm:py-2 md:py-5 text-[7px] sm:text-xs md:text-sm text-gray-500 truncate max-w-[35px] sm:max-w-none">
                             {row.location}
                           </td>
-                          <td className="px-6 py-5 text-sm font-semibold text-gray-700">
+                          <td className="px-0.5 sm:px-3 md:px-6 py-1 sm:py-2 md:py-5 text-[7px] sm:text-xs md:text-sm font-semibold text-gray-700 truncate max-w-[35px] sm:max-w-none">
                             {row.organizer}
                           </td>
-                          <td className="px-6 py-5">
+                          <td className="px-0.5 sm:px-3 md:px-6 py-1 sm:py-2 md:py-5">
                             <span
-                              className={`px-3 py-1 text-xs font-medium rounded-lg uppercase tracking-widest ${row.status === "active" ? "bg-green-100 text-green-700" : "bg-red-50 text-red-600"}`}
+                              className={`px-0.5 sm:px-2 md:px-3 py-0.5 sm:py-1 text-[7px] sm:text-xs md:text-xs font-medium rounded-lg uppercase tracking-widest ${row.status === "active" ? "bg-green-100 text-green-700" : "bg-red-50 text-red-600"}`}
                             >
                               {row.status}
                             </span>
@@ -730,35 +730,35 @@ export default function AdminReportsPage() {
                       )}
                       {currentTab === "users" && (
                         <>
-                          <td className="px-6 py-5 text-sm font-mono text-blue-600 font-semibold">
+                          <td className="px-0.5 sm:px-3 md:px-6 py-1 sm:py-2 md:py-5 text-[7px] sm:text-xs md:text-sm font-mono text-blue-600 font-semibold truncate max-w-[45px] sm:max-w-none">
                             {row.email}
                           </td>
-                          <td className="px-6 py-5 text-sm font-semibold text-gray-800">
+                          <td className="px-0.5 sm:px-3 md:px-6 py-1 sm:py-2 md:py-5 text-[7px] sm:text-xs md:text-sm font-semibold text-gray-800 truncate max-w-[35px] sm:max-w-none">
                             {row.firstName} {row.lastName}
                           </td>
-                          <td className="px-6 py-5">
-                            <span className="px-3 py-1 text-xs font-medium bg-indigo-50 text-indigo-700 rounded-lg uppercase tracking-widest">
+                          <td className="px-0.5 sm:px-3 md:px-6 py-1 sm:py-2 md:py-5">
+                            <span className="px-0.5 sm:px-2 md:px-3 py-0.5 sm:py-1 text-[7px] sm:text-xs md:text-xs font-medium bg-indigo-50 text-indigo-700 rounded-lg uppercase tracking-widest">
                               {row.role}
                             </span>
                           </td>
-                          <td className="px-6 py-5 text-center">
+                          <td className="px-0.5 sm:px-3 md:px-6 py-1 sm:py-2 md:py-5 text-center">
                             <div className="flex justify-center">
                               {row.isEmailVerified ? (
                                 <LuCircleCheck
                                   className="text-green-500"
-                                  size={20}
+                                  size={16}
                                 />
                               ) : (
                                 <LuCircleX
                                   className="text-gray-300"
-                                  size={20}
+                                  size={16}
                                 />
                               )}
                             </div>
                           </td>
-                          <td className="px-6 py-5">
+                          <td className="px-0.5 sm:px-3 md:px-6 py-1 sm:py-2 md:py-5">
                             <span
-                              className={`px-3 py-1 text-xs font-medium rounded-lg uppercase tracking-widest ${row.isBlock ? "bg-red-50 text-red-600" : "bg-green-100 text-green-700"}`}
+                              className={`px-0.5 sm:px-2 md:px-3 py-0.5 sm:py-1 text-[7px] sm:text-xs md:text-xs font-medium rounded-lg uppercase tracking-widest ${row.isBlock ? "bg-red-50 text-red-600" : "bg-green-100 text-green-700"}`}
                             >
                               {row.isBlock ? "Blocked" : "Active"}
                             </span>
@@ -767,27 +767,27 @@ export default function AdminReportsPage() {
                       )}
                       {currentTab === "registrations" && (
                         <>
-                          <td className="px-6 py-5 text-sm font-mono text-accent font-semibold uppercase">
+                          <td className="px-0.5 sm:px-3 md:px-6 py-1 sm:py-2 md:py-5 text-[7px] sm:text-xs md:text-sm font-mono text-accent font-semibold uppercase truncate max-w-[30px] sm:max-w-none">
                             {row.eventID}
                           </td>
-                          <td className="px-6 py-5 text-sm font-mono text-blue-600 font-semibold">
+                          <td className="px-0.5 sm:px-3 md:px-6 py-1 sm:py-2 md:py-5 text-[7px] sm:text-xs md:text-sm font-mono text-blue-600 font-semibold truncate max-w-[45px] sm:max-w-none">
                             {row.userEmail}
                           </td>
-                          <td className="px-6 py-5 text-sm font-semibold text-gray-800 uppercase leading-none">
+                          <td className="px-0.5 sm:px-3 md:px-6 py-1 sm:py-2 md:py-5 text-[7px] sm:text-xs md:text-sm font-semibold text-gray-800 uppercase leading-none truncate max-w-[30px] sm:max-w-none">
                             {row.regNo}
                           </td>
-                          <td className="px-6 py-5">
-                            <span className="px-3 py-1 text-xs font-medium bg-purple-50 text-purple-600 rounded-lg uppercase tracking-wider">
+                          <td className="px-0.5 sm:px-3 md:px-6 py-1 sm:py-2 md:py-5">
+                            <span className="px-0.5 sm:px-2 md:px-3 py-0.5 sm:py-1 text-[7px] sm:text-xs md:text-xs font-medium bg-purple-50 text-purple-600 rounded-lg uppercase tracking-wider">
                               {row.faculty}
                             </span>
                           </td>
-                          <td className="px-6 py-5 text-sm text-gray-500">
+                          <td className="px-0.5 sm:px-3 md:px-6 py-1 sm:py-2 md:py-5 text-[7px] sm:text-xs md:text-sm text-gray-500">
                             {new Date(
                               row.registrationDate,
                             ).toLocaleDateString()}
                           </td>
-                          <td className="px-6 py-5">
-                            <span className="px-3 py-1 text-xs font-medium bg-amber-50 text-amber-700 rounded-lg uppercase tracking-widest">
+                          <td className="px-0.5 sm:px-3 md:px-6 py-1 sm:py-2 md:py-5">
+                            <span className="px-0.5 sm:px-2 md:px-3 py-0.5 sm:py-1 text-[7px] sm:text-xs md:text-xs font-medium bg-amber-50 text-amber-700 rounded-lg uppercase tracking-widest">
                               {row.status}
                             </span>
                           </td>
@@ -795,23 +795,25 @@ export default function AdminReportsPage() {
                       )}
                       {currentTab === "feedback" && (
                         <>
-                          <td className="px-6 py-5 text-sm font-mono text-accent font-semibold uppercase">
+                          <td className="px-0.5 sm:px-3 md:px-6 py-1 sm:py-2 md:py-5 text-[7px] sm:text-xs md:text-sm font-mono text-accent font-semibold uppercase truncate max-w-[30px] sm:max-w-none">
                             {row.eventID}
                           </td>
-                          <td className="px-6 py-5 text-sm font-mono text-blue-600 font-semibold">
+                          <td className="px-0.5 sm:px-3 md:px-6 py-1 sm:py-2 md:py-5 text-[7px] sm:text-xs md:text-sm font-mono text-blue-600 font-semibold truncate max-w-[45px] sm:max-w-none">
                             {row.userEmail}
                           </td>
-                          <td className="px-6 py-5">
-                            {renderStars(row.rating)}
+                          <td className="px-0.5 sm:px-3 md:px-6 py-1 sm:py-2 md:py-5">
+                            <div className="scale-[0.6] sm:scale-90 md:scale-100 origin-left">
+                              {renderStars(row.rating)}
+                            </div>
                           </td>
-                          <td className="px-6 py-5 text-sm font-medium text-gray-600 max-w-xs">
+                          <td className="px-0.5 sm:px-3 md:px-6 py-1 sm:py-2 md:py-5 text-[7px] sm:text-xs md:text-sm font-medium text-gray-600 max-w-[35px] sm:max-w-xs truncate">
                             {row.comment || (
                               <span className="text-gray-300 italic">
                                 No comment
                               </span>
                             )}
                           </td>
-                          <td className="px-6 py-5 text-sm text-gray-500">
+                          <td className="px-0.5 sm:px-3 md:px-6 py-1 sm:py-2 md:py-5 text-[7px] sm:text-xs md:text-sm text-gray-500">
                             {new Date(row.createdAt).toLocaleDateString()}
                           </td>
                         </>

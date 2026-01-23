@@ -114,22 +114,25 @@ export default function AdminPage() {
   return (
     <div className="w-full h-screen bg-[#F8F9FA] flex flex-col lg:flex-row overflow-hidden">
       {/* Mobile Header */}
-      <div className="lg:hidden flex items-center justify-between px-4 py-3 bg-white border-b border-gray-200 z-20">
-        <div className="flex items-center gap-2">
-          <Link to="/" aria-label="Go to home">
+      <div className="lg:hidden flex items-center justify-between px-4 py-3.5 bg-white border-b border-gray-200 shadow-sm sticky top-0 z-30">
+        <div className="flex items-center gap-3">
+          <Link to="/" aria-label="Go to home" className="flex-shrink-0">
             <img
               src={logo}
               alt="OUEvents Logo"
-              className="object-contain w-10 h-10"
+              className="object-contain w-9 h-9"
             />
           </Link>
-          <span className="text-lg font-bold text-secondary">Admin Panel</span>
+          <div>
+            <span className="text-base font-bold text-secondary">OUEvents</span>
+            <p className="text-[10px] text-gray-500 font-medium">Admin Panel</p>
+          </div>
         </div>
         <button
           onClick={() => setIsSidebarOpen(true)}
-          className="p-2 text-gray-600 rounded-lg hover:bg-gray-100"
+          className="p-2 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors active:bg-gray-200"
         >
-          <LuMenu size={24} />
+          <LuMenu size={22} />
         </button>
       </div>
 
@@ -148,26 +151,26 @@ export default function AdminPage() {
         }`}
       >
         {/* Logo Section - Desktop Only (reused for mobile sidebar header) */}
-        <div className="px-5 py-6 border-b border-gray-100 flex items-center justify-between">
-          <div className="flex items-center gap-1">
-            <Link to="/" aria-label="Go to home">
+        <div className="px-5 py-5 border-b border-gray-200 flex items-center justify-between bg-gradient-to-r from-gray-50 to-white">
+          <div className="flex items-center gap-2.5">
+            <Link to="/" aria-label="Go to home" className="flex-shrink-0">
               <img
                 src={logo}
                 alt="OUEvents Logo"
-                className="object-contain w-20 h-20 lg:w-20 lg:h-20"
+                className="object-contain w-16 h-16"
               />
             </Link>
             <div>
-              <h1 className="text-xl font-bold text-secondary">OUEvents</h1>
-              <p className="text-[12px] text-secondary/80 font-medium">
-                Admin Panel
+              <h1 className="text-lg font-bold text-secondary">OUEvents</h1>
+              <p className="text-[11px] text-gray-600 font-medium">
+                Admin Dashboard
               </p>
             </div>
           </div>
           {/* Close Button for Mobile Sidebar */}
           <button
             onClick={() => setIsSidebarOpen(false)}
-            className="lg:hidden p-2 text-gray-500 hover:bg-gray-100 rounded-lg"
+            className="lg:hidden p-1.5 text-gray-500 hover:bg-gray-100 rounded-lg transition-colors"
           >
             <LuX size={20} />
           </button>

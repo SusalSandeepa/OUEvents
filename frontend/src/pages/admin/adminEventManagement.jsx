@@ -203,9 +203,9 @@ export default function AdminEventManagement() {
         />
       )}
       {/* Header */}
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 sm:mb-8">
         <div>
-          <h2 className="text-2xl text-secondary font-bold">
+          <h2 className="text-xl sm:text-2xl text-secondary font-bold">
             Event Management
           </h2>
           <p className="text-gray-500 text-sm mt-1">
@@ -214,7 +214,7 @@ export default function AdminEventManagement() {
         </div>
         <Link
           to="/admin/events/create"
-          className="flex items-center gap-2 text-white font-medium text-base bg-accent px-4 py-2 rounded-xl hover:opacity-90 transition-opacity"
+          className="flex items-center gap-2 text-white font-medium text-sm sm:text-base bg-accent px-4 py-2 rounded-xl hover:opacity-90 transition-opacity whitespace-nowrap"
         >
           <LuPlus className="w-5 h-5" />
           Create Event
@@ -222,52 +222,54 @@ export default function AdminEventManagement() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-2 mb-6">
-        <button
-          onClick={() => setActiveTab("upcoming")}
-          className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
-            activeTab === "upcoming"
-              ? "bg-accent text-white"
-              : "bg-gray-100 text-secondary hover:bg-gray-200"
-          }`}
-        >
-          Upcoming Events
-          <span className="ml-2 px-2 py-0.5 text-xs rounded-full bg-white/20">
-            {upcomingEvents.length}
-          </span>
-        </button>
-        <button
-          onClick={() => setActiveTab("past")}
-          className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
-            activeTab === "past"
-              ? "bg-accent text-white"
-              : "bg-gray-100 text-secondary hover:bg-gray-200"
-          }`}
-        >
-          Past Events
-          <span className="ml-2 px-2 py-0.5 text-xs rounded-full bg-white/20">
-            {pastEvents.length}
-          </span>
-        </button>
-        <button
-          onClick={() => setActiveTab("pending")}
-          className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
-            activeTab === "pending"
-              ? "bg-accent text-white"
-              : "bg-gray-100 text-secondary hover:bg-gray-200"
-          }`}
-        >
-          Pending Events
-          <span className="ml-2 px-2 py-0.5 text-xs rounded-full bg-white/20">
-            {pendingEvents.length}
-          </span>
-        </button>
+      <div className="mb-6">
+        <div className="flex flex-wrap gap-2">
+          <button
+            onClick={() => setActiveTab("upcoming")}
+            className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-lg transition-colors whitespace-nowrap ${
+              activeTab === "upcoming"
+                ? "bg-accent text-white"
+                : "bg-gray-100 text-secondary hover:bg-gray-200"
+            }`}
+          >
+            Upcoming Events
+            <span className="ml-2 px-2 py-0.5 text-xs rounded-full bg-white/20">
+              {upcomingEvents.length}
+            </span>
+          </button>
+          <button
+            onClick={() => setActiveTab("past")}
+            className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-lg transition-colors whitespace-nowrap ${
+              activeTab === "past"
+                ? "bg-accent text-white"
+                : "bg-gray-100 text-secondary hover:bg-gray-200"
+            }`}
+          >
+            Past Events
+            <span className="ml-2 px-2 py-0.5 text-xs rounded-full bg-white/20">
+              {pastEvents.length}
+            </span>
+          </button>
+          <button
+            onClick={() => setActiveTab("pending")}
+            className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-lg transition-colors whitespace-nowrap ${
+              activeTab === "pending"
+                ? "bg-accent text-white"
+                : "bg-gray-100 text-secondary hover:bg-gray-200"
+            }`}
+          >
+            Pending Events
+            <span className="ml-2 px-2 py-0.5 text-xs rounded-full bg-white/20">
+              {pendingEvents.length}
+            </span>
+          </button>
+        </div>
       </div>
 
       {/* Search and Filter Bar */}
-      <div className="flex flex-wrap gap-3 mb-6 items-center">
+      <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3 mb-6">
         {/* Search Input */}
-        <div className="relative flex-1 min-w-[200px] max-w-[400px]">
+        <div className="relative flex-1 min-w-full sm:min-w-[200px] sm:max-w-[400px]">
           <LuSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           <input
             type="text"
@@ -287,12 +289,12 @@ export default function AdminEventManagement() {
         </div>
 
         {/* Category Filter */}
-        <div className="relative">
+        <div className="relative w-full sm:w-auto">
           <LuFilter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            className="pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent bg-white min-w-[160px] appearance-none cursor-pointer"
+            className="w-full pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent bg-white sm:min-w-[160px] appearance-none cursor-pointer"
           >
             <option value="">All Categories</option>
             {categories.map((category) => (
@@ -304,7 +306,7 @@ export default function AdminEventManagement() {
         </div>
 
         {/* Sort Dropdown */}
-        <div className="relative">
+        <div className="relative w-full sm:w-auto sm:flex-1">
           <LuArrowUpDown className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
           <select
             value={`${sortConfig.key}-${sortConfig.direction}`}
@@ -312,7 +314,7 @@ export default function AdminEventManagement() {
               const [key, direction] = e.target.value.split("-");
               setSortConfig({ key, direction });
             }}
-            className="pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent bg-white min-w-[180px] appearance-none cursor-pointer"
+            className="w-full pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent bg-white sm:min-w-[180px] appearance-none cursor-pointer"
           >
             <option value="eventDateTime-asc">Date (Oldest First)</option>
             <option value="eventDateTime-desc">Date (Newest First)</option>
@@ -375,112 +377,113 @@ export default function AdminEventManagement() {
         </div>
       ) : (
         <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-          <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-200">
-              <tr>
-                <th className="text-left px-4 py-3 text-sm font-semibold text-secondary">
-                  Image
-                </th>
-                <th className="text-left px-4 py-3 text-sm font-semibold text-secondary">
-                  Event ID
-                </th>
-                <th className="text-left px-4 py-3 text-sm font-semibold text-secondary">
-                  Title
-                </th>
-                <th className="text-left px-4 py-3 text-sm font-semibold text-secondary">
-                  <div className="flex items-center gap-1.5">
-                    <LuCalendar className="w-4 h-4" />
-                    Date & Time
-                  </div>
-                </th>
-                <th className="text-left px-4 py-3 text-sm font-semibold text-secondary">
-                  Category
-                </th>
-                <th className="text-left px-4 py-3 text-sm font-semibold text-secondary">
-                  Status
-                </th>
-                <th className="text-left px-4 py-3 text-sm font-semibold text-secondary">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {processedEvents.map((event) => (
-                <tr
-                  key={event.eventID}
-                  className="border-b border-gray-100 hover:bg-gray-50"
-                >
-                  <td className="px-4 py-3">
-                    <img
-                      src={event.image}
-                      alt={event.title}
-                      className="w-16 h-12 object-cover rounded-lg"
-                    />
-                  </td>
-                  <td className="px-4 py-3 text-sm text-gray-600">
-                    {event.eventID}
-                  </td>
-                  <td className="px-4 py-3 text-sm font-medium text-secondary">
-                    {event.title}
-                  </td>
-                  <td className="px-4 py-3 text-sm text-gray-600">
-                    {new Date(event.eventDateTime).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "short",
-                      day: "numeric",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </td>
-                  <td className="px-4 py-3">
-                    <span className="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-700 rounded-full">
-                      {event.category}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3">
-                    <span
-                      className={`px-2 py-1 text-xs font-medium rounded-full ${
-                        activeTab === "past"
-                          ? "bg-gray-100 text-gray-600"
-                          : activeTab === "pending"
-                            ? "bg-yellow-100 text-yellow-700"
-                            : event.status === "active"
-                              ? "bg-green-100 text-green-700"
-                              : "bg-gray-100 text-gray-600"
-                      }`}
-                    >
-                      {activeTab === "past"
-                        ? "inactive"
-                        : activeTab === "pending"
-                          ? "pending"
-                          : event.status}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() =>
-                          navigate("/admin/events/update", { state: event })
-                        } // state is used to identify the event to be updated
-                        className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                      >
-                        <LuPencil className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => {
-                          setEventToDelete(event.eventID);
-                          setIsDeleteModalOpen(true);
-                        }}
-                        className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                      >
-                        <LuTrash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </td>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gray-50 border-b border-gray-200">
+                <tr>
+                  <th className="text-left px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-sm sm:text-base font-semibold text-secondary">
+                    Image
+                  </th>
+                  <th className="text-left px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-sm sm:text-base font-semibold text-secondary">
+                    Event ID
+                  </th>
+                  <th className="text-left px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-sm sm:text-base font-semibold text-secondary">
+                    Title
+                  </th>
+                  <th className="text-left px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-sm sm:text-base font-semibold text-secondary">
+                    Date
+                  </th>
+                  <th className="text-left px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-sm sm:text-base font-semibold text-secondary">
+                    Category
+                  </th>
+                  <th className="text-left px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-sm sm:text-base font-semibold text-secondary">
+                    Status
+                  </th>
+                  <th className="text-left px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-sm sm:text-base font-semibold text-secondary">
+                    Actions
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {processedEvents.map((event) => (
+                  <tr
+                    key={event.eventID}
+                    className="border-b border-gray-100 hover:bg-gray-50"
+                  >
+                    <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-4">
+                      <img
+                        src={event.image}
+                        alt={event.title}
+                        className="w-14 h-12 sm:w-20 sm:h-16 object-cover rounded-lg"
+                      />
+                    </td>
+                    <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-sm sm:text-base text-gray-600">
+                      {event.eventID}
+                    </td>
+                    <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-4">
+                      <div className="text-sm sm:text-base font-medium text-secondary">
+                        {event.title}
+                      </div>
+                    </td>
+                    <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-sm sm:text-base text-gray-600">
+                      {new Date(event.eventDateTime).toLocaleDateString(
+                        "en-US",
+                        {
+                          month: "short",
+                          day: "numeric",
+                        },
+                      )}
+                    </td>
+                    <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-4">
+                      <span className="px-3 py-1.5 text-sm font-medium bg-blue-100 text-blue-700 rounded-full">
+                        {event.category}
+                      </span>
+                    </td>
+                    <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-4">
+                      <span
+                        className={`px-3 py-1.5 text-sm font-medium rounded-full ${
+                          activeTab === "past"
+                            ? "bg-gray-100 text-gray-600"
+                            : activeTab === "pending"
+                              ? "bg-yellow-100 text-yellow-700"
+                              : event.status === "active"
+                                ? "bg-green-100 text-green-700"
+                                : "bg-gray-100 text-gray-600"
+                        }`}
+                      >
+                        {activeTab === "past"
+                          ? "inactive"
+                          : activeTab === "pending"
+                            ? "pending"
+                            : event.status}
+                      </span>
+                    </td>
+                    <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-4">
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() =>
+                            navigate("/admin/events/update", { state: event })
+                          }
+                          className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                        >
+                          <LuPencil className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => {
+                            setEventToDelete(event.eventID);
+                            setIsDeleteModalOpen(true);
+                          }}
+                          className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                        >
+                          <LuTrash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
     </div>
