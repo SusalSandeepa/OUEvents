@@ -24,6 +24,7 @@ export default function ForgotPasswordPage() {
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
 
   // Error states for inline validation
+  const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
 
@@ -33,6 +34,16 @@ export default function ForgotPasswordPage() {
 
   // send OTP function
   async function sendOTP() {
+    // Clear previous email error
+    setEmailError("");
+
+    // Email regex validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setEmailError("Please enter a valid email address");
+      return;
+    }
+
     try {
       await axios.get(
         import.meta.env.VITE_API_URL + "api/users/send-otp/" + email,
@@ -41,6 +52,12 @@ export default function ForgotPasswordPage() {
       setStep("otp");
       return;
     } catch (err) {
+      // Check if the error is a 404 (email not found in database)
+      if (err.response && err.response.status === 404) {
+        toast.error("Email not found. Please register first.");
+        navigate("/register");
+        return;
+      }
       toast.error("Failed to send OTP");
       return;
     }
@@ -164,12 +181,20 @@ export default function ForgotPasswordPage() {
             <div className="flex-col text-sm">
               <input
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  setEmailError("");
+                }}
                 type="email"
                 placeholder="you@example.com"
                 autoComplete="email"
-                className="w-[400px] h-[40px] border bg-white border-gray-300 rounded-lg p-2 mt-2 ml-[50px]"
+                className={`w-[400px] h-[40px] border bg-white rounded-lg p-2 mt-2 ml-[50px] ${emailError ? "border-red-500" : "border-gray-300"}`}
               />
+              {emailError && (
+                <p className="text-red-500 text-xs ml-[50px] mt-1">
+                  {emailError}
+                </p>
+              )}
             </div>
 
             <div className="flex justify-center mt-8">

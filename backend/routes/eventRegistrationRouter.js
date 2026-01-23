@@ -6,7 +6,6 @@ import {
   checkRegistration,
   getEventRegistrations,
   getAllRegistrations,
-  markAttendance,
 } from "../controllers/eventRegistrationController.js";
 
 const eventRegistrationRouter = express.Router();
