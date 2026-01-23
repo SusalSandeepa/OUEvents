@@ -56,6 +56,10 @@ export default function LoginPage() {
   const [savedEmail, setSavedEmail] = useState("");
   const [savedPassword, setSavedPassword] = useState("");
 
+  // Error states
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+
   // When page loads, check if credentials were saved (but don't fill yet)
   useEffect(() => {
     const storedEmail = localStorage.getItem("rememberedEmail");
@@ -88,6 +92,24 @@ export default function LoginPage() {
   }
 
   async function login() {
+    // Clear previous errors
+    setEmailError("");
+    setPasswordError("");
+
+    let hasError = false;
+
+    if (!email.trim()) {
+      setEmailError("Email is required");
+      hasError = true;
+    }
+
+    if (!password) {
+      setPasswordError("Password is required");
+      hasError = true;
+    }
+
+    if (hasError) return;
+
     try {
       const response = await axios.post(
         import.meta.env.VITE_API_URL + "api/users/login",
@@ -138,7 +160,8 @@ export default function LoginPage() {
 
   return (
     <div className="flex w-full h-full bg-primary">
-      <div className="w-[50%] h-full flex flex-col justify-center items-center">
+      {/* Left side - decorative (hidden on mobile) */}
+      <div className="hidden lg:flex w-[50%] h-full flex-col justify-center items-center">
         {/* Main content */}
         <div className="px-16 text-center">
           {/* Welcome text */}
@@ -181,43 +204,46 @@ export default function LoginPage() {
           </p>
         </div>
       </div>
-      <div className="w-[50%] h-full flex justify-center items-center">
-        <div className="w-[500px] h-[700px] bg-[#fdfbf9] shadow-2xl rounded-3xl ">
-          <div className="w-full h-[150px] flex justify-center items-center pt-4">
+
+      {/* Right side - Login form (full width on mobile) */}
+      <div className="w-full lg:w-[50%] h-full flex justify-center items-center p-4 lg:p-0">
+        <div className="w-full max-w-[500px] bg-[#fdfbf9] shadow-2xl rounded-3xl py-6 lg:py-0 lg:h-[700px]">
+          <div className="w-full h-[120px] lg:h-[150px] flex justify-center items-center pt-4">
             <img
               src={logo}
               alt="Logo"
               className="object-contain w-auto h-full"
             />
           </div>
-          <div className="text-2xl font-bold text-center text-secondary">
+          <div className="text-xl lg:text-2xl font-bold text-center text-secondary">
             Welcome to OUEvents
           </div>
-          <div className="mt-3 text-sm text-center text-secondary">
+          <div className="mt-2 lg:mt-3 text-sm text-center text-secondary">
             Sign in to continue
           </div>
-          <div className="flex justify-center mt-6">
+          <div className="flex justify-center mt-4 lg:mt-6 px-6 lg:px-0">
             <button
               onClick={googleLogin}
-              className="w-[400px] h-[40px] bg-white flex items-center border border-gray-300 justify-center text-secondary font-medium rounded-lg hover:bg-gray-50"
+              className="w-full max-w-[400px] h-[40px] bg-white flex items-center border border-gray-300 justify-center text-secondary font-medium rounded-lg hover:bg-gray-50"
             >
               <FcGoogle size={25} className="mr-2" /> Continue with Google
             </button>
           </div>
 
           {/* Divider */}
-          <div className="flex items-center justify-center">
-            <div className="w-[400px] h-[1px] bg-gray-300 my-8"></div>
+          <div className="flex items-center justify-center px-6 lg:px-0">
+            <div className="w-full max-w-[400px] h-[1px] bg-gray-300 my-6 lg:my-8"></div>
           </div>
 
-          <div className="text-secondary ml-[50px] text-sm font-medium">
+          <div className="text-secondary px-6 lg:px-0 lg:ml-[50px] text-sm font-medium">
             Email
           </div>
-          <div className="flex-col text-sm relative">
+          <div className="flex-col text-sm relative px-6 lg:px-0">
             <input
               value={email}
               onChange={(e) => {
                 setEmail(e.target.value);
+                setEmailError("");
               }}
               onFocus={() => {
                 if (savedEmail) setShowSavedCredentials(true);
@@ -228,13 +254,18 @@ export default function LoginPage() {
               type="email"
               placeholder="you@example.com"
               autoComplete="off"
-              className="w-[400px] h-[40px] border bg-white border-gray-300 rounded-lg p-2 mt-2 ml-[50px]"
+              className={`w-full max-w-[400px] h-[40px] border bg-white rounded-lg p-2 mt-2 lg:ml-[50px] ${emailError ? "border-red-500" : "border-gray-300"}`}
             />
+            {emailError && (
+              <p className="text-red-500 text-xs lg:ml-[50px] mt-1">
+                {emailError}
+              </p>
+            )}
             {/* Dropdown showing saved email */}
             {showSavedCredentials && (
               <div
                 onClick={fillSavedCredentials}
-                className="absolute left-[50px] top-[50px] w-[400px] bg-secondary border border-gray-300 rounded-lg shadow-lg p-2 cursor-pointer hover:bg-gray-600 z-10"
+                className="absolute left-6 lg:left-[50px] top-[50px] w-[calc(100%-48px)] lg:w-[400px] bg-secondary border border-gray-300 rounded-lg shadow-lg p-2 cursor-pointer hover:bg-gray-600 z-10"
               >
                 <span className="text-sm text-white m-1">
                   Saved credentials:
@@ -246,20 +277,21 @@ export default function LoginPage() {
             )}
           </div>
 
-          <div className="text-secondary ml-[50px] mt-4 text-sm font-medium">
+          <div className="text-secondary px-6 lg:px-0 lg:ml-[50px] mt-4 text-sm font-medium">
             Password
           </div>
-          <div className="flex-col text-sm">
-            <div className="relative w-[400px] ml-[50px] mt-2">
+          <div className="flex-col text-sm px-6 lg:px-0">
+            <div className="relative w-full max-w-[400px] lg:ml-[50px] mt-2">
               <input
                 value={password}
                 onChange={(e) => {
                   setPassword(e.target.value);
+                  setPasswordError("");
                 }}
                 type={showPassword ? "text" : "password"}
                 placeholder="Enter your password"
                 autoComplete="current-password"
-                className="w-full h-[40px] border bg-white border-gray-300 rounded-lg p-2 pr-10"
+                className={`w-full h-[40px] border bg-white rounded-lg p-2 pr-10 ${passwordError ? "border-red-500" : "border-gray-300"}`}
               />
               <button
                 type="button"
@@ -269,9 +301,14 @@ export default function LoginPage() {
                 {passwordIcon}
               </button>
             </div>
+            {passwordError && (
+              <p className="text-red-500 text-xs lg:ml-[50px] mt-1">
+                {passwordError}
+              </p>
+            )}
           </div>
 
-          <div className="flex items-center ml-[50px] mt-4">
+          <div className="flex items-center px-6 lg:px-0 lg:ml-[50px] mt-4">
             <div className="w-[50%] flex items-center">
               <input
                 type="checkbox"
@@ -287,21 +324,21 @@ export default function LoginPage() {
             </div>
             <Link
               to="/forgot-password"
-              className="w-[50%] flex items-center justify-end text-sm mr-[50px] text-accent hover:underline cursor-pointer"
+              className="w-[50%] flex items-center justify-end text-sm lg:mr-[50px] text-accent hover:underline cursor-pointer"
             >
               Forgot Password?
             </Link>
           </div>
 
-          <div className="flex justify-center mt-6">
+          <div className="flex justify-center mt-6 px-6 lg:px-0">
             <button
               onClick={login}
-              className="w-[400px] h-[40px] bg-accent/95 flex items-center border border-gray-300 justify-center text-white font-medium rounded-lg hover:bg-accent"
+              className="w-full max-w-[400px] h-[40px] bg-accent/95 flex items-center border border-gray-300 justify-center text-white font-medium rounded-lg hover:bg-accent"
             >
               Sign In
             </button>
           </div>
-          <div className="flex justify-center mt-6">
+          <div className="flex justify-center mt-6 pb-6 lg:pb-0">
             <p className="text-sm text-secondary">
               Don't have an account?{" "}
               <Link

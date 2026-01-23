@@ -309,7 +309,7 @@ export default function MyProfile() {
                   className="flex items-center gap-2 px-6 py-2.5 text-white font-medium bg-accent rounded-xl hover:opacity-90 transition-opacity"
                 >
                   <LuSave className="w-4 h-4" />
-                  Save Changes
+                  Save
                 </button>
                 <button
                   onClick={handleCancel}

@@ -161,9 +161,11 @@ export default function AdminUserManagement() {
       )}
 
       {/* Header */}
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex justify-between items-center mb-6 sm:mb-8">
         <div>
-          <h2 className="text-2xl text-secondary font-bold">User Management</h2>
+          <h2 className="text-xl sm:text-2xl text-secondary font-bold">
+            User Management
+          </h2>
           <p className="text-gray-500 text-sm mt-1">
             Monitor and manage user accounts, roles, and access permissions.
           </p>
@@ -171,9 +173,9 @@ export default function AdminUserManagement() {
       </div>
 
       {/* Search and Filter Bar */}
-      <div className="flex flex-wrap gap-3 mb-4 items-center">
+      <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3 mb-4">
         {/* Search Input */}
-        <div className="relative flex-1 min-w-[200px] max-w-[400px]">
+        <div className="relative flex-1 min-w-full sm:min-w-[200px] sm:max-w-[400px]">
           <LuSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           <input
             type="text"
@@ -193,7 +195,7 @@ export default function AdminUserManagement() {
         </div>
 
         {/* Sort Dropdown */}
-        <div className="relative">
+        <div className="relative w-full sm:w-auto">
           <LuArrowUpDown className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
           <select
             value={`${sortConfig.key}-${sortConfig.direction}`}
@@ -201,7 +203,7 @@ export default function AdminUserManagement() {
               const [key, direction] = e.target.value.split("-");
               setSortConfig({ key, direction });
             }}
-            className="pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent bg-white min-w-[160px] appearance-none cursor-pointer"
+            className="w-full pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent bg-white sm:min-w-[160px] appearance-none cursor-pointer"
           >
             <option value="name-asc">Name (A-Z)</option>
             <option value="name-desc">Name (Z-A)</option>
@@ -241,22 +243,22 @@ export default function AdminUserManagement() {
           <table className="w-full">
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
-                <th className="text-left px-4 py-3 text-sm font-semibold text-secondary">
+                <th className="text-left px-1 sm:px-2 md:px-4 py-1.5 sm:py-2 md:py-3 text-[10px] sm:text-xs md:text-sm font-semibold text-secondary">
                   Image
                 </th>
-                <th className="text-left px-4 py-3 text-sm font-semibold text-secondary">
+                <th className="text-left px-1 sm:px-2 md:px-4 py-1.5 sm:py-2 md:py-3 text-[10px] sm:text-xs md:text-sm font-semibold text-secondary">
                   Name
                 </th>
-                <th className="text-left px-4 py-3 text-sm font-semibold text-secondary">
+                <th className="text-left px-1 sm:px-2 md:px-4 py-1.5 sm:py-2 md:py-3 text-[10px] sm:text-xs md:text-sm font-semibold text-secondary">
                   Email
                 </th>
-                <th className="text-left px-4 py-3 text-sm font-semibold text-secondary">
+                <th className="text-left px-1 sm:px-2 md:px-4 py-1.5 sm:py-2 md:py-3 text-[10px] sm:text-xs md:text-sm font-semibold text-secondary">
                   Role
                 </th>
-                <th className="text-left px-4 py-3 text-sm font-semibold text-secondary">
+                <th className="text-left px-1 sm:px-2 md:px-4 py-1.5 sm:py-2 md:py-3 text-[10px] sm:text-xs md:text-sm font-semibold text-secondary">
                   Status
                 </th>
-                <th className="text-left px-4 py-3 text-sm font-semibold text-secondary">
+                <th className="text-left px-1 sm:px-2 md:px-4 py-1.5 sm:py-2 md:py-3 text-[10px] sm:text-xs md:text-sm font-semibold text-secondary">
                   Actions
                 </th>
               </tr>
@@ -267,19 +269,19 @@ export default function AdminUserManagement() {
                   key={user.email}
                   className="border-b border-gray-100 hover:bg-gray-50"
                 >
-                  <td className="px-4 py-3">
+                  <td className="px-1 sm:px-2 md:px-4 py-1.5 sm:py-2 md:py-3">
                     {user.image && user.image.startsWith("http") ? (
                       <img
                         src={user.image}
                         referrerPolicy="no-referrer"
                         alt={user.firstName}
-                        className={`w-12 h-12 rounded-full object-cover border-2 ${
+                        className={`w-7 h-7 sm:w-9 sm:h-9 md:w-12 md:h-12 rounded-full object-cover border sm:border-2 ${
                           user.isBlock ? "border-red-400" : "border-green-400"
                         }`}
                       />
                     ) : (
                       <div
-                        className={`w-12 h-12 rounded-full flex items-center justify-center text-accent font-semibold border-2 bg-accent/10 ${
+                        className={`w-7 h-7 sm:w-9 sm:h-9 md:w-12 md:h-12 rounded-full flex items-center justify-center text-[10px] sm:text-xs md:text-sm text-accent font-semibold border sm:border-2 bg-accent/10 ${
                           user.isBlock ? "border-red-400" : "border-green-400"
                         }`}
                       >
@@ -288,36 +290,38 @@ export default function AdminUserManagement() {
                       </div>
                     )}
                   </td>
-                  <td className="px-4 py-3 text-sm font-medium text-secondary">
+                  <td className="px-1 sm:px-2 md:px-4 py-1.5 sm:py-2 md:py-3 text-[10px] sm:text-xs md:text-sm font-medium text-secondary">
                     {user.firstName} {user.lastName}
                   </td>
-                  <td className="px-4 py-3 text-sm text-gray-600">
-                    <div className="flex items-center gap-1.5">
-                      {user.email}
+                  <td className="px-1 sm:px-2 md:px-4 py-1.5 sm:py-2 md:py-3 text-[10px] sm:text-xs md:text-sm text-gray-600">
+                    <div className="flex items-center gap-0.5 sm:gap-1">
+                      <span className="truncate max-w-[80px] sm:max-w-[120px] md:max-w-none">
+                        {user.email}
+                      </span>
                       {user.isEmailVerified && (
-                        <MdVerified className="text-blue-500" />
+                        <MdVerified className="text-blue-500 shrink-0 w-3 h-3 sm:w-4 sm:h-4" />
                       )}
                     </div>
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="px-1 sm:px-2 md:px-4 py-1.5 sm:py-2 md:py-3">
                     <span
-                      className={`inline-flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-full ${
+                      className={`inline-flex items-center gap-0.5 px-1 sm:px-1.5 md:px-2 py-0.5 sm:py-1 text-[9px] sm:text-[10px] md:text-xs font-medium rounded-full ${
                         user.role === "admin"
                           ? "bg-purple-100 text-purple-700"
                           : "bg-blue-100 text-blue-700"
                       }`}
                     >
                       {user.role === "admin" ? (
-                        <MdOutlineAdminPanelSettings />
+                        <MdOutlineAdminPanelSettings className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                       ) : (
-                        <LuUser className="w-3 h-3" />
+                        <LuUser className="w-2 h-2 sm:w-2.5 sm:h-2.5 md:w-3 md:h-3" />
                       )}
                       {user.role}
                     </span>
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="px-1 sm:px-2 md:px-4 py-1.5 sm:py-2 md:py-3">
                     <span
-                      className={`px-2 py-1 text-xs font-medium rounded-full ${
+                      className={`px-1 sm:px-1.5 md:px-2 py-0.5 sm:py-1 text-[9px] sm:text-[10px] md:text-xs font-medium rounded-full ${
                         user.isBlock
                           ? "bg-red-100 text-red-700"
                           : "bg-green-100 text-green-700"
@@ -326,14 +330,14 @@ export default function AdminUserManagement() {
                       {user.isBlock ? "Blocked" : "Active"}
                     </span>
                   </td>
-                  <td className="px-4 py-3">
-                    <div className="flex gap-2">
+                  <td className="px-1 sm:px-2 md:px-4 py-1.5 sm:py-2 md:py-3">
+                    <div className="flex gap-1 sm:gap-2">
                       <button
                         onClick={() => {
                           setUserToBlock(user);
                           setIsBlockConfirmVisible(true);
                         }}
-                        className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
+                        className={`px-1.5 sm:px-2 md:px-3 py-1 sm:py-1.5 text-[9px] sm:text-[10px] md:text-xs font-medium rounded-md sm:rounded-lg transition-colors ${
                           user.isBlock
                             ? "bg-green-100 text-green-700 hover:bg-green-200"
                             : "bg-red-100 text-red-700 hover:bg-red-200"
