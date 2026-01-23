@@ -88,21 +88,19 @@ export function cancelRegistration(req, res) {
     return;
   }
 
-  const registrationId = req.params.id;
+  const eventID = req.params.eventID;
+  const userEmail = req.user.email;
 
-  EventRegistration.findById(registrationId)
+  // Find registration by eventID and userEmail
+  EventRegistration.findOne({
+    eventID: eventID,
+    userEmail: userEmail,
+    status: "registered",
+  })
     .then((registration) => {
       if (registration == null) {
         res.status(404).json({
           message: "Registration not found",
-        });
-        return;
-      }
-
-      // Check if user owns this registration or is admin
-      if (registration.userEmail != req.user.email && !isAdmin(req)) {
-        res.status(403).json({
-          message: "You can only cancel your own registrations",
         });
         return;
       }
@@ -152,7 +150,7 @@ export function getMyRegistrations(req, res) {
       const promises = registrations.map((reg) => {
         return Promise.all([
           Event.findOne({ eventID: reg.eventID }),
-          Feedback.findOne({ eventID: reg.eventID, userEmail: req.user.email })
+          Feedback.findOne({ eventID: reg.eventID, userEmail: req.user.email }),
         ]).then(([event, feedback]) => {
           const regObj = reg.toObject();
           return {
@@ -173,7 +171,7 @@ export function getMyRegistrations(req, res) {
         .then((registrationsWithEvents) => {
           // Filter out events with pending status
           const filteredEvents = registrationsWithEvents.filter(
-            (item) => item.event && item.event.status !== "pending"
+            (item) => item.event && item.event.status !== "pending",
           );
           res.json(filteredEvents);
         })
@@ -270,49 +268,6 @@ export function getAllRegistrations(req, res) {
       console.error(err);
       res.status(500).json({
         message: "Failed to get registrations",
-      });
-    });
-}
-
-// Mark attendance (admin only)
-export function markAttendance(req, res) {
-  if (!isAdmin(req)) {
-    res.status(401).json({
-      message: "You are not authorized to mark attendance",
-    });
-    return;
-  }
-
-  const registrationId = req.params.id;
-
-  EventRegistration.findById(registrationId)
-    .then((registration) => {
-      if (registration == null) {
-        res.status(404).json({
-          message: "Registration not found",
-        });
-        return;
-      }
-
-      registration.status = "attended";
-      registration
-        .save()
-        .then(() => {
-          res.json({
-            message: "Attendance marked successfully",
-          });
-        })
-        .catch((err) => {
-          console.error(err);
-          res.status(500).json({
-            message: "Failed to mark attendance",
-          });
-        });
-    })
-    .catch((err) => {
-      console.error(err);
-      res.status(500).json({
-        message: "Failed to find registration",
       });
     });
 }
