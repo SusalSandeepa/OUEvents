@@ -2,6 +2,57 @@ import EventRegistration from "../models/eventRegistration.js";
 import Event from "../models/event.js";
 import Feedback from "../models/feedback.js";
 import { isAdmin } from "./userController.js";
+import User from "../models/user.js";
+import nodemailer from "nodemailer";
+import { getReminderEmail } from "../utils/reminderEmail.js";
+
+// Nodemailer transporter for registration emails
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.APP_PASSWORD,
+  },
+});
+
+// Send registration confirmation email (fire-and-forget)
+async function sendRegistrationEmail(userEmail, event) {
+  try {
+    const user = await User.findOne({ email: userEmail });
+    const firstName = user?.firstName || "there";
+
+    const now = new Date();
+    const eventDate = new Date(event.eventDateTime);
+    const msPerDay = 1000 * 60 * 60 * 24;
+    const daysLeft = Math.max(0, Math.ceil((eventDate - now) / msPerDay));
+
+    const formattedDate = eventDate.toLocaleDateString("en-US", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+
+    await transporter.sendMail({
+      from: `"OUEvents" <${process.env.EMAIL_USER}>`,
+      to: userEmail,
+      subject: `[OUEvents] You're registered for "${event.title}"!`,
+      html: getReminderEmail({
+        firstName,
+        eventTitle: event.title,
+        eventDate: formattedDate,
+        venue: event.location,
+        daysLeft,
+      }),
+    });
+
+    console.log(`[Email] Confirmation sent to ${userEmail} for "${event.title}"`);
+  } catch (err) {
+    console.error(`[Email] Failed to send confirmation to ${userEmail}:`, err.message);
+  }
+}
 
 // Register for an event
 export function registerForEvent(req, res) {
@@ -53,9 +104,12 @@ export function registerForEvent(req, res) {
           registration
             .save()
             .then(() => {
+              // Respond to the user immediately
               res.json({
                 message: "Successfully registered for the event",
               });
+              // Send confirmation email in the background (non-blocking)
+              sendRegistrationEmail(req.user.email, event);
             })
             .catch((err) => {
               console.error(err);
