@@ -230,7 +230,7 @@ export default function UpdateEventForm() {
           </div>
         </div>
 
-        {/* Organizer and Status */}
+        {/* Organizer */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label className="block text-sm font-medium text-secondary mb-2">
