@@ -85,11 +85,12 @@ export default function Navbar() {
     <>
       {/* NAVBAR */}
       <nav className="sticky top-0 z-50 w-full bg-white border-b border-gray-200 shadow">
-        <div className="flex items-center justify-between px-4 py-0">
-          {/* LEFT */}
-          <Link to="/" className="flex items-center space-x-4">
-            <img src={logo} alt="Logo" className="w-auto h-10 md:h-20" />
-            <span className="text-2xl md:text-2xl px-4 font-bold text-[#2f3e4e]">
+        <div className="container px-4 mx-auto sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between py-3">
+          {/* LEFT — Brand lockup */}
+          <Link to="/" className="flex items-center gap-1">
+            <img src={logo} alt="Logo" className="h-14 w-auto" />
+            <span className="text-2xl font-bold text-[#2f3e4e] tracking-tight">
               OUEvents
             </span>
           </Link>
@@ -208,6 +209,7 @@ export default function Navbar() {
           >
             ☰
           </button>
+        </div>
         </div>
       </nav>
 
