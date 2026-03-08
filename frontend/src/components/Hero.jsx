@@ -5,7 +5,7 @@ import heroImage from "../assets/heroimage2.jpeg";
 import EventCard from "./EventCard/EventCard";
 import { useTimeTicker } from "../context/TimeTickerContext";
 
-const EVENTS_API_URL = "/api/events";
+const EVENTS_API_URL = import.meta.env.VITE_API_URL + "api/events";
 const MAX_UPCOMING_EVENTS = 4;
 
 const Hero = () => {
