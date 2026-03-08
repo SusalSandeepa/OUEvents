@@ -16,35 +16,66 @@ export default function SignupPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   // Error states for inline validation
+  const [firstNameError, setFirstNameError] = useState("");
+  const [lastNameError, setLastNameError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
 
   async function register() {
     // Clear previous errors
+    setFirstNameError("");
+    setLastNameError("");
     setEmailError("");
     setPasswordError("");
     setConfirmPasswordError("");
 
     let hasError = false;
 
+    // First name validation
+    if (!firstName.trim()) {
+      setFirstNameError("First name is required");
+      hasError = true;
+    }
+
+    // Last name validation
+    if (!lastName.trim()) {
+      setLastNameError("Last name is required");
+      hasError = true;
+    }
+
     // Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      setEmailError("Please enter a valid email address");
+    if (!email.trim()) {
+      setEmailError("Email is required");
       hasError = true;
+    } else {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        setEmailError("Please enter a valid email address");
+        hasError = true;
+      }
     }
 
-    // Password validation: at least 1 digit, 1 lowercase, 1 uppercase, and 8+ characters
-    const passwordRegex = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}/;
-    if (!passwordRegex.test(password)) {
-      setPasswordError(
-        "Use 8+ characters with uppercase, lowercase & a number",
-      );
+    // Password validation
+    if (!password) {
+      setPasswordError("Password is required");
       hasError = true;
+    } else {
+      // Password format: at least 1 digit, 1 lowercase, 1 uppercase, and 8+ characters
+      const passwordRegex = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}/;
+      if (!passwordRegex.test(password)) {
+        setPasswordError(
+          "Use 8+ characters with uppercase, lowercase & a number",
+        );
+        hasError = true;
+      }
     }
 
-    if (password !== confirmPassword) {
+    // Confirm password validation
+    if (!confirmPassword) {
+      setConfirmPasswordError("Please confirm your password");
+      hasError = true;
+    } else if (password !== confirmPassword) {
       setConfirmPasswordError("Passwords do not match");
       hasError = true;
     }
@@ -100,55 +131,68 @@ export default function SignupPage() {
 
   return (
     <div className="flex w-full h-full bg-primary">
-      <div className="w-[50%] h-full flex justify-center items-center">
-        <div className="w-[500px]  bg-[#fdfbf9] shadow-2xl rounded-3xl">
-          <div className="w-full h-[120px] flex justify-center items-center pt-4">
+      {/* Left side - Form (full width on mobile) */}
+      <div className="w-full lg:w-[50%] h-full flex justify-center items-center p-4 lg:p-0">
+        <div className="w-full max-w-[500px] bg-[#fdfbf9] shadow-2xl rounded-3xl py-6">
+          <div className="w-full h-[100px] lg:h-[120px] flex justify-center items-center pt-4">
             <img
               src={logo}
               alt="Logo"
               className="object-contain w-auto h-full"
             />
           </div>
-          <div className="text-2xl font-bold text-center text-secondary">
+          <div className="text-xl lg:text-2xl font-bold text-center text-secondary">
             Create Account
           </div>
           <div className="mt-2 text-sm text-center text-secondary">
             Sign up to get started
           </div>
 
-          <div className="flex gap-4 ml-[50px] mt-6">
-            <div className="flex-col text-sm">
+          <div className="flex flex-col sm:flex-row gap-4 px-6 lg:px-0 lg:ml-[50px] mt-6">
+            <div className="flex-col text-sm flex-1">
               <div className="text-secondary text-sm font-medium">
                 First Name
               </div>
               <input
                 type="text"
                 value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
+                onChange={(e) => {
+                  setFirstName(e.target.value);
+                  setFirstNameError("");
+                }}
                 placeholder="First name"
                 autoComplete="given-name"
-                className="w-[192px] h-[40px] border bg-white border-gray-300 rounded-lg p-2 mt-2"
+                className={`w-full lg:w-[192px] h-[40px] border bg-white rounded-lg p-2 mt-2 ${firstNameError ? "border-red-500" : "border-gray-300"}`}
               />
+              {firstNameError && (
+                <p className="text-red-500 text-xs mt-1">{firstNameError}</p>
+              )}
             </div>
-            <div className="flex-col text-sm">
+            <div className="flex-col text-sm flex-1">
               <div className="text-secondary text-sm font-medium">
                 Last Name
               </div>
               <input
                 type="text"
                 value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
+                onChange={(e) => {
+                  setLastName(e.target.value);
+                  setLastNameError("");
+                }}
                 placeholder="Last name"
                 autoComplete="family-name"
-                className="w-[192px] h-[40px] border bg-white border-gray-300 rounded-lg p-2 mt-2"
+                className={`w-full lg:w-[192px] h-[40px] border bg-white rounded-lg p-2 mt-2 ${lastNameError ? "border-red-500" : "border-gray-300"}`}
               />
+              {lastNameError && (
+                <p className="text-red-500 text-xs mt-1">{lastNameError}</p>
+              )}
             </div>
           </div>
 
-          <div className="text-secondary ml-[50px] mt-3 text-sm font-medium">
+          <div className="text-secondary px-6 lg:px-0 lg:ml-[50px] mt-3 text-sm font-medium">
             Email
           </div>
-          <div className="flex-col text-sm">
+          <div className="flex-col text-sm px-6 lg:px-0">
             <input
               type="email"
               value={email}
@@ -158,20 +202,20 @@ export default function SignupPage() {
               }}
               placeholder="you@example.com"
               autoComplete="email"
-              className={`w-[400px] h-[40px] border bg-white rounded-lg p-2 mt-2 ml-[50px] ${emailError ? "border-red-500" : "border-gray-300"}`}
+              className={`w-full max-w-[400px] h-[40px] border bg-white rounded-lg p-2 mt-2 lg:ml-[50px] ${emailError ? "border-red-500" : "border-gray-300"}`}
             />
             {emailError && (
-              <p className="text-red-500 text-xs ml-[50px] mt-1">
+              <p className="text-red-500 text-xs lg:ml-[50px] mt-1">
                 {emailError}
               </p>
             )}
           </div>
 
-          <div className="text-secondary ml-[50px] mt-3 text-sm font-medium">
+          <div className="text-secondary px-6 lg:px-0 lg:ml-[50px] mt-3 text-sm font-medium">
             Password
           </div>
-          <div className="flex-col text-sm">
-            <div className="relative w-[400px] ml-[50px] mt-2">
+          <div className="flex-col text-sm px-6 lg:px-0">
+            <div className="relative w-full max-w-[400px] lg:ml-[50px] mt-2">
               <input
                 type={showPassword ? "text" : "password"}
                 value={password}
@@ -191,17 +235,17 @@ export default function SignupPage() {
               </button>
             </div>
             {passwordError && (
-              <p className="text-red-500 text-xs ml-[50px] mt-1">
+              <p className="text-red-500 text-xs lg:ml-[50px] mt-1">
                 {passwordError}
               </p>
             )}
           </div>
 
-          <div className="text-secondary ml-[50px] mt-3 text-sm font-medium">
+          <div className="text-secondary px-6 lg:px-0 lg:ml-[50px] mt-3 text-sm font-medium">
             Confirm Password
           </div>
-          <div className="flex-col text-sm">
-            <div className="relative w-[400px] ml-[50px] mt-2">
+          <div className="flex-col text-sm px-6 lg:px-0">
+            <div className="relative w-full max-w-[400px] lg:ml-[50px] mt-2">
               <input
                 type={showConfirmPassword ? "text" : "password"}
                 value={confirmPassword}
@@ -221,16 +265,16 @@ export default function SignupPage() {
               </button>
             </div>
             {confirmPasswordError && (
-              <p className="text-red-500 text-xs ml-[50px] mt-1">
+              <p className="text-red-500 text-xs lg:ml-[50px] mt-1">
                 {confirmPasswordError}
               </p>
             )}
           </div>
 
-          <div className="flex justify-center mt-6">
+          <div className="flex justify-center mt-6 px-6 lg:px-0">
             <button
               onClick={register}
-              className="w-[400px] h-[40px] bg-accent/95 flex items-center border border-gray-300 justify-center text-white font-medium rounded-lg hover:bg-accent"
+              className="w-full max-w-[400px] h-[40px] bg-accent/95 flex items-center border border-gray-300 justify-center text-white font-medium rounded-lg hover:bg-accent"
             >
               Sign Up
             </button>
@@ -250,7 +294,8 @@ export default function SignupPage() {
         </div>
       </div>
 
-      <div className="w-[50%] h-full flex flex-col justify-center items-center">
+      {/* Right side - Decorative (hidden on mobile) */}
+      <div className="hidden lg:flex w-[50%] h-full flex-col justify-center items-center">
         <div className="px-16 text-center">
           <p className="mb-4 text-base tracking-widest uppercase text-accent">
             Start Your Journey

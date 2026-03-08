@@ -138,7 +138,7 @@ export default function AdminFeedbackPage() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-8">
         <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-5">
           <p className="text-blue-600 text-sm font-medium mb-1">
             Total Feedback
@@ -176,7 +176,7 @@ export default function AdminFeedbackPage() {
           id="event-filter"
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
-          className="w-full md:w-64 px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent"
+          className="w-full sm:w-64 px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent"
         >
           <option value="">All Events</option>
           {uniqueEventIds.map((eventId) => (
@@ -194,70 +194,72 @@ export default function AdminFeedbackPage() {
         </div>
       ) : (
         <div className="bg-white border border-gray-100 rounded-2xl overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50 border-b border-gray-100">
-                <tr>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                    Event
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                    User
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                    Rating
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                    Comment
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                    Date
-                  </th>
-                  <th className="px-6 py-4 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                    Actions
-                  </th>
+          <table className="w-full">
+            <thead className="bg-gray-50 border-b border-gray-100">
+              <tr>
+                <th className="px-0.5 sm:px-3 md:px-6 py-1 sm:py-2 md:py-4 text-left text-[8px] sm:text-xs md:text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                  Event
+                </th>
+                <th className="px-0.5 sm:px-3 md:px-6 py-1 sm:py-2 md:py-4 text-left text-[8px] sm:text-xs md:text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                  User
+                </th>
+                <th className="px-0.5 sm:px-3 md:px-6 py-1 sm:py-2 md:py-4 text-left text-[8px] sm:text-xs md:text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                  Rating
+                </th>
+                <th className="px-0.5 sm:px-3 md:px-6 py-1 sm:py-2 md:py-4 text-left text-[8px] sm:text-xs md:text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                  Comment
+                </th>
+                <th className="px-0.5 sm:px-3 md:px-6 py-1 sm:py-2 md:py-4 text-left text-[8px] sm:text-xs md:text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                  Date
+                </th>
+                <th className="px-0.5 sm:px-3 md:px-6 py-1 sm:py-2 md:py-4 text-right text-[8px] sm:text-xs md:text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {filteredFeedback.map((fb) => (
+                <tr key={fb._id} className="hover:bg-gray-50 transition-colors">
+                  <td className="px-0.5 sm:px-3 md:px-6 py-1 sm:py-2 md:py-4">
+                    <div className="text-[7px] sm:text-xs md:text-sm font-medium text-gray-900 truncate max-w-[40px] sm:max-w-[100px] md:max-w-none">
+                      {events[fb.eventID] || fb.eventID}
+                    </div>
+                  </td>
+                  <td className="px-0.5 sm:px-3 md:px-6 py-1 sm:py-2 md:py-4">
+                    <p className="text-[7px] sm:text-[10px] md:text-sm text-gray-600 truncate max-w-[40px] sm:max-w-[100px] md:max-w-[150px]">
+                      {fb.userEmail}
+                    </p>
+                  </td>
+                  <td className="px-0.5 sm:px-3 md:px-6 py-1 sm:py-2 md:py-4">
+                    <div className="scale-[0.6] sm:scale-90 md:scale-100 origin-left">
+                      {renderStars(fb.rating)}
+                    </div>
+                  </td>
+                  <td className="px-0.5 sm:px-3 md:px-6 py-1 sm:py-2 md:py-4">
+                    <p className="text-[7px] sm:text-[10px] md:text-sm text-gray-600 truncate max-w-[35px] sm:max-w-[100px] md:max-w-[200px]">
+                      {fb.comment || "-"}
+                    </p>
+                  </td>
+                  <td className="px-0.5 sm:px-3 md:px-6 py-1 sm:py-2 md:py-4">
+                    <p className="text-[7px] sm:text-[10px] md:text-sm text-gray-500 whitespace-nowrap">
+                      {new Date(fb.createdAt).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                      })}
+                    </p>
+                  </td>
+                  <td className="px-0.5 sm:px-3 md:px-6 py-1 sm:py-2 md:py-4 text-right">
+                    <button
+                      onClick={() => handleDelete(fb._id)}
+                      className="text-red-600 hover:text-red-800 text-[7px] sm:text-[10px] md:text-sm font-medium transition-colors"
+                    >
+                      Delete
+                    </button>
+                  </td>
                 </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {filteredFeedback.map((fb) => (
-                  <tr
-                    key={fb._id}
-                    className="hover:bg-gray-50 transition-colors"
-                  >
-                    <td className="px-6 py-4">
-                      <p className="text-sm font-medium text-gray-900 truncate max-w-[150px]">
-                        {events[fb.eventID] || fb.eventID}
-                      </p>
-                    </td>
-                    <td className="px-6 py-4">
-                      <p className="text-sm text-gray-600 truncate max-w-[150px]">
-                        {fb.userEmail}
-                      </p>
-                    </td>
-                    <td className="px-6 py-4">{renderStars(fb.rating)}</td>
-                    <td className="px-6 py-4">
-                      <p className="text-sm text-gray-600 truncate max-w-[200px]">
-                        {fb.comment || "-"}
-                      </p>
-                    </td>
-                    <td className="px-6 py-4">
-                      <p className="text-sm text-gray-500">
-                        {formatDate(fb.createdAt)}
-                      </p>
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <button
-                        onClick={() => handleDelete(fb._id)}
-                        className="text-red-600 hover:text-red-800 text-sm font-medium transition-colors"
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
     </div>

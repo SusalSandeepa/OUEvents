@@ -176,24 +176,27 @@ export default function AdminDashboard() {
   return (
     <div className="space-y-6">
       {/* Header section */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800">Dashboard</h1>
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-800">
+            Dashboard
+          </h1>
           <p className="text-gray-500 text-sm mt-1">
             Welcome back! Here's what's happening with your events.
           </p>
         </div>
         <button
           onClick={fetchStats}
-          className="flex items-center gap-2 px-4 py-2 text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+          className="flex items-center gap-2 px-4 py-2 text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors whitespace-nowrap"
         >
           <LuRefreshCw size={16} />
-          Refresh
+          <span className="hidden sm:inline">Refresh</span>
+          <span className="sm:hidden">Refresh Data</span>
         </button>
       </div>
 
       {/* Stat cards grid for: Users, Admins, Total Events, Registrations, Today's Registrations*/}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
         {statCards.map((card, index) => (
           <div
             key={index}
@@ -330,29 +333,29 @@ export default function AdminDashboard() {
                   key={index}
                   className="p-4 hover:bg-gray-50 transition-colors"
                 >
-                  <div className="flex items-start gap-4">
+                  <div className="flex items-start gap-3 sm:gap-4">
                     {/* Event image */}
                     <img
                       src={event.image}
                       alt={event.title}
-                      className="w-20 h-20 rounded-lg object-cover border border-gray-200"
+                      className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg object-cover border border-gray-200 shrink-0"
                     />
 
                     {/* Event details */}
-                    <div className="flex-1 flex items-start justify-between">
-                      <div className="flex-1">
-                        <h3 className="font-medium text-gray-800 truncate">
+                    <div className="flex-1 flex flex-col sm:flex-row items-start justify-between gap-2 min-w-0">
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-medium text-gray-800 truncate text-sm sm:text-base">
                           {event.title}
                         </h3>
-                        <p className="text-sm text-gray-500 mt-1">
+                        <p className="text-xs sm:text-sm text-gray-500 mt-1 truncate">
                           {event.location}
                         </p>
                         <span className="inline-block mt-2 px-2.5 py-0.5 text-xs font-medium bg-gray-100 text-gray-600 rounded-full">
                           {event.category}
                         </span>
                       </div>
-                      <div className="text-right ml-4">
-                        <p className="text-sm font-medium text-gray-700">
+                      <div className="text-left sm:text-right sm:ml-4 shrink-0">
+                        <p className="text-xs sm:text-sm font-medium text-gray-700">
                           {formatDate(event.eventDateTime)}
                         </p>
                         <p className="text-xs text-gray-500 mt-0.5">

@@ -40,7 +40,16 @@ export async function createEvent(req,res){
 export async function getEvents(req,res){
 
     try{
-        const events = await Event.find();
+        let events;
+        
+        if(isAdmin(req)){
+            // Admin can see all events
+            events = await Event.find();
+        }else{
+            // Regular users cannot see pending events
+            events = await Event.find({ status: { $ne: "pending" } });
+        }
+        
         res.json(events);
 
     }catch(err){

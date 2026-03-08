@@ -7,7 +7,7 @@ import eventRegistrationRouter from "./routes/eventRegistrationRouter.js";
 import feedbackRouter from "./routes/feedbackRouter.js";
 import statsRouter from "./routes/statsRouter.js";
 import reportsRouter from "./routes/reportsRouter.js";
-
+import { startReminderScheduler, runReminderJob } from "./utils/reminderScheduler.js";
 import jwt from "jsonwebtoken";
 import cors from "cors";
 
@@ -49,12 +49,11 @@ const connectionString = process.env.MONGO_URI; // Get MongoDB connection string
 
 mongoose
   .connect(connectionString)
-  .then(
-    // connect to MongoDB
-    () => {
+  .then(() => {
       console.log("Database Connected");
-    },
-  )
+      // Start the daily reminder scheduler after DB is connected
+      startReminderScheduler();
+  })
   .catch(() => {
     console.log("Database Connection Failed");
   });
@@ -65,6 +64,16 @@ app.use("/api/registrations", eventRegistrationRouter);
 app.use("/api/feedback", feedbackRouter);
 app.use("/api/stats", statsRouter);
 app.use("/api/reports", reportsRouter);
+
+// Test endpoint to manually trigger the reminder job (for development only)
+app.get("/api/reminders/test", async (req, res) => {
+  try {
+    await runReminderJob();
+    res.json({ message: "Reminder job triggered successfully. Check server logs and email inboxes." });
+  } catch (err) {
+    res.status(500).json({ message: "Reminder job failed", error: err.message });
+  }
+});
 
 
 app.listen(5000, () => {

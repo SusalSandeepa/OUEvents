@@ -27,13 +27,13 @@ const eventRegistrationSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ["registered", "cancelled", "attended"],
+    enum: ["registered", "cancelled"],
     default: "registered",
   },
 });
 
 const EventRegistration = mongoose.model(
   "EventRegistration",
-  eventRegistrationSchema
+  eventRegistrationSchema,
 );
 export default EventRegistration;

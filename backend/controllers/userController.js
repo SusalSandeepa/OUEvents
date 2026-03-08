@@ -324,6 +324,15 @@ export async function sendOTP(req, res) {
     return;
   }
 
+  // Check if email exists in the database
+  const existingUser = await User.findOne({ email: email });
+  if (existingUser == null) {
+    res.status(404).json({
+      message: "Email not found. Please register first.",
+    });
+    return;
+  }
+
   //Generate a random OTP between 10000 to 99999
   const otp = Math.floor(Math.random() * 90000) + 10000;
 
