@@ -25,6 +25,7 @@ import UpdateEventForm from "./admin/updateEventForm";
 import AdminFeedbackPage from "./admin/AdminFeedbackPage";
 import AdminDashboard from "./admin/adminDashboard";
 import AdminReportsPage from "./admin/AdminReportsPage";
+import AdminRegistrationsPage from "./admin/AdminRegistrationsPage";
 import Settings from "./admin/settings";
 import MyProfile from "./admin/myProfile";
 import { useState, useEffect } from "react";
@@ -260,14 +261,7 @@ export default function AdminPage() {
               <Route path="/users" element={<AdminUserManagement />} />
               <Route path="/events" element={<AdminEventManagement />} />
               <Route path="/reports" element={<AdminReportsPage />} />
-              <Route
-                path="/registrations"
-                element={
-                  <h2 className="text-lg font-semibold opacity-50">
-                    Event Registrations Module
-                  </h2>
-                }
-              />
+              <Route path="/registrations" element={<AdminRegistrationsPage />} />
               <Route path="/feedback" element={<AdminFeedbackPage />} />
               <Route path="/profile" element={<MyProfile />} />
               <Route path="/settings" element={<Settings />} />
