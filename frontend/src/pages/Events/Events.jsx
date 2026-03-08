@@ -56,7 +56,7 @@ import EventsErrorState from "./EventsErrorState";
 import EventsEmptyState from "./EventsEmptyState";
 
 // TODO: Update this URL to match your actual backend route.
-const EVENTS_API_URL = import.meta.env.VITE_API_URL + "api/events";
+const EVENTS_API_URL = "/api/events";
 
 // Number of events per page
 const PAGE_SIZE = 6;
