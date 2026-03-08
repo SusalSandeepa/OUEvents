@@ -9,9 +9,15 @@ import { getReminderEmail } from "../utils/reminderEmail.js";
 // Nodemailer transporter for registration emails
 const transporter = nodemailer.createTransport({
   service: "gmail",
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false,
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.APP_PASSWORD,
+  },
+  tls: {
+    rejectUnauthorized: false, // Bypass SSL certificate issues
   },
 });
 
@@ -35,7 +41,7 @@ async function sendRegistrationEmail(userEmail, event) {
       minute: "2-digit",
     });
 
-    await transporter.sendMail({
+    const info = await transporter.sendMail({
       from: `"OUEvents" <${process.env.EMAIL_USER}>`,
       to: userEmail,
       subject: `[OUEvents] You're registered for "${event.title}"!`,
@@ -44,13 +50,13 @@ async function sendRegistrationEmail(userEmail, event) {
         eventTitle: event.title,
         eventDate: formattedDate,
         venue: event.location,
-        daysLeft,
+        daysLeft: 0, // 0 triggers the "Registration Confirmed" badge style
       }),
     });
 
-    console.log(`[Email] Confirmation sent to ${userEmail} for "${event.title}"`);
+    console.log(`[Email] Confirmation sent to ${userEmail} for "${event.title}". MessageId: ${info.messageId}`);
   } catch (err) {
-    console.error(`[Email] Failed to send confirmation to ${userEmail}:`, err.message);
+    console.error(`[Email Error] Failed to send confirmation to ${userEmail}:`, err.message);
   }
 }
 
