@@ -79,7 +79,7 @@ const EventDetail = () => {
 
         // Adjust this URL to match  backend.
         // If you have a baseURL configured in axios, just use `/events/${id}`.
-        const res = await axios.get(`${import.meta.env.VITE_API_URL}api/events/${id}`);
+        const res = await axios.get(`/api/events/${id}`);
 
         // Adjust this depending on  API response shape:
         //  - If your backend returns { data: { ...event } }, use res.data.data
