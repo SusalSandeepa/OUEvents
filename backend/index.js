@@ -65,6 +65,11 @@ app.use("/api/feedback", feedbackRouter);
 app.use("/api/stats", statsRouter);
 app.use("/api/reports", reportsRouter);
 
+// Simple ping endpoint to keep the free-tier Render server awake
+app.get("/api/ping", (req, res) => {
+  res.json({ message: "Server is awake!" });
+});
+
 // Test endpoint to manually trigger the reminder job (for development only)
 app.get("/api/reminders/test", async (req, res) => {
   try {
