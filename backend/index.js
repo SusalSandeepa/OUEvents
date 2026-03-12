@@ -7,7 +7,10 @@ import eventRegistrationRouter from "./routes/eventRegistrationRouter.js";
 import feedbackRouter from "./routes/feedbackRouter.js";
 import statsRouter from "./routes/statsRouter.js";
 import reportsRouter from "./routes/reportsRouter.js";
-import { startReminderScheduler, runReminderJob } from "./utils/reminderScheduler.js";
+import {
+  startReminderScheduler,
+  runReminderJob,
+} from "./utils/reminderScheduler.js";
 import jwt from "jsonwebtoken";
 import cors from "cors";
 
@@ -50,9 +53,9 @@ const connectionString = process.env.MONGO_URI; // Get MongoDB connection string
 mongoose
   .connect(connectionString)
   .then(() => {
-      console.log("Database Connected");
-      // Start the daily reminder scheduler after DB is connected
-      startReminderScheduler();
+    console.log("Database Connected");
+    // Start the daily reminder scheduler after DB is connected
+    startReminderScheduler();
   })
   .catch(() => {
     console.log("Database Connection Failed");
@@ -64,22 +67,6 @@ app.use("/api/registrations", eventRegistrationRouter);
 app.use("/api/feedback", feedbackRouter);
 app.use("/api/stats", statsRouter);
 app.use("/api/reports", reportsRouter);
-
-// Simple ping endpoint to keep the free-tier Render server awake
-app.get("/api/ping", (req, res) => {
-  res.json({ message: "Server is awake!" });
-});
-
-// Test endpoint to manually trigger the reminder job (for development only)
-app.get("/api/reminders/test", async (req, res) => {
-  try {
-    await runReminderJob();
-    res.json({ message: "Reminder job triggered successfully. Check server logs and email inboxes." });
-  } catch (err) {
-    res.status(500).json({ message: "Reminder job failed", error: err.message });
-  }
-});
-
 
 app.listen(5000, () => {
   console.log("Server is running on port 5000");

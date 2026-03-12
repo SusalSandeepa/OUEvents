@@ -1,150 +1,142 @@
 import Event from "../models/event.js";
 import { isAdmin } from "./userController.js";
+import EventRegistration from "../models/eventRegistration.js";
+import Feedback from "../models/feedback.js";
 
-export async function createEvent(req,res){
+export async function createEvent(req, res) {
+  if (!isAdmin(req)) {
+    res.status(401).json({
+      message: "You are not authorized to create an event",
+    });
+    return;
+  }
 
-    if(!isAdmin(req)){
-        res.status(401).json({
-            message: "You are not authorized to create an event"
-        })
-        return;
+  try {
+    const eventData = req.body;
+
+    if (!eventData.eventDateTime && eventData.date && eventData.time) {
+      const date = new Date(eventData.date);
+      const timeSplit = eventData.time.split(":");
+      date.setUTCHours(parseInt(timeSplit[0]));
+      date.setUTCMinutes(parseInt(timeSplit[1]));
+      eventData.eventDateTime = date;
     }
+    const event = new Event(eventData);
 
-    try{
-        const eventData = req.body;
+    await event.save();
 
-        if(!eventData.eventDateTime && eventData.date && eventData.time){
-            const date = new Date(eventData.date);
-            const timeSplit = eventData.time.split(":");
-            date.setUTCHours(parseInt(timeSplit[0]));
-            date.setUTCMinutes(parseInt(timeSplit[1]));
-            eventData.eventDateTime = date;
-        }
-        const event = new Event(eventData);
-
-        await event.save();
-
-        res.json({
-            message: "Event created successfully",
-            event: event
-        })
-
-    }catch(err){        
-        console.error(err);
-        res.status(500).json({
-            message: "Failed to create event"           
-        })
-    }
+    res.json({
+      message: "Event created successfully",
+      event: event,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      message: "Failed to create event",
+    });
+  }
 }
 
-export async function getEvents(req,res){
+export async function getEvents(req, res) {
+  try {
+    let events;
 
-    try{
-        let events;
-        
-        if(isAdmin(req)){
-            // Admin can see all events
-            events = await Event.find();
-        }else{
-            // Regular users cannot see pending events
-            events = await Event.find({ status: { $ne: "pending" } });
-        }
-        
-        res.json(events);
-
-    }catch(err){
-        console.error(err);
-        res.status(500).json({
-            message: "Failed to fetch events"
-        })
+    if (isAdmin(req)) {
+      // Admin can see all events
+      events = await Event.find();
+    } else {
+      // normal users cannot see pending events
+      events = await Event.find({ status: { $ne: "pending" } });
     }
+
+    res.json(events);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      message: "Failed to fetch events",
+    });
+  }
 }
 
-export async function deleteEvent(req,res){
+export async function deleteEvent(req, res) {
+  if (!isAdmin(req)) {
+    res.status(401).json({
+      message: "You are not authorized to delete an event",
+    });
+    return;
+  }
 
-    if(!isAdmin(req)){
-        res.status(401).json({
-            message: "You are not authorized to delete an event"
-        })
-        return;
-    }
- 
-    try{
-        const eventID = req.params.eventID
+  try {
+    const eventID = req.params.eventID;
 
-        await Event.deleteOne({
-            eventID: eventID
-        })
+    await Event.deleteOne({
+      eventID: eventID,
+    });
 
-        res.json({
-            message: "Event deleted successfully"
-        })
+    // Also delete all registrations and feedback associated with this event
+    await EventRegistration.deleteMany({ eventID: eventID });
+    await Feedback.deleteMany({ eventID: eventID });
 
-    }catch(err){
-        console.error(err);
-        res.status(500).json({
-            message: "Failed to delete event"
-        })
-    }
+    res.json({
+      message: "Event deleted successfully",
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      message: "Failed to delete event",
+    });
+  }
 }
 
-export async function updateEvent(req,res){
+export async function updateEvent(req, res) {
+  if (!isAdmin(req)) {
+    res.status(401).json({
+      message: "You are not authorized to update an event",
+    });
+    return;
+  }
 
-    if(!isAdmin(req)){
-        res.status(401).json({
-            message: "You are not authorized to update an event"
-        })
-        return;
+  try {
+    const eventID = req.params.eventID;
+    const updatedData = req.body;
+
+    if (!updatedData.eventDateTime && updatedData.date && updatedData.time) {
+      const date = new Date(updatedData.date);
+      const timeSplit = updatedData.time.split(":");
+      date.setUTCHours(parseInt(timeSplit[0]));
+      date.setUTCMinutes(parseInt(timeSplit[1]));
+      updatedData.eventDateTime = date;
     }
- 
-    try{
-        const eventID = req.params.eventID
-        const updatedData = req.body
-        
-        if(!updatedData.eventDateTime && updatedData.date && updatedData.time){
-            const date = new Date(updatedData.date);
-            const timeSplit = updatedData.time.split(":");
-            date.setUTCHours(parseInt(timeSplit[0]));
-            date.setUTCMinutes(parseInt(timeSplit[1]));
-            updatedData.eventDateTime = date;
-        }
 
-        await Event.updateOne(
-            {eventID: eventID},
-            updatedData
-        )
+    await Event.updateOne({ eventID: eventID }, updatedData);
 
-        res.json({
-            message: "Event updated successfully"
-        })
-
-    }catch(err){
-        console.error(err);
-        res.status(500).json({
-            message: "Failed to update event"
-        })
-    }
+    res.json({
+      message: "Event updated successfully",
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      message: "Failed to update event",
+    });
+  }
 }
 
-export async function getEventById(req,res){
-    try{
-        const eventID = req.params.eventID
-        const event = await Event.findOne(
-            {eventID: eventID}
-        )
-        
-        if(event == null){
-            res.status(404).json({
-                message: "Event not found"
-            })
-        }else{
-            res.json(event)
-        }
-    
-    }catch(err){
-        console.error(err);
-        res.status(500).json({
-            message: "Failed to fetch event by ID"
-        })
+export async function getEventById(req, res) {
+  try {
+    const eventID = req.params.eventID;
+    const event = await Event.findOne({ eventID: eventID });
+
+    if (event == null) {
+      res.status(404).json({
+        message: "Event not found",
+      });
+    } else {
+      res.json(event);
     }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      message: "Failed to fetch event by ID",
+    });
+  }
 }
