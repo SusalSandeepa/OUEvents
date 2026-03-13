@@ -1,11 +1,11 @@
 import express from "express";
 import {
-    submitFeedback,
-    getEventFeedback,
-    checkUserFeedback,
-    getAllFeedback,
-    deleteFeedback,
-} from "../controllers/feedbackController.js";
+  submitFeedback,
+  getEventFeedback,
+  checkUserFeedback,
+  getAllFeedback,
+  deleteFeedback,
+} from "../controllers/feedbackController.js"; // Import controller functions
 
 const feedbackRouter = express.Router();
 
