@@ -100,12 +100,12 @@ export async function runReminderJob() {
           });
 
           console.log(
-            `[Reminder] Sent ${days}-day reminder to ${reg.userEmail} for "${event.title}"`
+            `[Reminder] Sent ${days}-day reminder to ${reg.userEmail} for "${event.title}"`,
           );
         } catch (err) {
           console.error(
             `[Reminder] Failed to send to ${reg.userEmail}:`,
-            err.message
+            err.message,
           );
         }
       }
@@ -122,9 +122,7 @@ export async function runReminderJob() {
 export function startReminderScheduler() {
   cron.schedule("0 8 * * *", () => {
     runReminderJob().catch((err) =>
-      console.error("[Reminder] Cron job error:", err)
+      console.error("[Reminder] Cron job error:", err),
     );
   });
-
-  console.log("[Reminder] Scheduler started — runs daily at 8:00 AM.");
 }
