@@ -13,6 +13,7 @@ export async function submitFeedback(req, res) {
     return;
   }
 
+  // Extract feedback data from request
   const { eventID, rating, comment } = req.body;
 
   // Validate required fields
@@ -89,7 +90,7 @@ export async function submitFeedback(req, res) {
       comment: comment || "",
     });
 
-    await feedback.save();
+    await feedback.save(); // Save feedback to database
 
     res.json({
       message: "Feedback submitted successfully",
@@ -109,7 +110,7 @@ export async function getEventFeedback(req, res) {
 
   try {
     const feedback = await Feedback.find({ eventID: eventID }).sort({
-      createdAt: -1,
+      createdAt: -1, // Sort by newest first
     });
 
     res.json(feedback);
@@ -150,7 +151,7 @@ export async function checkUserFeedback(req, res) {
   }
 }
 
-// Get all feedback (admin only)
+// Get all feedback (admin only) ========================================
 export async function getAllFeedback(req, res) {
   if (!isAdmin(req)) {
     res.status(401).json({
@@ -158,6 +159,7 @@ export async function getAllFeedback(req, res) {
     });
     return;
   }
+  // Admin dashboard view all feedback.
 
   try {
     const feedback = await Feedback.find().sort({ createdAt: -1 });
@@ -179,7 +181,7 @@ export async function deleteFeedback(req, res) {
     return;
   }
 
-  const feedbackId = req.params.id;
+  const feedbackId = req.params.id; // Get feedback ID from URL
 
   try {
     const result = await Feedback.findByIdAndDelete(feedbackId);

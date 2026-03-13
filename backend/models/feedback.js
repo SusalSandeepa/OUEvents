@@ -25,8 +25,9 @@ const feedbackSchema = new mongoose.Schema({
   },
 });
 
-// Ensure one feedback per user per event
+// Ensure one feedback per user per event (Prevent Duplicate Feedback)
+// Creates a compound index.
 feedbackSchema.index({ eventID: 1, userEmail: 1 }, { unique: true });
 
-const Feedback = mongoose.model("Feedback", feedbackSchema);
+const Feedback = mongoose.model("Feedback", feedbackSchema); // This creates a Mongoose model. (CRUD)
 export default Feedback;
