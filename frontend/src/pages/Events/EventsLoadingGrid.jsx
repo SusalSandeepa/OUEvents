@@ -1,25 +1,3 @@
-// src/pages/Events/EventsLoadingGrid.jsx
-//
-// EVENTS LOADING GRID
-// -------------------
-// This component shows a skeleton/grid placeholder while events are loading.
-// It is purely presentational and does NOT:
-// - Fetch data
-// - Manage any state
-//
-// DESIGN GOAL:
-// - Visually mimic the EventCard layout so the page doesn't "jump" when
-//   real data loads.
-// - Use a pulsing animation (animate-pulse) so users see it is loading.
-// - Responsive grid:
-//     * Mobile: 1 column
-//     * Small:  2 columns
-//     * Large+: 3 columns
-//
-// PROPS (optional):
-// - count: number
-//     How many placeholder cards to render. Default: 8.
-
 import React from "react";
 
 const EventsLoadingGrid = ({ count = 8 }) => {

@@ -1,37 +1,3 @@
-// src/pages/Events/EventsPagination.jsx
-//
-// EVENTS PAGINATION (ELLIPSIS VERSION)
-// ------------------------------------
-// This component renders the pagination controls at the bottom of the Events
-// grid. Compared to the simple version, this one:
-// - Shows all pages when totalPages is small.
-// - Uses "..." ellipsis when totalPages is large, so the UI does not overflow.
-//
-// EXAMPLES:
-// - totalPages = 5:
-//     1  2  3  4  5
-//
-// - totalPages = 20, currentPage = 2:
-//     Prev  1  2  3  4  5  ...  20  Next
-//
-// - totalPages = 20, currentPage = 10:
-//     Prev  1  ...  9  10  11  ...  20  Next
-//
-// - totalPages = 20, currentPage = 19:
-//     Prev  1  ...  16  17  18  19  20  Next
-//
-// PROPS:
-// - currentPage: number (1-based index of the current page).
-// - totalPages: number (>= 1).
-// - totalItems: number (total number of events matching filters).
-// - pageSize: number (number of items per page).
-// - onPageChange: (page: number) => void
-//     Called when user clicks a page or prev/next.
-//
-// NOTE:
-// - Purely presentational + callbacks; all logic for loading the correct page
-//   lives in Event.jsx.
-
 import React from "react";
 
 // Helper to build a compact page list with ellipsis markers

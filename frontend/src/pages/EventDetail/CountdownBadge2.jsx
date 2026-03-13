@@ -1,18 +1,3 @@
-// src/pages/EventDetail/CountdownBadge2.jsx
-//
-// Detailed animated countdown for Event page.
-// - Uses useCountdown(targetDateTime).
-// - Shows up to 4 contiguous segments in descending power order:
-//   [Years, Months, Weeks, Days, Hours, Min, Sec].
-// - Window rule:
-//   * Find a start unit S such that all upper units are 0 (Years is always allowed).
-//   * From S, extend to the right (toward smaller units) to include up to 4 units.
-//   * If near the end and we don't reach 4, prepend units on the left
-//     (still contiguous) to get up to 4 total.
-//   * 0 values inside the 4 boxes are allowed.
-// - Wrapper: fade-in + move-up animation.
-// - Each box: fixed size, top colored moving line, number animation, reset pulse.
-
 import React, { memo, useEffect, useState } from "react";
 import { useCountdown } from "../../hooks/useCountdown";
 
