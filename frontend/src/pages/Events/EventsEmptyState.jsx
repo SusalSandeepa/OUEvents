@@ -1,35 +1,3 @@
-// src/pages/Events/EventsEmptyState.jsx
-//
-// EVENTS EMPTY STATE
-// ------------------
-// This component displays when no events match the current search/filter.
-// It shows a friendly informational message without any action buttons.
-//
-// LAYOUT:
-// - Desktop: Two-column layout
-//     * Left column:  Icon + Title + Message (no buttons)
-//     * Right column: robot.png illustration
-// - Mobile: Single column, stacked
-//     * Top:    robot.png (centered, prominent)
-//     * Bottom: Icon + Title + Message (centered)
-//
-// DESIGN NOTES:
-// - Background has a soft secondary tint (using --color-secondary at low opacity)
-// - Icon uses --color-secondary (#2f3e4e) for a calm, neutral feel
-// - Title uses --color-secondary (#2f3e4e) for readability
-// - NO action buttons (no "Clear search", no "View all events")
-// - This is purely informational with text and robot illustration
-//
-// PROPS:
-// - searchQuery: string (optional)
-//     The current search term. Can be used for context, but the message
-//     displayed is always the same: "We couldn't find any events matching your search."
-//
-// THEME:
-// - --color-accent:    #7a1e1e (not used prominently here)
-// - --color-primary:   #faf7f2 (page background)
-// - --color-secondary: #2f3e4e (icon, title text, background tint)
-
 import React from "react";
 
 // Import the robot illustration

@@ -1,34 +1,3 @@
-// src/pages/Events/EventsErrorState.jsx
-//
-// EVENTS ERROR STATE
-// ------------------
-// This component displays when the events fetch fails.
-// It shows a friendly error message with a retry option.
-//
-// LAYOUT:
-// - Desktop: Two-column layout
-//     * Left column:  Icon + Title + Message + Retry button
-//     * Right column: robot.png illustration
-// - Mobile: Single column, stacked
-//     * Top:    robot.png (centered, prominent)
-//     * Bottom: Icon + Title + Message + Retry button (centered)
-//
-// DESIGN NOTES:
-// - Background has a soft maroon tint (using --color-accent at low opacity)
-// - Icon uses --color-accent (#7a1e1e) for the error indication
-// - Title uses --color-secondary (#2f3e4e) for readability
-// - No secondary links or additional actions (just the Retry button)
-//
-// PROPS:
-// - onRetry: () => void
-//     Callback function triggered when user clicks the "Retry" button.
-//     This should re-fetch the events from the backend.
-//
-// THEME:
-// - --color-accent:    #7a1e1e (error icon, retry button background)
-// - --color-primary:   #faf7f2 (page background)
-// - --color-secondary: #2f3e4e (title text)
-
 import React from "react";
 
 // Import the robot illustration

@@ -1,35 +1,4 @@
-// src/hooks/useCountdown.js
-//
-// SHARED COUNTDOWN HOOK
-// ----------------------
-// This hook centralizes all countdown logic for your app.
-// It uses the global "now" from TimeTickerProvider and a targetDateTime
-// (usually the event's startDateTime) to compute:
-//
-// - years, months, weeks, days, hours, minutes, seconds
-// - isPast (true when now >= target)
-//
-// IMPORTANT:
-// - This file does NOT create any timers itself.
-//   It only reacts to changes in `now` from TimeTickerContext, which
-//   already runs a single global timer.
-//
-// FUTURE TASKS / IMPROVEMENTS (OPTIONAL):
-// --------------------------------------
-// 1) Performance tuning:
-//    - If countdown calculations become expensive with many components,
-//      you can simplify or further optimize diffFromNowToTarget.
-// 2) Calendar precision:
-//    - Currently uses Date arithmetic (setFullYear/setMonth) so it respects
-//      real month lengths and leap years.
-// 3) Error handling in UI:
-//    - This hook returns all zeros and isPast=false when the target is
-//      invalid/missing. Badges can treat that as "N/A" instead of "Started".
-// 4) Testing:
-//    - Add unit tests with edge cases: leap years, month boundaries, etc.
-// 5) Timezone handling:
-//    - If events have specific timezones, normalize targetDateTime before
-//      passing it into this hook.
+
 
 import { useTimeTicker } from "../context/TimeTickerContext";
 
@@ -43,33 +12,12 @@ const toValidDate = (value) => {
   return Number.isNaN(d.getTime()) ? null : d;
 };
 
-/**
- * Core difference calculation between now and target.
- *
- * Returns an object:
- * {
- *   years, months, weeks, days, hours, minutes, seconds,
- *   isPast
- * }
- *
- * NOTE:
- * - Uses Date arithmetic to handle leap years and month lengths.
- * - Strategy:
- *   1) If target <= now => everything 0, isPast=true.
- *   2) Otherwise:
- *      - Increment a cursor date year-by-year, month-by-month
- *        to compute calendar-accurate years & months.
- *      - Remaining difference is converted into days/hours/minutes/seconds.
- *      - weeks = Math.floor(days / 7), days = days % 7.
- */
+
 const diffFromNowToTarget = (now, target) => {
   const targetDate = toValidDate(target);
   const nowDate = toValidDate(now);
 
-  // If either is invalid, treat as "unknown", not "past".
-  // - All units 0
-  // - isPast = false
-  // UI components (badges) can show "N/A" or similar.
+  
   if (!targetDate || !nowDate) {
     return {
       years: 0,
@@ -153,34 +101,8 @@ const diffFromNowToTarget = (now, target) => {
   };
 };
 
-/**
- * useCountdown
- *
- * @param {Date|string|number} targetDateTime - Target datetime (usually event startDateTime).
- *
- * @returns {{
- *   years: number;
- *   months: number;
- *   weeks: number;
- *   days: number;
- *   hours: number;
- *   minutes: number;
- *   seconds: number;
- *   isPast: boolean;
- * }}
- *
- * Usage:
- * - CountdownBadge1 (EventCard):
- *   * Show only the largest non-zero unit, or "Started" when isPast is true.
- *   * If all units are 0 AND isPast is false → treat as "N/A".
- * - CountdownBadge2 (Event.jsx):
- *   * Build the multi-box display using all units.
- */
 export const useCountdown = (targetDateTime) => {
   const { now } = useTimeTicker();
 
-  // We simply compute on each render; TimeTicker updates `now` once per second,
-  // so this function runs once per second per hook usage, which is fine for
-  // typical event volumes.
   return diffFromNowToTarget(now, targetDateTime);
 };
