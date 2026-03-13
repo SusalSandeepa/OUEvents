@@ -7,7 +7,6 @@ import SignupPage from "./pages/signupPage";
 import ForgotPasswordPage from "./pages/forgotPasswordPage";
 import { Toaster } from "react-hot-toast";
 import { TimeTickerProvider } from "./context/TimeTickerContext";
-import Test from "./pages/Test";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
 function App() {
@@ -23,7 +22,6 @@ function App() {
               <Route path="/login" element={<LoginPage />} />
               <Route path="/forgot-password" element={<ForgotPasswordPage />} />
               <Route path="/admin/*" element={<AdminPage />} />
-              <Route path="/test" element={<Test />} />
             </Routes>
           </div>
         </TimeTickerProvider>
