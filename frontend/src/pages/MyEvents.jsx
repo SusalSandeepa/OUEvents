@@ -1,7 +1,3 @@
-// MyEvents.jsx
-// Shows user's registered events - upcoming and past
-// Past events have option to add feedback
-
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
@@ -30,7 +26,7 @@ export default function MyEvents() {
   // Fetch user's registered events
   useEffect(() => {
     const token = localStorage.getItem("token");
-    
+
     if (!token) {
       toast.error("Please login to view your events");
       navigate("/login");
@@ -261,11 +257,7 @@ export default function MyEvents() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {upcomingEvents.map((item) => (
-                <EventCard
-                  key={item._id}
-                  item={item}
-                  isPast={false}
-                />
+                <EventCard key={item._id} item={item} isPast={false} />
               ))}
             </div>
           )
@@ -277,11 +269,7 @@ export default function MyEvents() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {pastEvents.map((item) => (
-              <EventCard
-                key={item._id}
-                item={item}
-                isPast={true}
-              />
+              <EventCard key={item._id} item={item} isPast={true} />
             ))}
           </div>
         )}
