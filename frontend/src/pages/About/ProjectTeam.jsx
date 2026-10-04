@@ -13,7 +13,7 @@ const ProjectTeam = () => {
       name: "K.W.S. Sandeepa",
       role: "Backend / Frontend / Testing",
       github: "https://github.com/SusalSandeepa",
-      linkedin: "https://www.linkedin.com/in/susal-sandeepa-185114198/",
+      linkedin: "https://www.linkedin.com/in/susalsandeepa/",
     },
     {
       initials: "HD",
